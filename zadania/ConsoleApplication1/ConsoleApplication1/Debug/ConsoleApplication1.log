@@ -1,0 +1,7 @@
+﻿  ConsoleApplication1.cpp
+K:\Studenci\PK\Prywatne\327923\JPRO\zadania\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(24,12): error C2109: indeks dolny wymaga tablicy lub wskaźnika typu
+K:\Studenci\PK\Prywatne\327923\JPRO\zadania\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(25,25): error C2109: indeks dolny wymaga tablicy lub wskaźnika typu
+K:\Studenci\PK\Prywatne\327923\JPRO\zadania\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(28,27): error C2109: indeks dolny wymaga tablicy lub wskaźnika typu
+K:\Studenci\PK\Prywatne\327923\JPRO\zadania\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(38,15): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+K:\Studenci\PK\Prywatne\327923\JPRO\zadania\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(60,35): error C2660: "maksind": funkcja nie przyjmuje 1 argumentów
+K:\Studenci\PK\Prywatne\327923\JPRO\zadania\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(18,5): message : zobacz deklarację „maksind”

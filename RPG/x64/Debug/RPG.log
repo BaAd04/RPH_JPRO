@@ -1,0 +1,6 @@
+﻿  RPG.cpp
+K:\Studenci\PK\Prywatne\327923\JPRO\RPG\RPG.cpp(150,12): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+K:\Studenci\PK\Prywatne\327923\JPRO\RPG\RPG.cpp(161,9): warning C4477: „printf”: ciąg formatu „%s” wymaga argumentu typu „char *”, ale argument 1 ze zmienną liczbą argumentów ma typ „int”
+K:\Studenci\PK\Prywatne\327923\JPRO\RPG\RPG.cpp(161,9): warning C4313: „printf”: „%s” w ciągu formatu powoduje konflikt z argumentem 1 typu „int”
+K:\Studenci\PK\Prywatne\327923\JPRO\RPG\RPG.cpp(156,7): warning C4101: "nazwa": lokalna zmienna, do której nie istnieje odwołanie
+  RPG.vcxproj -> K:\Studenci\PK\Prywatne\327923\JPRO\RPG\x64\Debug\RPG.exe
