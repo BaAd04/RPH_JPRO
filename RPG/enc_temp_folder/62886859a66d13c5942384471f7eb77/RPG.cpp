@@ -175,7 +175,7 @@ void generate_map() {
 				mapa[i][j] = 'E';
 			}
 			else {
-				//mapa[i][j] = ' ';
+				mapa[i][j] = '.'; // empty tile or floor
 			}
 
 			}
