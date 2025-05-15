@@ -139,12 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="character.cpp" />
     <ClCompile Include="funkcje.cpp" />
     <ClCompile Include="RPG.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="character.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,7 @@
 ﻿  RPG.cpp
-K:\Studenci\PK\Prywatne\327923\JPRO\RPG\RPG.cpp(150,12): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
-K:\Studenci\PK\Prywatne\327923\JPRO\RPG\RPG.cpp(161,9): warning C4477: „printf”: ciąg formatu „%s” wymaga argumentu typu „char *”, ale argument 1 ze zmienną liczbą argumentów ma typ „int”
-K:\Studenci\PK\Prywatne\327923\JPRO\RPG\RPG.cpp(161,9): warning C4313: „printf”: „%s” w ciągu formatu powoduje konflikt z argumentem 1 typu „int”
-K:\Studenci\PK\Prywatne\327923\JPRO\RPG\RPG.cpp(156,7): warning C4101: "nazwa": lokalna zmienna, do której nie istnieje odwołanie
-  RPG.vcxproj -> K:\Studenci\PK\Prywatne\327923\JPRO\RPG\x64\Debug\RPG.exe
+C:\Users\GioScottiGroyper\Source\Repos\RPH_JPRO\RPG\RPG.cpp(381,12): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+C:\Users\GioScottiGroyper\Source\Repos\RPH_JPRO\RPG\RPG.cpp(423,11): warning C4473: „scanf_s”: przekazano niewystarczającą liczbę argumentów dla ciągu formatowania
+C:\Users\GioScottiGroyper\Source\Repos\RPH_JPRO\RPG\RPG.cpp(423,11): message : symbole zastępcze i ich parametry oczekują 2 argumentów ze zmienną liczbą argumentów, ale podano następującą liczbę zmiennych argumentów: 1
+C:\Users\GioScottiGroyper\Source\Repos\RPH_JPRO\RPG\RPG.cpp(423,11): message : brakujący argument 2 o zmiennej liczbie parametrów jest wymagany w ciągu formatu „%c”
+C:\Users\GioScottiGroyper\Source\Repos\RPH_JPRO\RPG\RPG.cpp(423,11): message : ten argument jest używany jako rozmiar bufora
+  RPG.vcxproj -> C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\x64\Debug\RPG.exe

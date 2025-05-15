@@ -1,2 +1,3 @@
 C:\Users\pk\Desktop\RPG\x64\Debug\RPG.exe
 K:\Studenci\PK\Prywatne\327923\JPRO\RPG\x64\Debug\RPG.exe
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\x64\Debug\RPG.exe
