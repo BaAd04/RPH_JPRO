@@ -27,16 +27,15 @@ struct item
 struct Slot {
 	//std::string item_name;  // Nazwa przedmiotu
 	char item_name[10];
+	int type;			// 1 - broń, 2 - zbroja, 3 - pierścień
 	bool isEmpty;           // Sprawdzenie, czy slot jest pusty
 	item* wpn;            // Wskaźnik na broń
-	item* arm;             // Wskaźnik na zbroję
-	item* rg;               // Wskaźnik na pierścień
-
-	Slot() : isEmpty(true), wpn(nullptr), arm(nullptr), rg(nullptr) {} // Konstruktor domyślny
+	
+	Slot() : isEmpty(true), wpn(nullptr), item_name("XXX") {} // Konstruktor domyślny
 };
 
 struct postac {
-	char name;
+	char name[10];
 	int lvl;
 	int health;
 	int attack;
@@ -54,6 +53,7 @@ struct postac {
 	Slot left_hand;    // Slot na broń w lewej ręce
 	Slot armor_slot;   // Slot na zbroję
 	Slot ring_slot;    // Slot na pierścień
+	Slot ring_slot2;
 	item* ekwipunek;
 	item** backpack;
 	int backpack_height;
@@ -63,7 +63,6 @@ struct postac {
 
 
 struct enemy {
-	std::string name;
 	int lvl;
 	int health;
 	int attack;
@@ -76,11 +75,10 @@ struct enemy {
 
 
 enemy* generate_enemy() {
-	enemy* en = (enemy*)malloc(sizeof enemy);
+	enemy* en = (enemy*)malloc(sizeof(enemy));
 	
 	int rand_enemytype = rand() % 10 + 1;
 	if (rand_enemytype > 6) {
-		en->name, "Goblin";
 		en->lvl = 1;
 		en->health = 3;
 		en->attack = 1;
@@ -92,7 +90,6 @@ enemy* generate_enemy() {
 			
 	}
 	else if (rand_enemytype > 3) {
-		en->name, "Zombie";
 		en->lvl = 1;
 		en->health = 5;
 		en->attack = 2;
@@ -103,7 +100,6 @@ enemy* generate_enemy() {
 		en->race = 2;
 	}
 	else if(rand_enemytype > 1) {
-		en->name, "Ork";
 		en->lvl = 2;
 		en->health = 8;
 		en->attack = 5;
@@ -114,7 +110,6 @@ enemy* generate_enemy() {
 
 	}
 	else if (rand_enemytype == 1) {
-		en->name, "Wizard";
 		en->lvl = 5;
 		en->health = 5;
 		en->attack = 8;
@@ -129,11 +124,12 @@ enemy* generate_enemy() {
 }
 
 
-postac* generate_postac() {
+postac* generate_postac(char nazwa[10]) {
 	postac* post = (postac*)malloc(sizeof postac);
 	post->backpack_height = 10;
 	post->backpack_width = 12;
 
+	strcpy_s(post->name, sizeof(post->name), nazwa);
 	post->posx = 1;
 	post->posy = 1;
 	post->xp = 0;
@@ -143,7 +139,10 @@ postac* generate_postac() {
 	post->attack = rand() % 10 + 1;
 	post->health = rand() % 20 + 10;
 	post->stamina = rand() % 15 + 6;
-	post->speed = rand() % 12 + 3;
+	post->speed = rand() % 12 + 3;	
+	post->luck = rand() % 20 + 1;
+	post->hunger = 100;
+	post->mana = 0;
 	
 	int size = 100;
 	
@@ -471,16 +470,26 @@ void show_map(char** mapa, int mapx_size, int mapy_size){
 }
 void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznosci od broni
 	printf(
-		"		       {}				\n"
-		"		      .--.				\n"
-		"		     /.--.⧵			\n"
-		"		    |= == =|				\n"
-		"		    | `::` |			\n"
-		"		  .-;`⧵..../ `;-.		\n"
-		"		  /  |...::... |  ⧵		\n"
-		"		  |  /''': :'''⧵   |	\n"
-		"		  ; --'⧵   ::  /⧵--;	\n"
-		"	         <__>,>._::_. <,<__>	\n"
+		"		       {}			[IMIE] = %s\n"
+		"		      .--.		    \t[LEVEL] = %d\n"
+		"		     /.--.⧵			[HEALTH] = %d\n"
+		"		    |= == =|		\t[ATTACK] = %d\t\t[ARMOR-SLOT] = ", postac1->name, postac1->lvl, postac1->health, postac1->attack); 
+	if (postac1->armor_slot.isEmpty == false) {
+		printf("%s\n", postac1->armor_slot.item_name);
+	}
+	else { printf("[XXX]\n"); } 
+	printf(
+		"		    | `::` |		\t[X POINTS] = %d		\n"
+		"		  .-;`⧵..../ `;-.	\t[STAMINA] = %d\t\t[LEFT HAND] = 	", postac1->xp, postac1->stamina);
+			if (postac1->left_hand.isEmpty == false) {
+				printf("%s\n", postac1->left_hand.item_name);
+			}
+			else { printf("[XXX]\n"); }
+		printf(
+		"		  /  |...::... |  ⧵	\t[HUNGER]  = %d	\n"
+		"		  |  /''': :'''⧵   |	\t[MANA] = %d\n"
+		"		  ; --'⧵   ::  /⧵--;	\t[SPEED] = %d\n"
+		"	         <__>,>._::_. <,<__>    \t[LUCK] = %d	\n"
 		"	       |  |/   ^^    ⧵|  |	\n"
 		"	       ⧵::/|         |⧵::/	\n"
 		"	       |||⧵|         |/|||	\n"
@@ -491,7 +500,8 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 		"	            |  ||  |					\n"
 		"	           _⧵.:||:./_			\n"
 		"		  /____/ ⧵____⧵		\n\n\n"
-		"_____________________________________________________________________________________________________________\n");
+		"_____________________________________________________________________________________________________________\n",
+		 postac1->stamina, postac1->hunger, postac1->mana, postac1->speed, postac1->luck);
 }
 void pokaz_postac(postac* postac1) {
 	system("cls");
@@ -501,7 +511,7 @@ void pokaz_postac(postac* postac1) {
 		"\t| |_| |  _|  ||_) | | | |\n"
 		"\t|  _  | |___ | _ <| |_| |\n"
 		"\t|_| |_| _____|_|⧵_⧵⧵___/ \n\n\n");
-
+	
 	model_hero(postac1);
 }
 
@@ -627,11 +637,8 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 		postac1->posy++;
 		mapa[postac1->posx][postac1->posy] = 'P';
 
-	}
-	
-
+	}	
 }
-
 
 int main()
 
@@ -640,41 +647,37 @@ int main()
 	
 	SetConsoleOutputCP(CP_UTF8);
 	srand(time(NULL));
-	int stage = 0;	//0- mapa, 1- ekwipunek
+
 	int mapx_size = 10;
 	int mapy_size = 15;
 
+	char nazwa[10];
+
 	char** mapa = (char**)malloc(sizeof(char*) * mapx_size);
 
-	postac* postac1 = generate_postac();
+	printf ("\t[PODAJ SWOJE IMIE:]\n\t");
+	scanf_s("%9s", nazwa, (unsigned)_countof(nazwa));
+
+	postac* postac1 = generate_postac(nazwa);
 
 	generate_map(mapa, mapx_size, mapy_size, postac1);
 
 	
 
-	item* pierscien22 = generate_ring('n');
-	postac1->backpack[0][0] = *pierscien22;
-
+	//item* pierscien22 = generate_ring('n');
+	//postac1->backpack[0][0] = *pierscien22;
 	 //Generate a random weapon
-	
-	item* miecz1 = generate_weapon();
-	//std::cout << "Random weapon generated with AP: " << miecz1.AP << ", AS: " << miecz1.AS << "\n";
-
-
+	//item* miecz1 = generate_weapon();
 	// Generate random armor
-	item* zbroja1 = generate_armor();
-	//std::cout << "Random armor generated with Armor Points: " << zbroja1.armorpoints << "\n";
+	//item* zbroja1 = generate_armor();
+	//item* pierscien = generate_ring('f');
+	//postac1->right_hand.wpn = miecz1;
+	//postac1->armor_slot.arm = zbroja1;
+	//postac1->ring_slot.rg = pierscien;
+	//item* spareSword = generate_weapon();
+	//postac1->ekwipunek = spareSword;
 
-	item* pierscien = generate_ring('f');
-	
 
-	postac1->right_hand.wpn = miecz1;
-	postac1->armor_slot.arm = zbroja1;
-	postac1->ring_slot.rg = pierscien;
-
-	
-	item* spareSword = generate_weapon();
-	postac1->ekwipunek = spareSword;
 	int runda = 1;
 
 	while (postac1->health > 0) {
@@ -685,7 +688,7 @@ int main()
 		printf("Wybierz ruch (w/a/s/d): ");
 		scanf_s(" %c", &move[0]);
 				
-		if(move[0] == 'e') {
+		if(move[0] == 'e') {			//otwieranie ekwipunku
 			char znak;
 			do {
 				pokaz_postac(postac1);
@@ -699,7 +702,7 @@ int main()
 
 		//enemy_check()		//sprawdza czy wrog jest w poblizu i podaje jego dane
 
-		//no_enemy_check()	//jesli na mapie nie ma wroga to tworzy go 
+		//no_enemy_check(int enemycount)	//jesli na mapie nie ma wroga to tworzy go 
 		
 		runda++;
 	}
@@ -707,8 +710,8 @@ int main()
 
 	free(postac1->ekwipunek);
 	
-	free(pierscien);
-	free(miecz1);
+	//free(pierscien);
+	//free(miecz1);
 	
 	for (int i = 0; i < postac1->backpack_height; i++) {
 		free (postac1->backpack[i]) ;
