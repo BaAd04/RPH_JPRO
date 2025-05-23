@@ -6,9 +6,14 @@
 #include <windows.h>
 #include <conio.h>
 
+int last_fight_round = 0;
+
+
+
 struct item
 {
 	char name[10];
+	int klasa; //1-10 klasa przedmiotu, generowanie losowe zalezne od poziomu postaci i szczescia
 	int AP;
 	int AS;
 	int weight;
@@ -27,9 +32,9 @@ struct item
 struct Slot {
 	//std::string item_name;  // Nazwa przedmiotu
 	char item_name[10];
-	int type;			// 1 - broń, 2 - zbroja, 3 - pierścień
+	int type;			//0 - potion, 1 - broń, 2 - zbroja, 3 - pierścień
 	bool isEmpty;           // Sprawdzenie, czy slot jest pusty
-	item* wpn;            // Wskaźnik na broń
+	item* wpn;             // Wskaźnik na broń
 	
 	Slot() : isEmpty(true), wpn(nullptr), item_name("XXX") {} // Konstruktor domyślny
 };
@@ -49,11 +54,17 @@ struct postac {
 	float speed;
 	int luck;
 	int points;
+	int cash;
 	Slot right_hand;   // Slot na broń w prawej ręce
 	Slot left_hand;    // Slot na broń w lewej ręce
 	Slot armor_slot;   // Slot na zbroję
 	Slot ring_slot;    // Slot na pierścień
 	Slot ring_slot2;
+	Slot potion_slot,
+		potion_slot2,
+		potion_slot3,
+		potion_slot4,
+		potion_slot5;
 	item* ekwipunek;
 	item** backpack;
 	int backpack_height;
@@ -125,7 +136,7 @@ enemy* generate_enemy() {
 
 
 postac* generate_postac(char nazwa[10]) {
-	postac* post = (postac*)malloc(sizeof postac);
+	postac* post = (postac*)malloc(sizeof (postac));
 	post->backpack_height = 10;
 	post->backpack_width = 12;
 
@@ -134,6 +145,7 @@ postac* generate_postac(char nazwa[10]) {
 	post->posy = 1;
 	post->xp = 0;
 	post->effect = 0;
+	post->cash = 0;
 
 	post->lvl = 1;
 	post->attack = rand() % 10 + 1;
@@ -153,18 +165,52 @@ postac* generate_postac(char nazwa[10]) {
 		post->backpack[i] = (item*)malloc(sizeof(item) * post->backpack_width);
 	}
 
+	for (int i = 0; i < post->backpack_height; i++) {
+		for (int j = 0; j < post->backpack_width; j++) {
+			post->backpack[i][j].name[0] = '\0';
+		}
+	}
+
 	return post;
 }
-//void walka(postac* postac1) {
+void walka(postac* postac1, enemy* wrog, int tura) {
 
-//	printf("\n\n\t[WALKA Z WROGIEM!]\n\n");
-//}
+	printf("\n\n\t[WALKA Z ");
+	switch (wrog->race)
+	{
+	case 1:
+		printf("GOBLINEM]\n\n");
+		break;
+	case 2:
+		printf("ZOMBIE]\n\n");
+		break;
+	case 3:
+		printf("ORKIEM]\n\n");
+		break;
+	case 4:
+		printf("WIZARDEM]\n\n");
+		break;
+	default:
+		break;
+	}
+	int kto_pierwszy;	// 0 - pierwszy gracz 1 - pierwszy mob, 2 - dwie tury dla gracza  
+	if (wrog->AS < postac1->speed || wrog->AS == postac1->speed)
+	{
+		kto_pierwszy = 0;
+		if (postac1->speed >= 3 * wrog->AS) {
+			kto_pierwszy = 2;
+		}
+	}
+	else {
+		kto_pierwszy = 1;
+	}
+}
 
 void ekran_walki(postac* postac1) {
 	enemy* wrog = generate_enemy();
 	//while(wrog->health > 0 && postac1->health >0) {
 	system("cls");
-
+	int tura = 1;
 	switch (wrog->race) {
 	case 1:
 		printf(
@@ -286,7 +332,7 @@ void ekran_walki(postac* postac1) {
 		break;
 	}
 	Sleep(1000);
-	//walka(postac1);
+	walka(postac1, wrog, tura);
 	//}
 
 }
@@ -330,6 +376,8 @@ item* generate_weapon() {
 	wpn->mana = 5;
 	wpn->health_reg = 0;
 	wpn->luck_modifier = 1;
+
+
 
 
 	return wpn;
@@ -436,7 +484,7 @@ void generate_map(char** mapa, int mapx_size, int mapy_, postac* postac1) {
 	mapa[i][j] = 'P'; // postac na mapie
 }
 
-void show_map(char** mapa, int mapx_size, int mapy_size){
+void show_map(char** mapa, int mapx_size, int mapy_size, postac* postac1){
 	printf("\n\n\ttraps: %d enemies: %d\n", trapcount, enemycount);
     printf("\n");
     // Górna ramka
@@ -458,7 +506,25 @@ void show_map(char** mapa, int mapx_size, int mapy_size){
 			}
             
         }
-        printf("#\n"); // Prawa ramka
+        printf("#"); // Prawa ramka
+		switch (i) {
+		case 0:
+			printf("\tLVL: %d\tXP: %d\n", postac1->lvl, postac1->xp);
+			break;
+		case 2:
+			printf("\tHP: %d\tCASH: %d$\n", postac1->health, postac1->cash);
+			break;
+		case 4:
+			printf("\tLCK: %d\tSPD: %d\n", postac1->luck, postac1->speed);
+			break;
+		case 6:
+			printf("\tATK: %d\tSTM: %d\n", postac1->attack, postac1->stamina);
+			break;
+		default:
+			printf("\n");
+			break;
+		}
+		
     }
 
     // Dolna ramka
@@ -471,26 +537,41 @@ void show_map(char** mapa, int mapx_size, int mapy_size){
 void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznosci od broni
 	printf(
 		"		       {}			[IMIE] = %s\n"
-		"		      .--.		    \t[LEVEL] = %d\n"
-		"		     /.--.⧵			[HEALTH] = %d\n"
-		"		    |= == =|		\t[ATTACK] = %d\t\t[ARMOR-SLOT] = ", postac1->name, postac1->lvl, postac1->health, postac1->attack); 
-	if (postac1->armor_slot.isEmpty == false) {
+		"		      .--.		    \t[LEVEL] = %d\t\t[ARMOR-SLOT] = ", postac1->name, postac1->lvl);
+		if (postac1->armor_slot.isEmpty == false) {
 		printf("%s\n", postac1->armor_slot.item_name);
-	}
-	else { printf("[XXX]\n"); } 
+		}
+		else { printf("[XXX]\n"); }
 	printf(
+		"		     /.--.⧵			[HEALTH] = %d\n"
+		"		    |= == =|		\t[ATTACK] = %d\t\t[LEFT  HAND] = ",  postac1->health, postac1->attack); 
+		if (postac1->left_hand.isEmpty == false) {
+		printf("%s\n", postac1->left_hand.item_name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
 		"		    | `::` |		\t[X POINTS] = %d		\n"
-		"		  .-;`⧵..../ `;-.	\t[STAMINA] = %d\t\t[LEFT HAND] = 	", postac1->xp, postac1->stamina);
-			if (postac1->left_hand.isEmpty == false) {
-				printf("%s\n", postac1->left_hand.item_name);
-			}
-			else { printf("[XXX]\n"); }
+		"		  .-;`⧵..../ `;-.	\t[STAMINA] = %d\t\t[RIGHT HAND] = ", postac1->xp, postac1->stamina);
+		if (postac1->right_hand.isEmpty == false) {
+			printf("%s\n", postac1->right_hand.item_name);
+		}
+		else { printf("[XXX]\n"); }
 		printf(
 		"		  /  |...::... |  ⧵	\t[HUNGER]  = %d	\n"
-		"		  |  /''': :'''⧵   |	\t[MANA] = %d\n"
+		"		  |  /''': :'''⧵   |	\t[MANA] = %d\t\t[FIRST RING] = ", postac1->hunger, postac1->mana);
+		if (postac1->ring_slot.isEmpty == false) {
+			printf("%s\n", postac1->ring_slot.item_name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
 		"		  ; --'⧵   ::  /⧵--;	\t[SPEED] = %d\n"
-		"	         <__>,>._::_. <,<__>    \t[LUCK] = %d	\n"
-		"	       |  |/   ^^    ⧵|  |	\n"
+		"	         <__>,>._::_. <,<__>    \t[LUCK] = %d\t\t[SCND. RING] = ",postac1->speed, postac1->luck);
+		if (postac1->ring_slot2.isEmpty == false) {
+			printf("%s\n", postac1->ring_slot2.item_name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
+		"	       |  |/   ^^    ⧵|  |\t\t[CASH] = %d	\n"
 		"	       ⧵::/|         |⧵::/	\n"
 		"	       |||⧵|         |/|||	\n"
 		"	       ''' |___/ ⧵___| '''	\n"
@@ -500,9 +581,25 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 		"	            |  ||  |					\n"
 		"	           _⧵.:||:./_			\n"
 		"		  /____/ ⧵____⧵		\n\n\n"
-		"_____________________________________________________________________________________________________________\n",
-		 postac1->stamina, postac1->hunger, postac1->mana, postac1->speed, postac1->luck);
+		"_____________________________________________________________________________________________________________\n", postac1->cash
+		 );
 }
+void show_ekwipunek(postac* postac1) {
+	printf("Ekwipunek postaci:\n");
+	int licznik = 1;
+	for (int i = 0; i < postac1->backpack_height; i++) {
+		for (int j = 0; j < postac1->backpack_width; j++) {
+			item* przedmiot = &postac1->backpack[i][j];
+			if (przedmiot->name[0] != '\0') {
+				printf("%d. %s\n", licznik++, przedmiot->name);
+			}
+		}
+	}
+	if (licznik == 1) {
+		printf("Brak przedmiotów w ekwipunku.\n");
+	}
+}
+
 void pokaz_postac(postac* postac1) {
 	system("cls");
 	printf("\n"
@@ -513,17 +610,18 @@ void pokaz_postac(postac* postac1) {
 		"\t|_| |_| _____|_|⧵_⧵⧵___/ \n\n\n");
 	
 	model_hero(postac1);
+	show_ekwipunek(postac1);
 }
 
 
 void widok_glowny(int mapx_size, int mapy_size, char** mapa, postac* postac1, int runda) {
 	
     printf("_____________________________________________________________________________________________________________\n");
-    printf("\tRunda = %d LVL: %d\tHP: %d\tSTM: %d\tXP: %d\t AT: %d\t SPD: %.1f\t", runda, postac1->lvl, postac1->health, postac1->stamina, postac1->xp, postac1->attack, postac1->speed);
-    show_map(mapa, mapx_size, mapy_size);
+    printf("\tRunda = %d ", runda);
+     show_map(mapa, mapx_size, mapy_size, postac1);
 }
 
-void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size) {
+void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size, int runda) {
 
 
 			// Ruch w gore
@@ -546,6 +644,7 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
         }
 		if (mapa[postac1->posx - 1][postac1->posy] == 'E') {
 			printf("\n\t[WPADASZ NA WROGA!]\n\n");
+			last_fight_round = runda;
 			enemycount--;
 			ekran_walki(postac1);
 		}
@@ -575,6 +674,7 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 		}
 		if (mapa[postac1->posx + 1][postac1->posy] == 'E') {
 			printf("\n\t[WPADASZ NA WROGA!]\n\n");
+			last_fight_round = runda;
 			enemycount--;
 			ekran_walki(postac1);
 		}
@@ -604,6 +704,7 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 		}
 		if (mapa[postac1->posx][postac1->posy - 1] == 'E') {
 			printf("\n\t[WPADASZ NA WROGA!]\n\n");
+			last_fight_round = runda;
 			enemycount--;
 			ekran_walki(postac1);
 		}
@@ -630,6 +731,7 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 		}
 		if (mapa[postac1->posx][postac1->posy + 1] == 'E') {
 			printf("\n\t[WPADASZ NA WROGA!]\n\n");
+			last_fight_round = runda;
 			enemycount--;
 			ekran_walki(postac1);
 		}
@@ -638,6 +740,17 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 		mapa[postac1->posx][postac1->posy] = 'P';
 
 	}	
+}
+
+void no_enemy_check(int mapx, int mapy, char** mapa, int runda) {
+	if (enemycount < 1 && last_fight_round != runda) {
+		int e_posx = rand() % mapx;
+		int e_posy = rand() % mapy;
+
+		mapa[e_posx][e_posy] = 'E';
+		enemycount++;
+		printf("\n\t[POJAWIL SIE NOWY WROG!]\n\n");
+	}
 }
 
 int main()
@@ -654,6 +767,9 @@ int main()
 	char nazwa[10];
 
 	char** mapa = (char**)malloc(sizeof(char*) * mapx_size);
+	for (int i = 0; i < mapx_size; i++) {
+		mapa[i] = (char*)malloc(sizeof(char) * mapy_size);
+	}
 
 	printf ("\t[PODAJ SWOJE IMIE:]\n\t");
 	scanf_s("%9s", nazwa, (unsigned)_countof(nazwa));
@@ -698,11 +814,11 @@ int main()
 			continue;
 		}		 
 					
-		krok(move, mapa, postac1, mapx_size, mapy_size);
+		krok(move, mapa, postac1, mapx_size, mapy_size, runda);
 
 		//enemy_check()		//sprawdza czy wrog jest w poblizu i podaje jego dane
 
-		//no_enemy_check(int enemycount)	//jesli na mapie nie ma wroga to tworzy go 
+		no_enemy_check(mapx_size, mapy_size, mapa, runda);	//jesli na mapie nie ma wroga to tworzy go 
 		
 		runda++;
 	}
