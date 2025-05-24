@@ -1,10 +1,56 @@
 ﻿  RPG.cpp
-C:\Users\GioScottiGroyper\Source\Repos\RPH_JPRO\RPG\RPG.cpp(154,28): warning C4244: "=": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\GioScottiGroyper\Source\Repos\RPH_JPRO\RPG\RPG.cpp(518,11): warning C4477: „printf”: ciąg formatu „%d” wymaga argumentu typu „int”, ale argument 2 ze zmienną liczbą argumentów ma typ „double”
-C:\Users\GioScottiGroyper\Source\Repos\RPH_JPRO\RPG\RPG.cpp(567,3): warning C4477: „printf”: ciąg formatu „%d” wymaga argumentu typu „int”, ale argument 1 ze zmienną liczbą argumentów ma typ „double”
-C:\Users\GioScottiGroyper\Source\Repos\RPH_JPRO\RPG\RPG.cpp(762,12): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
-C:\Users\GioScottiGroyper\Source\Repos\RPH_JPRO\RPG\RPG.cpp(805,11): warning C4473: „scanf_s”: przekazano niewystarczającą liczbę argumentów dla ciągu formatowania
-C:\Users\GioScottiGroyper\Source\Repos\RPH_JPRO\RPG\RPG.cpp(805,11): message : symbole zastępcze i ich parametry oczekują 2 argumentów ze zmienną liczbą argumentów, ale podano następującą liczbę zmiennych argumentów: 1
-C:\Users\GioScottiGroyper\Source\Repos\RPH_JPRO\RPG\RPG.cpp(805,11): message : brakujący argument 2 o zmiennej liczbie parametrów jest wymagany w ciągu formatu „%c”
-C:\Users\GioScottiGroyper\Source\Repos\RPH_JPRO\RPG\RPG.cpp(805,11): message : ten argument jest używany jako rozmiar bufora
-  RPG.vcxproj -> C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\x64\Debug\RPG.exe
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(169,28): warning C4244: "=": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(307,33): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(331,39): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(332,12): warning C4473: „printf”: przekazano niewystarczającą liczbę argumentów dla ciągu formatowania
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(332,12): message : symbole zastępcze i ich parametry oczekują 1 argumentów ze zmienną liczbą argumentów, ale podano następującą liczbę zmiennych argumentów: 0
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(332,12): message : brakujący argument 1 o zmiennej liczbie parametrów jest wymagany w ciągu formatu „%d”
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(358,39): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(367,90): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(368,105): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(369,105): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(370,105): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(371,72): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(376,78): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(377,93): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(378,93): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(379,93): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(380,44): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(383,33): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(393,88): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(394,102): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(395,102): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(396,102): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(397,89): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(402,78): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(403,93): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(404,93): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(405,93): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(406,44): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(409,39): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(410,12): warning C4473: „printf”: przekazano niewystarczającą liczbę argumentów dla ciągu formatowania
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(410,12): message : symbole zastępcze i ich parametry oczekują 1 argumentów ze zmienną liczbą argumentów, ale podano następującą liczbę zmiennych argumentów: 0
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(410,12): message : brakujący argument 1 o zmiennej liczbie parametrów jest wymagany w ciągu formatu „%d”
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(417,87): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(418,105): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(419,105): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(420,105): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(421,72): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(426,78): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(427,93): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(428,93): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(429,93): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(430,44): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(433,33): warning C4244: "=": konwersja z "double" do "int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(447,1): error C2059: błąd składniowy: „}”
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(789,11): warning C4477: „printf”: ciąg formatu „%d” wymaga argumentu typu „int”, ale argument 2 ze zmienną liczbą argumentów ma typ „double”
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(838,3): warning C4477: „printf”: ciąg formatu „%d” wymaga argumentu typu „int”, ale argument 1 ze zmienną liczbą argumentów ma typ „double”
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(1052,12): warning C4244: "argument": konwersja z "time_t" do "unsigned int", możliwa utrata danych
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(1095,11): warning C4473: „scanf_s”: przekazano niewystarczającą liczbę argumentów dla ciągu formatowania
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(1095,11): message : symbole zastępcze i ich parametry oczekują 2 argumentów ze zmienną liczbą argumentów, ale podano następującą liczbę zmiennych argumentów: 1
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(1095,11): message : brakujący argument 2 o zmiennej liczbie parametrów jest wymagany w ciągu formatu „%c”
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(1095,11): message : ten argument jest używany jako rozmiar bufora
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(1101,13): warning C4473: „scanf_s”: przekazano niewystarczającą liczbę argumentów dla ciągu formatowania
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(1101,13): message : symbole zastępcze i ich parametry oczekują 2 argumentów ze zmienną liczbą argumentów, ale podano następującą liczbę zmiennych argumentów: 1
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(1101,13): message : brakujący argument 2 o zmiennej liczbie parametrów jest wymagany w ciągu formatu „%c”
+C:\Users\GioScottiGroyper\source\repos\RPH_JPRO\RPG\RPG.cpp(1101,13): message : ten argument jest używany jako rozmiar bufora
