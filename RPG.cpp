@@ -7,28 +7,34 @@
 #include <conio.h>
 
 int last_fight_round = 0;
-
+int item_id = 1;
 
 
 struct item
 {
-	char name[10];
-	int klasa; //1-10 klasa przedmiotu, generowanie losowe zalezne od poziomu postaci i szczescia
+	char name[20];
+	int klasa; //1-5 klasa przedmiotu, generowanie losowe zalezne od poziomu szczescia
 	int AP;
 	int AS;
 	int weight;
-	int durability;
-	int armorpoints; // od XP-levelu 5
-	int speed; // 1 .. 10
-	int fire_res; // procentowo
-	int arrow_res;
-	int mag_boost;
+	int id;
+	int def;	//defence
+	int armorpoints; 
 	int lvl;
-    int mana;
 	int health_reg;
 	int luck_modifier;
+	int hp_modifier;
+	bool isWeapon;
+	bool isArmor;
+	bool isRing;
+	bool isPotion;
+	int potion_type; // 0 not potion, 1 - health, 
 	int szerokosc;
+	bool isTwoHanded; // czy przedmiot jest dwureczny
+	int typ; //0 - potion, 1 - broń, 2 - zbroja, 3 - pierścień
 };
+
+
 struct Slot {
 	//std::string item_name;  // Nazwa przedmiotu
 	char item_name[10];
@@ -49,7 +55,6 @@ struct postac {
 	int xp;
 	int stamina;
 	int hunger;
-	int mana;
 	int posx;
 	int posy;
 	int def;
@@ -170,7 +175,7 @@ postac* generate_postac(char nazwa[10]) {
 	post->luck = rand() % 20 + 1;
 	post->def = rand() % 11;
 	post->hunger = 100;
-	post->mana = 0;
+	
 
 	int hpmax = 20;
 	int xpmax = 20;			//xp wymagane do lvlowania po 1lvl
@@ -198,6 +203,145 @@ postac* generate_postac(char nazwa[10]) {
 
 	return post;
 }
+item* generate_ring(postac* postac1, int klasa) {
+
+	item* rg = (item*)malloc(sizeof item);	//health, attack, def, speed, luck, full
+
+	rg->isRing = true;
+	rg->isArmor = false;
+	rg->isWeapon = false;
+	rg->isPotion = false;
+	rg->isTwoHanded = false;
+	rg->AP = 0;
+	rg->def = 0;
+	rg->AS = 0;
+	rg->luck_modifier = 0;
+	rg->hp_modifier = 0;
+	rg->armorpoints = 0;
+	rg->potion_type = 0;
+	rg->weight = 1;
+	rg->typ = 3;
+	rg->szerokosc = 1;
+
+	
+
+	int rand_ = rand() % 1000 + 1;
+	rg->lvl = postac1->lvl;
+	if (rand_ + postac1->luck < 50) { rg->lvl = postac1->lvl + 1; }
+	if (rand_ + postac1->luck < 20) { rg->lvl = postac1->lvl + 2; }
+	if (rand_ + postac1->luck <  1) { rg->lvl = postac1->lvl + 5; }
+
+	
+
+	rand_ = rand() % 1000;
+	rand_ += postac1->luck;
+	if (rand_ > 0 && rand_ < 200) {
+		rg->AP = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Attack ring");}//to attack ring 20%
+	if (rand_ >= 200 && rand_ < 400) {
+		rg->def = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Deffence ring");}//deff ring 20%
+	if (rand_ >= 400 && rand_ < 600) {
+		rg->AS = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Speed ring");} //speed ring 20%
+	if (rand_ >= 600 && rand_ < 690) {
+		rg->luck_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl; strcpy_s(rg->name, sizeof(rg->name), "Luck ring");} //luck ring 9%
+	if (rand_ >= 690 && rand_ < 700) {
+		rg->def = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Full ring");			//full ring 1%
+		rg->luck_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl;
+		rg->AS = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5;
+		rg->def = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5;
+		rg->AP = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5;
+		rg->hp_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5;
+	}
+	else {
+		rg->hp_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Health ring");}	//health ring 30%
+	
+	switch (klasa) {	//wylosowane wartosci zostaja przemnozone przez klase
+	case 0:						//klasa zardzewiale
+		 rg->AP = rg->AP * 0.5; 
+		 rg->def = rg->def * 0.5;
+		 rg->AS = rg->def * 0.5; 
+		 rg->luck_modifier = rg->luck_modifier * 0.5;
+		 rg->hp_modifier = rg->hp_modifier * 0.5;
+		break;
+	case 2:				//klasa rzadkie (klasa normalne nie wymaga zmian)
+		rg->AP = rg->AP * 1.2 + postac1->luck * 0.1;
+		rg->def = rg->def * 1.2 + postac1->luck * 0.1;
+		rg->AS = rg->def * 1.2 + postac1->luck * 0.1;
+		rg->luck_modifier = rg->luck_modifier * 1.2 + postac1->luck * 0.1;
+		rg->hp_modifier = rg->hp_modifier * 1.2 + postac1->luck * 0.1;
+		break;
+	case 3:
+		rg->AP = rg->AP * 1.5 + postac1->luck * 0.5;
+		rg->def = rg->def * 1.5 + postac1->luck * 0.5;
+		rg->AS = rg->def * 1.5 + postac1->luck * 0.5;
+		rg->luck_modifier = rg->luck_modifier * 1.5 + postac1->luck * 0.5;
+		rg->hp_modifier = rg->hp_modifier * 1.5 + postac1->luck * 0.5;
+		break;
+	case 4:
+		rg->AP = rg->AP * 3 + postac1->luck;
+		rg->def = rg->def * 3 + postac1->luck;
+		rg->AS = rg->def * 3 + postac1->luck;
+		rg->luck_modifier = rg->luck_modifier * 3 + postac1->luck;
+		rg->hp_modifier = rg->hp_modifier * 3 + postac1->luck;
+		break;
+	case 5:
+		rg->AP = rg->AP * 5 * postac1->luck * 2;
+		rg->def = rg->def * 5 * postac1->luck * 2;
+		rg->AS = rg->def * 5 * postac1->luck * 2 ;
+		rg->luck_modifier = rg->luck_modifier * 5 * postac1->luck * 2;
+		rg->hp_modifier = rg->hp_modifier * 5 * postac1->luck * 2;
+		break;
+	default:
+		break;
+	}
+	
+	rg->klasa = klasa;
+	
+return rg;}
+item* generate_weapon(postac* postac1, int klasa) {
+	item* wpn = (item*)malloc(sizeof item);
+
+
+	wpn->AP = rand() % 10 + 1;		//attack power
+	wpn->AS = rand() % 15 + 1;
+	wpn->weight = rand() % 60 + 1;
+	wpn->szerokosc = rand() % 3 + 1;
+
+	wpn->armorpoints = 0;
+	wpn->klasa = 1;
+	strcpy_s(wpn->name, sizeof(wpn->name), "bron");
+	wpn->lvl = 1;
+	wpn->health_reg = 0;
+	wpn->luck_modifier = 1;
+
+	wpn->potion_type = 0; //nie potion
+
+	return wpn;
+}
+item* generate_potion(postac* postac1, int klasa) {
+	item* pot = (item*)malloc(sizeof item);
+
+
+
+
+	int potion_type = rand() % 3 + 1;	//0 - nie potion, 1 -  health, 2 - luck boost, 3 - atack boost
+	
+	strcpy_s(pot->name, sizeof(pot->name), "Potion");
+	pot->klasa = 1;
+	pot->szerokosc = 1;
+	pot->weight = 1;
+	pot->armorpoints = 0;
+	return pot;
+}
+item* generate_armor(postac* postac1, int klasa) {
+	item* armr = (item*)malloc(sizeof item);
+	strcpy_s(armr->name, sizeof(armr->name), "zbroja");
+	armr->armorpoints = rand() % 50 + 1;;
+	armr->szerokosc = rand() % 5 + 1;
+	return armr;
+
+
+}
+
 void atak_info(double sila_ataku, int powodzenie_ataku, int powodzenie_obrony) {
 	switch (powodzenie_ataku) {
 	case 1:
@@ -304,6 +448,9 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 				if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.9 * sila_ataku;   powodzenie_obrony = 2; }	//2
 				if (rzutt < 1.5)                 {								    powodzenie_obrony = 1; }		//1
 				sila_ataku = sila_ataku - 0.1 * wrog->def;
+
+				if (sila_ataku < 0) { sila_ataku = 0; }
+
 				wrog->health = wrog->health - sila_ataku;
 				printf("\nTURA WALKI: %d\n\t[ATAKUJESZ]\n", tura);
 				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
@@ -328,6 +475,7 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 				if (rzutt < 1.5) { powodzenie_obrony = 1; }		//1
 
 				sila_ataku = sila_ataku - 0.1 * postac1->def;
+				if (sila_ataku < 0) { sila_ataku = 0; }
 				postac1->health = postac1->health - sila_ataku;
 				printf("\nTURA WALKI: %d\n\t[WROG ATAKUJE]\n");
 				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
@@ -355,8 +503,8 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 				if (rzutt < 1.5) { powodzenie_obrony = 1; }		//1
 
 				sila_ataku = sila_ataku - 0.1 * postac1->def;
+				if (sila_ataku < 0) { sila_ataku = 0; }
 				postac1->health = postac1->health - sila_ataku;
-
 				printf("\nTURA WALKI: %d\n\t[WROG ATAKUJE]\n", tura);
 				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
 			}
@@ -380,6 +528,7 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 				if (rzutt < 1.5) { powodzenie_obrony = rzut; }		//1
 
 				sila_ataku = sila_ataku - 0.1 * wrog->def;
+				if (sila_ataku < 0) { sila_ataku = 0; }
 				wrog->health = wrog->health - sila_ataku;
 				printf("\nTURA WALKI: %d\n\t[ATAKUJESZ]\n", tura);
 				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
@@ -406,6 +555,7 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 				if (rzutt < 1.5) { powodzenie_obrony = rzut; }		//1
 
 				sila_ataku = sila_ataku - 0.1 * postac1->def;
+				if (sila_ataku < 0) { sila_ataku = 0; }
 				postac1->health = postac1->health - sila_ataku;
 				printf("\nTURA WALKI: %d\n\t[WROG ATAKUJE]\n");
 				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
@@ -430,6 +580,7 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 				if (rzutt < 1.5) { powodzenie_obrony = rzut; }		//1
 
 				sila_ataku = sila_ataku - 0.1 * wrog->def;
+				if (sila_ataku < 0) { sila_ataku = 0; }
 				wrog->health = wrog->health - sila_ataku;
 				printf("\nTURA WALKI: %d\n\t[ATAKUJESZ]\n", tura);
 				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
@@ -440,10 +591,142 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 		}
 }
 
+int item_class_generator(postac* postac1) {
+	int klasa_itema = rand() % 100 + 1 + postac1->luck;	//losowanie klasy przedmiotu
+	if (klasa_itema >= 0 && klasa_itema < 21) { klasa_itema = 0; }	//klasa - przerdzewiały  20% szans
+	if (klasa_itema >= 21 && klasa_itema < 71) { klasa_itema = 1; }	//klasa - zwykly 50% szans
+	if (klasa_itema >= 71 && klasa_itema < 91) { klasa_itema = 2; }	//klasa - rzadki 20% szans
+	if (klasa_itema >= 91 && klasa_itema < 99) {
+		klasa_itema = 3; //klasa - epicki 9% szans
+	}
+	else {
+		klasa_itema = 4;		//klasa - legendarny 1% szans
+		int destroyer_class = rand() % 100 + 1;	//losowanie klasy przedmiotu
+		if (destroyer_class == 2) {
+			klasa_itema = 5;	//klasa - destroyer 0.01 * 0.01 szans
+		}
+	}
+	return klasa_itema;
+}
+
+void pick_item(item* newItem, postac* postac1) {
+	printf("\n\t[WYLECIAŁ ");
+	switch (newItem->klasa) {
+	case 0:
+		printf("ZARDZEWIAŁY/A %s ", newItem->name);
+		break;
+	case 1:
+		printf("NORMALNY/A %s ", newItem->name);
+		break;
+	case 2:
+		printf("RZADKI/A %s ", newItem->name);
+		break;
+	case 3:
+		printf("EPICKI/A %s ", newItem->name);
+		break;
+	case 4:
+		printf("LEGENDARNY/A %s ", newItem->name);
+		break;
+	case 5:
+		printf("D E S T R O Y E R  %s ", newItem->name);
+		break;
+	default:
+		printf("blad switcha %s ",newItem->name);
+		break;
+	}
+	if (newItem->AP > 0) {
+		printf("ATK: %d ", newItem->AP);}
+	if (newItem->armorpoints > 0) {
+		printf("ARMOR: %d ", newItem->armorpoints);}
+	if (newItem->AS > 0) {
+		printf("SPD: %d ", newItem->AS);}
+	if (newItem->luck_modifier > 0) {
+		printf("LCK: %d ", newItem->luck_modifier);}
+	if (newItem->def > 0) {
+		printf("DEF: %d ", newItem->def);}
+	printf("]");
+	printf("\ng - wez do ekwipunku, inny klawisz - porzuc [NIE MOZNA COFNAC]\n");
+	char move[1];
+	scanf_s("%s", &move[0]);
+	if(move[0] == 'g'){
+	int szerokosc = newItem->szerokosc;
+	for (int i = 0; i < postac1->backpack_height; i++) {
+		for (int j = 0; j < postac1->backpack_width; j++) {
+			if (postac1->backpack[i][j].id == NULL && szerokosc > 0) {//sprawdzanie czy jest puste
+				postac1->backpack[i][j].id = item_id;
+				postac1->backpack[i][j].AP = newItem->AP;
+				postac1->backpack[i][j].AS = newItem->AS;
+				postac1->backpack[i][j].weight = newItem->weight;
+				postac1->backpack[i][j].def = newItem->def;
+				postac1->backpack[i][j].armorpoints = newItem->armorpoints;
+				postac1->backpack[i][j].lvl = newItem->lvl;
+				postac1->backpack[i][j].health_reg = newItem->health_reg;
+				postac1->backpack[i][j].luck_modifier = newItem->luck_modifier;
+				postac1->backpack[i][j].hp_modifier = newItem->hp_modifier;
+				postac1->backpack[i][j].isWeapon = newItem->isWeapon;
+				postac1->backpack[i][j].isArmor = newItem->isArmor;
+				postac1->backpack[i][j].isRing = newItem->isRing;
+				postac1->backpack[i][j].isPotion = newItem->isPotion;
+				postac1->backpack[i][j].potion_type = newItem->potion_type;
+				postac1->backpack[i][j].szerokosc = newItem->szerokosc;
+				postac1->backpack[i][j].klasa = newItem->klasa;
+				postac1->backpack[i][j].typ = newItem->typ;
+				postac1->backpack[i][j].isTwoHanded = newItem->isTwoHanded;
+				szerokosc--;
+				return;
+			}
+		}
+	}
+	item_id++;
+	}
+	else {
+		return;
+	}
+}
+
 void post_fight(postac* postac1, enemy* wrog) {
+	
 	postac1->xp = postac1->xp + wrog->xpdrop;
 	int cash_drop = rand() % 10 + 1 * wrog->type;
 	postac1->cash = postac1->cash + cash_drop * postac1->luck;
+
+	printf("\n\n\t[WROG POKONANY]\n\n");
+
+	int item_drop = rand() % 11 + postac1->luck * 0.1;	//losowanie przedmiotu
+		if(item_drop >= 10){
+
+			int klasa_itema = item_class_generator(postac1);	//losowanie klasy przedmiotu
+
+			int type_rand = rand() % 10;	//losowanie typu przedmiotu
+			int item_type = 0;//0 - potion, 1 - broń, 2 - zbroja, 3 - pierścień
+
+			if(type_rand >= 0 && type_rand < 2) {	//20% na bron			0,1
+				item_type = 1;
+				item* newItem = generate_weapon(postac1, klasa_itema);
+				pick_item(newItem, postac1);
+
+			}
+			else if (type_rand >= 2 && type_rand < 4) {	//zbroja 20%		2,3
+				item_type = 2;
+				item* newItem = generate_armor(postac1, klasa_itema);
+				pick_item(newItem, postac1);
+			}
+			else if (type_rand >= 4 && type_rand < 7) {	//potion 30%	4,5, 6
+				item_type = 0;
+				item* newItem = generate_potion(postac1, klasa_itema);
+				pick_item(newItem, postac1);
+			}
+			else if (type_rand >= 6 && type_rand < 10) {	// pierścień 30%	7,8,9
+				item_type = 3;
+				item* newItem = generate_ring(postac1, klasa_itema);
+				pick_item(newItem, postac1);
+			}
+			
+			
+			
+			}
+	
+
 }
 
 void lvlowanie(postac* postac1) {
@@ -607,67 +890,7 @@ void ekran_walki(postac* postac1) {
 	}
 	
 }
-item* generate_ring(char nazwa) {
 
-	
-	 
-	item* rg = (item*)malloc(sizeof item);
-
-	rg->name[0] = 'a';
-	rg->mana = rand() % 20;
-	rg->health_reg = rand() % 4 + 1;
-	rg->szerokosc = 1;
-	
-	if (rand() % 10 + 1 >= 5) {
-		rg->luck_modifier = rand() % 200 + 1;
-	};
-	if (rand() % 10 + 1 >= 5) {
-		rg->fire_res = rand() % 3 + 1;
-	};
-
-	return rg;
-}
-
-item* generate_weapon() {
-	item* wpn = (item*)malloc(sizeof item);
-	
-	wpn->AP = rand() % 10 + 1;
-	wpn->AS = rand() % 15 + 1;
-	wpn->weight = rand() % 60 + 1;
-	wpn->durability = rand() % 100 + 1;
-	wpn->szerokosc = rand() % 3 + 1;
-
-	wpn->armorpoints = 0;
-	wpn->speed = 9;
-	wpn->fire_res = 3;
-
-	wpn->arrow_res = 0;
-	wpn->mag_boost = 0;
-	wpn->lvl = 1;
-	wpn->mana = 5;
-	wpn->health_reg = 0;
-	wpn->luck_modifier = 1;
-
-
-
-
-	return wpn;
-}
-
-item* generate_armor() {
-	item* armr = (item*)malloc(sizeof item);
-
-	armr->durability = rand() % 100+1;
-	armr->armorpoints = rand() % 50 + 1;;
-	armr->szerokosc = rand() % 5 + 1;
-	return armr;
-
-
-}
-//int uderzenie(postac& post, item& wpn, item& armr) {
-//	int real_hit_point = (post.attack + 2 * wpn.AP) - armr.armorpoints;
-//
-//	return real_hit_point > 0 ? real_hit_point : 0;//}
 
 
 void pulapka(postac* postac1) {			//healt attack stamina speed
@@ -780,16 +1003,16 @@ void show_map(char** mapa, int mapx_size, int mapy_size, postac* postac1){
         printf("#"); // Prawa ramka
 		switch (i) {
 		case 0:
-			printf("\tLVL: %d\tXP: %d/%d\n", postac1->lvl, postac1->xp, postac1->max_xp[postac1->lvl - 1]);
+			printf("\tLVL: %d\t\tXP: %d/%d\n", postac1->lvl, postac1->xp, postac1->max_xp[postac1->lvl - 1]);
 			break;
 		case 2:
 			printf("\tCSH: %d$\tHP: %d/%d\n", postac1->cash, postac1->health, postac1->max_hp[postac1->lvl - 1]);
 			break;
 		case 4:
-			printf("\tLCK: %d\tSPD: %d\n", postac1->luck, postac1->speed);
+			printf("\tLCK: %d\t\tSPD: %d\n", postac1->luck, postac1->speed);
 			break;
 		case 6:
-			printf("\tATK: %d\tSTM: %d\n", postac1->attack, postac1->stamina);
+			printf("\tATK: %d\t\tSTM: %d\n", postac1->attack, postac1->stamina);
 			break;
 		default:
 			printf("\n");
@@ -829,7 +1052,7 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 		else { printf("[XXX]\n"); }
 		printf(
 		"		  /  |...::... |  ⧵	\t[HUNGER]  = %d	\n"
-		"		  |  /''': :'''⧵   |	\t[MANA] = %d\t\t[FIRST RING] = ", postac1->hunger, postac1->mana);
+		"		  |  /''': :'''⧵   |	\t[DEF] = %d\t\t[FIRST RING] = ", postac1->hunger, postac1->def);
 		if (postac1->ring_slot.isEmpty == false) {
 			printf("%s\n", postac1->ring_slot.item_name);
 		}
@@ -903,7 +1126,7 @@ void pokaz_postac(postac* postac1) {
 	
 	model_hero(postac1);
 	show_ekwipunek(postac1);
-	printf("\nq - wychodzenie, w - wkladanie itemow, e - podejrzyj przedmioty, r - zdejmowanie przedmiotów, t - skillpointy");
+	printf("\nq - wychodzenie, w - wkladanie itemow, e - podejrzyj przedmioty, r - zdejmowanie przedmiotów, t - skillpointy\n");
 }
 
 
@@ -1118,8 +1341,6 @@ int main(){
 
 	free(postac1->ekwipunek);
 	
-	//free(pierscien);
-	//free(miecz1);
 	
 	for (int i = 0; i < postac1->backpack_height; i++) {
 		free (postac1->backpack[i]) ;
