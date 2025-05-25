@@ -648,7 +648,6 @@ void pick_item(item* newItem, postac* postac1) {
 	printf("\ng - wez do ekwipunku, inny klawisz - porzuc [NIE MOZNA COFNAC]\n");
 	char move[1];
 	scanf_s("%s", &move[0]);
-	if(move[0] == 'g'){
 	int szerokosc = newItem->szerokosc;
 	for (int i = 0; i < postac1->backpack_height; i++) {
 		for (int j = 0; j < postac1->backpack_width; j++) {
@@ -678,10 +677,6 @@ void pick_item(item* newItem, postac* postac1) {
 		}
 	}
 	item_id++;
-	}
-	else {
-		return;
-	}
 }
 
 void post_fight(postac* postac1, enemy* wrog) {
