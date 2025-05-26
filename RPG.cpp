@@ -58,7 +58,7 @@ struct postac {
 	int posx;
 	int posy;
 	int def;
-	float speed;
+	int speed;
 	int luck;
 	int skillpoints;
 	int cash;
@@ -135,6 +135,7 @@ enemy* generate_enemy() {
 		en->race = 3;
 		en->luck = 0;
 		en->def = 5;
+		en->AS = 3;
 
 	}
 	else if (rand_enemytype == 1) {		//wizard
@@ -166,7 +167,7 @@ postac* generate_postac(char nazwa[10]) {
 	post->effect = 0;
 	post->cash = 0;
 	post->skillpoints = 0;
-
+	
 	post->lvl = 1;
 	post->attack = rand() % 10 + 1;
 	post->health = 20;
@@ -197,7 +198,7 @@ postac* generate_postac(char nazwa[10]) {
 
 	for (int i = 0; i < post->backpack_height; i++) {
 		for (int j = 0; j < post->backpack_width; j++) {
-			post->backpack[i][j].name[0] = '\0';
+			post->backpack[i][j].id = 0;
 		}
 	}
 
@@ -335,8 +336,10 @@ item* generate_potion(postac* postac1, int klasa) {
 item* generate_armor(postac* postac1, int klasa) {
 	item* armr = (item*)malloc(sizeof item);
 	strcpy_s(armr->name, sizeof(armr->name), "zbroja");
-	armr->armorpoints = rand() % 50 + 1;;
+	armr->lvl = postac1->lvl;
+	armr->armorpoints = rand() % 5 + 1 * armr->lvl;
 	armr->szerokosc = rand() % 5 + 1;
+	armr->klasa = 1;
 	return armr;
 
 
@@ -411,7 +414,7 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 		break;
 	}
 	int kto_pierwszy;	// 0 - pierwszy gracz 1 - pierwszy mob, 2 - dwie tury dla gracza  
-	if (wrog->AS >= postac1->speed)
+	if (wrog->AS <= postac1->speed)
 	{
 		kto_pierwszy = 0;
 		if (postac1->speed >= 3 * wrog->AS) {
@@ -582,7 +585,7 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 				sila_ataku = sila_ataku - 0.1 * wrog->def;
 				if (sila_ataku < 0) { sila_ataku = 0; }
 				wrog->health = wrog->health - sila_ataku;
-				printf("\nTURA WALKI: %d\n\t[ATAKUJESZ]\n", tura);
+				printf("\nTURA WALKI: %d\n\t[ATAKUJESZ]\n");
 				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
 			}
 			break;
@@ -646,16 +649,18 @@ void pick_item(item* newItem, postac* postac1) {
 		printf("DEF: %d ", newItem->def);}
 	printf("]");
 	printf("\ng - wez do ekwipunku, inny klawisz - porzuc [NIE MOZNA COFNAC]\n");
-	char move[1];
-	scanf_s("%s", &move[0]);
-	if(move[0] == 'g'){
+	char move[2];
+	getchar(); // pobiera i ignoruje zaległy znak nowej linii
+	scanf_s("%c", &move[0], 1);
+	if(move[0] == 'g') {
 	int szerokosc = newItem->szerokosc;
 	for (int i = 0; i < postac1->backpack_height; i++) {
 		for (int j = 0; j < postac1->backpack_width; j++) {
-			if (postac1->backpack[i][j].id == NULL && szerokosc > 0) {//sprawdzanie czy jest puste
+			if (postac1->backpack[i][j].id == 0 && szerokosc > 0) {//sprawdzanie czy jest puste
 				postac1->backpack[i][j].id = item_id;
 				postac1->backpack[i][j].AP = newItem->AP;
 				postac1->backpack[i][j].AS = newItem->AS;
+				strcpy_s(postac1->backpack[i][j].name, sizeof(postac1->backpack[i][j].name), newItem->name);
 				postac1->backpack[i][j].weight = newItem->weight;
 				postac1->backpack[i][j].def = newItem->def;
 				postac1->backpack[i][j].armorpoints = newItem->armorpoints;
@@ -673,19 +678,16 @@ void pick_item(item* newItem, postac* postac1) {
 				postac1->backpack[i][j].typ = newItem->typ;
 				postac1->backpack[i][j].isTwoHanded = newItem->isTwoHanded;
 				szerokosc--;
+				item_id++;
 				return;
 			}
 		}
 	}
-	item_id++;
-	}
-	else {
-		return;
+	
 	}
 }
 
 void post_fight(postac* postac1, enemy* wrog) {
-	
 	postac1->xp = postac1->xp + wrog->xpdrop;
 	int cash_drop = rand() % 10 + 1 * wrog->type;
 	postac1->cash = postac1->cash + cash_drop * postac1->luck;
@@ -730,29 +732,39 @@ void post_fight(postac* postac1, enemy* wrog) {
 }
 
 void lvlowanie(postac* postac1) {
+	
 	postac1->skillpoints = postac1->skillpoints + postac1->lvl;
+	postac1->xp = postac1->xp - postac1->max_xp[postac1->lvl - 1];
+	printf("\n\t[LVLUJESZ!!]\n\t[DOSTAJESZ SKILLPOINT]\n");
+	
 	int losowanie_powerupa = rand() % 10 + 1;
 	
 	switch (losowanie_powerupa) {		//def luck speed attack skillpoints gracz ma szanse na dodatkowy punkt
 	case 1:	
 		postac1->def++;
+		printf("\n\t[DEFF ZOSTAJE ULEPSZONY]\n");
 		break;
 	case 2:
 		postac1->luck++;
+		printf("\n\t[LUCK ZOSTAJE ULEPSZONY]\n");
 		break;
 	case 3:
 		postac1->speed++;
+		printf("\n\t[SPEED ZOSTAJE ULEPSZONY]\n");
 		break;
 	case 4:
 		postac1->attack++;
+		printf("\n\t[ATTACK ZOSTAJE ULEPSZONY]\n");
 		break;
 	case 5:
 		postac1->skillpoints++;
+		printf("\n\t[DOSTAJESZ DODATKOWY SKILLPOINT]\n");
 		break;
 	default:
 		break;
 	}
 	postac1->lvl++;
+	Sleep(1000);
 }
 
 void ekran_walki(postac* postac1) {
@@ -795,10 +807,10 @@ void ekran_walki(postac* postac1) {
 			"	        \n"
 			"									ENEMY	|	HERP \n"
 			"										|\n"		
-			"	⠀⠀⠀⠀⠀⠀⠀⠀⢀⡠⠖⠊⠉⠉⠉⠉⢉⠝⠉⠓⠦⣄⠀⠀⠀⠀⠀⠀⠀⠀			\t\tHP: %d|\n"
-			"	⠀⠀⠀⠀⠀⠀⢀⡴⣋⠀⠀⣤⣒⡠⢀⠀⠐⠂⠀⠤⠤⠈⠓⢦⡀⠀⠀⠀⠀⠀			\t\t\t|\n"
-			"	⠀⠀⠀⠀⠀⣰⢋⢬⠀⡄⣀⠤⠄⠀⠓⢧⠐⠥⢃⣴⠤⣤⠀⢀⡙⣆⠀⠀⠀⠀			\t\t\t|\n"
-			"	⠀⠀⠀⠀⢠⡣⢨⠁⡘⠉⠀⢀⣤⡀⠀⢸⠀⢀⡏⠑⠢⣈⠦⠃⠦⡘⡆⠀⠀⠀			\t\t\t|\n"
+			"	⠀⠀⠀⠀⠀⠀⠀⠀⢀⡠⠖⠊⠉⠉⠉⠉⢉⠝⠉⠓⠦⣄⠀⠀⠀⠀⠀⠀⠀⠀			\t\tHP : %d\t|\t %d\n"
+			"	⠀⠀⠀⠀⠀⠀⢀⡴⣋⠀⠀⣤⣒⡠⢀⠀⠐⠂⠀⠤⠤⠈⠓⢦⡀⠀⠀⠀⠀⠀			\t\tSPD: %d\t|\t %d\n"
+			"	⠀⠀⠀⠀⠀⣰⢋⢬⠀⡄⣀⠤⠄⠀⠓⢧⠐⠥⢃⣴⠤⣤⠀⢀⡙⣆⠀⠀⠀⠀			\t\tATK: %d\t|\t %d\n"
+			"	⠀⠀⠀⠀⢠⡣⢨⠁⡘⠉⠀⢀⣤⡀⠀⢸⠀⢀⡏⠑⠢⣈⠦⠃⠦⡘⡆⠀⠀⠀			\t\tDEF: %d\t|\t %d\n"
 			"	⠀⠀⠀⠀⢸⡠⠊⠀⣇⠀⠀⢿⣿⠇⠀⡼⠀⢸⡀⠠⣶⡎⠳⣸⡠⠃⡇⠀⠀⠀			\t\t\t|\n"
 			"	⢀⠔⠒⠢⢜⡆⡆⠀⢿⢦⣤⠖⠒⢂⣽⢁⢀⠸⣿⣦⡀⢀⡼⠁⠀⠀⡇⠒⠑⡆			\t\t\t|\n"
 			"	⡇⠀⠐⠰⢦⠱⡤⠀⠈⠑⠪⢭⠩⠕⢁⣾⢸⣧⠙⡯⣿⠏⠠⡌⠁⡼⢣⠁⡜⠁			\t\t\t|\n"
@@ -815,7 +827,8 @@ void ekran_walki(postac* postac1) {
 			"	   |__  /___  _ __ ___ | |__ (_) ___	\n"
 			"	    / // _ ⧵| '_ ` _ ⧵| '_ ⧵| |/ _ ⧵	\n"
 			"	   / /| (_) | | | | | | |_) | |  __/	\n"
-			"	  /____⧵___/|_| |_| |_|_.__/|_|⧵___|	\n",wrog->health);
+			"	  /____⧵___/|_| |_| |_|_.__/|_|⧵___|	\n",wrog->health,postac1->health, wrog->AS, postac1->speed,
+			wrog->attack, postac1->attack, wrog->def, postac1->def);
 		
 		break;
 	case 3:
@@ -850,13 +863,13 @@ void ekran_walki(postac* postac1) {
 		printf(
 												
 													
-			"			     _,-'|				|\n"		
-			"			 ,-' ._  |		ENEMY	|	HERP \n"	
-			"		 . || ,   |####⧵ |			|\n"
-			"		 ⧵.`', /  ⧵####| |		HP %d |\n"
-			"	   	 =, . =   | ###| |			|\n"
-			"		 / || ⧵ , -'⧵#/,'`.			|\n"
-			"		   || ,  '   `,,. `.			|\n"
+			"			     _,-'|		|\n"		
+			"			 ,-' ._  |		ENEMY	 |	HERP \n"	
+			"		 . || ,   |####⧵ |			 |\n"
+			"		 ⧵.`', /  ⧵####| |		HP : %d \t|\t %d\n"
+			"	   	 =, . =   | ###| |		SPD: %d \t|\t %d\n"
+			"		 / || ⧵ , -'⧵#/,'`.		ATK: %d	\t|\t %d\n"
+			"		   || ,  '   `,,. `.	DEF  %d	\t|\t %d\n"
 			"		  , | ____, ' , ,;' ⧵| |		|\n"
 			"		 (3 | ⧵    _/|/'   _| |		\n"
 			"		   ||/, -'' | >-'' _, ⧵⧵		\n"
@@ -874,7 +887,8 @@ void ekran_walki(postac* postac1) {
 			"	      ⧵ ⧵      / (_)______ _ _ __ __| |\n"
 			"	       ⧵ ⧵ /⧵ / /| |_  / _` | '__/ _` |\n"
 			"		⧵ V  V / | |/ / (_| | | | (_| |	\n"
-			"		 ⧵_/⧵_/  |_/___⧵__,_|_|  ⧵__,_| \n", wrog->health);
+			"		 ⧵_/⧵_/  |_/___⧵__,_|_|  ⧵__,_| \n", wrog->health, postac1->health, wrog->AS, postac1->speed,
+			wrog->attack, postac1->attack, wrog->def, postac1->def);
 		break;
 	default:
 		break;
@@ -884,8 +898,9 @@ void ekran_walki(postac* postac1) {
 	
 	tura++;
 	}
-	post_fight(postac1, wrog);
-	if(postac1->xp >= postac1->max_xp[postac1->lvl - 1]){
+	if (postac1->health > 0) {post_fight(postac1, wrog);}
+	
+	while(postac1->xp >= postac1->max_xp[postac1->lvl - 1]){
 	lvlowanie(postac1);
 	}
 	
@@ -1006,13 +1021,22 @@ void show_map(char** mapa, int mapx_size, int mapy_size, postac* postac1){
 			printf("\tLVL: %d\t\tXP: %d/%d\n", postac1->lvl, postac1->xp, postac1->max_xp[postac1->lvl - 1]);
 			break;
 		case 2:
-			printf("\tCSH: %d$\tHP: %d/%d\n", postac1->cash, postac1->health, postac1->max_hp[postac1->lvl - 1]);
+			printf("\tCSH: %d$ \tHP: %d/%d\n", postac1->cash, postac1->health, postac1->max_hp[postac1->lvl - 1]);
 			break;
 		case 4:
 			printf("\tLCK: %d\t\tSPD: %d\n", postac1->luck, postac1->speed);
 			break;
 		case 6:
 			printf("\tATK: %d\t\tSTM: %d\n", postac1->attack, postac1->stamina);
+			break;
+		case 8:
+			if(postac1->skillpoints > 0){
+				printf("\t[MASZ %d SKILLPOINTOW!!!]\n", postac1->skillpoints);
+			}
+			else {
+				printf("\n");
+			}
+
 			break;
 		default:
 			printf("\n");
@@ -1101,18 +1125,61 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 }
 void show_ekwipunek(postac* postac1) {
 	printf("Ekwipunek postaci:\n");
-	int licznik = 1;
+	int last_item_id = -1;
 	for (int i = 0; i < postac1->backpack_height; i++) {
 		for (int j = 0; j < postac1->backpack_width; j++) {
-			item* przedmiot = &postac1->backpack[i][j];
-			if (przedmiot->name[0] != '\0') {
-				printf("%d. %s\n", licznik++, przedmiot->name);
+			if (postac1->backpack[i][j].id != 0 && postac1->backpack[i][j].id != last_item_id) {
+				last_item_id = postac1->backpack[i][j].id; // Zapamiętaj ostatni ID przedmiotu
+				printf("\n%d  ", postac1->backpack[i][j].id);
+				switch (postac1->backpack[i][j].klasa) {
+				case 0:
+					printf("PRZERDZEWIAŁY/A ");
+					break;
+				case 1:
+					printf("NORMALNY/A");
+					break;
+				case 2:
+					printf("RZADKI/A");
+					break;
+				case 3:
+					printf("EPICKI/A");
+					break;
+				case 4:
+					printf("LEGENDARNY/A");
+					break;
+				case 5:
+					printf("!D E S T R O Y E R!");
+					break;
+				default:
+					printf("BŁĄD W KLASIE PRZEDMIOTU! 1144l\n");
+					break;
+				}
+				printf(" %s ", postac1->backpack[i][j].name);
+				if (postac1->backpack[i][j].AP > 0) {
+					printf("ATK: %d ", postac1->backpack[i][j].AP);
+				}
+				if (postac1->backpack[i][j].armorpoints > 0) {
+					printf("ARMOR: %d ", postac1->backpack[i][j].armorpoints);
+				}
+				if (postac1->backpack[i][j].AS > 0) {
+					printf("SPD: %d ", postac1->backpack[i][j].AS);
+				}
+				if (postac1->backpack[i][j].luck_modifier > 0) {
+					printf("LCK: %d ", postac1->backpack[i][j].luck_modifier);
+				}
+				if (postac1->backpack[i][j].def > 0) {
+					printf("DEF: %d ", postac1->backpack[i][j].def);
+				}
+				printf("\n");
+
+
+
 			}
+			
 		}
-	}
-	if (licznik == 1) {
-		printf("Brak przedmiotów w ekwipunku.\n");
-	}
+	} 
+	if (last_item_id == -1) { printf("brak przedmiotów"); }
+	 
 }
 
 void pokaz_postac(postac* postac1) {
@@ -1322,6 +1389,7 @@ int main(){
 			do {
 				pokaz_postac(postac1);
 				scanf_s("%c", &znak);
+				
 			} while(znak != 'q');
 			system("cls");
 			continue;
@@ -1337,7 +1405,11 @@ int main(){
 		
 		runda++;
 	}
-	
+	printf("    ____     _    __    __ _____    _____     _______ ____   \n"
+		   "   / ___|   / \  |   \/  | ____|  / _ \ \   / / ____ | _ \	\n"
+		   "   | |  _  / _ \ |  |\/| |  _|   | | | \ \ / /|  _|  | |_) | \n"
+		   "   | |_| |/ ___ \|  |  | | |___  | |_| |\ V / | |___ | _ <  \n"
+		   "    ____/_/    \_\_ |  |_| _____| \___ / \_/  |_____ | _ | \_\ \n");
 
 	free(postac1->ekwipunek);
 	
