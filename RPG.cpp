@@ -166,15 +166,15 @@ postac* generate_postac(char nazwa[10]) {
 	post->xp = 0;
 	post->effect = 0;
 	post->cash = 0;
-	post->skillpoints = 0;
+	post->skillpoints = 20;
 	
 	post->lvl = 1;
-	post->attack = rand() % 10 + 1;
+	post->attack = 0;
 	post->health = 20;
-	post->stamina = rand() % 15 + 6;
-	post->speed = rand() % 12 + 3;	
-	post->luck = rand() % 20 + 1;
-	post->def = rand() % 11;
+	post->stamina = 10;
+	post->speed = 0;	
+	post->luck = rand()%10;
+	post->def = 0;
 	post->hunger = 100;
 	
 
@@ -206,7 +206,7 @@ postac* generate_postac(char nazwa[10]) {
 }
 item* generate_ring(postac* postac1, int klasa) {
 
-	item* rg = (item*)malloc(sizeof item);	//health, attack, def, speed, luck, full
+	item* rg = (item*)malloc(sizeof(item));	//health, attack, def, speed, luck, full
 
 	rg->isRing = true;
 	rg->isArmor = false;
@@ -252,7 +252,7 @@ item* generate_ring(postac* postac1, int klasa) {
 		rg->AP = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5;
 		rg->hp_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5;
 	}
-	else {
+	else if (rand_ >= 700  && rand_ < 1000) {
 		rg->hp_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Health ring");}	//health ring 30%
 	
 	switch (klasa) {	//wylosowane wartosci zostaja przemnozone przez klase
@@ -299,7 +299,7 @@ item* generate_ring(postac* postac1, int klasa) {
 	
 return rg;}
 item* generate_weapon(postac* postac1, int klasa) {
-	item* wpn = (item*)malloc(sizeof item);
+	item* wpn = (item*)malloc(sizeof (item));
 
 
 	wpn->AP = rand() % 10 + 1;		//attack power
@@ -319,7 +319,7 @@ item* generate_weapon(postac* postac1, int klasa) {
 	return wpn;
 }
 item* generate_potion(postac* postac1, int klasa) {
-	item* pot = (item*)malloc(sizeof item);
+	item* pot = (item*)malloc(sizeof (item));
 
 
 
@@ -334,7 +334,7 @@ item* generate_potion(postac* postac1, int klasa) {
 	return pot;
 }
 item* generate_armor(postac* postac1, int klasa) {
-	item* armr = (item*)malloc(sizeof item);
+	item* armr = (item*)malloc(sizeof (item));
 	strcpy_s(armr->name, sizeof(armr->name), "zbroja");
 	armr->lvl = postac1->lvl;
 	armr->armorpoints = rand() % 5 + 1 * armr->lvl;
@@ -344,6 +344,8 @@ item* generate_armor(postac* postac1, int klasa) {
 
 
 }
+
+
 
 void atak_info(double sila_ataku, int powodzenie_ataku, int powodzenie_obrony) {
 	switch (powodzenie_ataku) {
@@ -393,34 +395,16 @@ void atak_info(double sila_ataku, int powodzenie_ataku, int powodzenie_obrony) {
 
 
 }
-void walka(postac* postac1, enemy* wrog, int tura) {
 
-	printf("\n\n\t[WALKA Z ");
-	switch (wrog->race)
-	{
-	case 1:
-		printf("GOBLINEM]\n\n");
-		break;
-	case 2:
-		printf("ZOMBIE]\n\n");
-		break;
-	case 3:
-		printf("ORKIEM]\n\n");
-		break;
-	case 4:
-		printf("WIZARDEM]\n\n");
-		break;
-	default:
-		break;
-	}
-	int kto_pierwszy;	// 0 - pierwszy gracz 1 - pierwszy mob, 2 - dwie tury dla gracza  
+void walka(postac* postac1, enemy* wrog, int tura, int kto_pierwszy) {
+  
 	if (wrog->AS <= postac1->speed)
 	{
 		kto_pierwszy = 0;
 		if (postac1->speed >= 3 * wrog->AS) {
 			kto_pierwszy = 2;
 		}
-	}  
+	}
 	else {
 		kto_pierwszy = 1;
 	}
@@ -455,7 +439,7 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 				if (sila_ataku < 0) { sila_ataku = 0; }
 
 				wrog->health = wrog->health - sila_ataku;
-				printf("\nTURA WALKI: %d\n\t[ATAKUJESZ]\n", tura);
+				printf("\t[ATAKUJESZ]\n", tura);
 				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
 			}
 			else {	//gdy to tura wroga
@@ -480,7 +464,7 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 				sila_ataku = sila_ataku - 0.1 * postac1->def;
 				if (sila_ataku < 0) { sila_ataku = 0; }
 				postac1->health = postac1->health - sila_ataku;
-				printf("\nTURA WALKI: %d\n\t[WROG ATAKUJE]\n");
+				printf("\t[WROG ATAKUJE]\n");
 				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
 			}
 		break;
@@ -508,7 +492,7 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 				sila_ataku = sila_ataku - 0.1 * postac1->def;
 				if (sila_ataku < 0) { sila_ataku = 0; }
 				postac1->health = postac1->health - sila_ataku;
-				printf("\nTURA WALKI: %d\n\t[WROG ATAKUJE]\n", tura);
+				printf("\t[WROG ATAKUJE]\n", tura);
 				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
 			}
 			else {	//gdy to tura bohatera
@@ -533,7 +517,7 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 				sila_ataku = sila_ataku - 0.1 * wrog->def;
 				if (sila_ataku < 0) { sila_ataku = 0; }
 				wrog->health = wrog->health - sila_ataku;
-				printf("\nTURA WALKI: %d\n\t[ATAKUJESZ]\n", tura);
+				printf("\t[ATAKUJESZ]\n", tura);
 				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
 			}
 			break;
@@ -560,7 +544,7 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 				sila_ataku = sila_ataku - 0.1 * postac1->def;
 				if (sila_ataku < 0) { sila_ataku = 0; }
 				postac1->health = postac1->health - sila_ataku;
-				printf("\nTURA WALKI: %d\n\t[WROG ATAKUJE]\n");
+				printf("\t[WROG ATAKUJE]\n");
 				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
 			}
 			else {	//tura postaci
@@ -585,9 +569,10 @@ void walka(postac* postac1, enemy* wrog, int tura) {
 				sila_ataku = sila_ataku - 0.1 * wrog->def;
 				if (sila_ataku < 0) { sila_ataku = 0; }
 				wrog->health = wrog->health - sila_ataku;
-				printf("\nTURA WALKI: %d\n\t[ATAKUJESZ]\n");
+				printf("\t[ATAKUJESZ]\n");
 				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
 			}
+			
 			break;
 		default:
 			break;
@@ -611,7 +596,7 @@ int item_class_generator(postac* postac1) {
 	}
 	return klasa_itema;
 }
-
+ 
 void pick_item(item* newItem, postac* postac1) {
 	printf("\n\t[WYLECIAŁ ");
 	switch (newItem->klasa) {
@@ -692,7 +677,8 @@ void post_fight(postac* postac1, enemy* wrog) {
 	int cash_drop = rand() % 10 + 1 * wrog->type;
 	postac1->cash = postac1->cash + cash_drop * postac1->luck;
 
-	printf("\n\n\t[WROG POKONANY]\n\n");
+
+	printf("\n\n\t[WROG POKONANY|%dXP|%d$]\n\n",wrog->xpdrop, cash_drop*postac1->luck);
 
 	int item_drop = rand() % 11 + postac1->luck * 0.1;	//losowanie przedmiotu
 		if(item_drop >= 10){
@@ -723,8 +709,6 @@ void post_fight(postac* postac1, enemy* wrog) {
 				item* newItem = generate_ring(postac1, klasa_itema);
 				pick_item(newItem, postac1);
 			}
-			
-			
 			
 			}
 	
@@ -770,6 +754,27 @@ void lvlowanie(postac* postac1) {
 void ekran_walki(postac* postac1) {
 	enemy* wrog = generate_enemy();
 	int tura = 1;
+	int kto_pierwszy = 4;
+	printf("\n\n\t[WALKA Z ");
+	switch (wrog->race)
+	{
+	case 1:
+		printf("GOBLINEM]\n\n");
+		break;
+	case 2:
+		printf("ZOMBIE]\n\n");
+		break;
+	case 3:
+		printf("ORKIEM]\n\n");
+		break;
+	case 4:
+		printf("WIZARDEM]\n\n");
+		break;
+	default:
+		break;
+	}
+
+	
 	while(wrog->health > 0 && postac1->health >0) {
 	system("cls");
 	
@@ -863,13 +868,13 @@ void ekran_walki(postac* postac1) {
 		printf(
 												
 													
-			"			     _,-'|		|\n"		
-			"			 ,-' ._  |		ENEMY	 |	HERP \n"	
-			"		 . || ,   |####⧵ |			 |\n"
-			"		 ⧵.`', /  ⧵####| |		HP : %d \t|\t %d\n"
-			"	   	 =, . =   | ###| |		SPD: %d \t|\t %d\n"
-			"		 / || ⧵ , -'⧵#/,'`.		ATK: %d	\t|\t %d\n"
-			"		   || ,  '   `,,. `.	DEF  %d	\t|\t %d\n"
+			"			     _,-'|		\t|\n"		
+			"			 ,-' ._  |		ENEMY	|	HERP \n"	
+			"		 . || ,   |####⧵ |			|\n"
+			"		 ⧵.`', /  ⧵####| |		HP : %d \t|\t%d\n"
+			"	   	 =, . =   | ###| |		SPD: %d \t|\t%d\n"
+			"		 / || ⧵ , -'⧵#/,'`.		ATK: %d \t|\t%d\n"
+			"		   || ,  '   `,,. `.   \t\tDEF: %d\t|\t%d\n"
 			"		  , | ____, ' , ,;' ⧵| |		|\n"
 			"		 (3 | ⧵    _/|/'   _| |		\n"
 			"		   ||/, -'' | >-'' _, ⧵⧵		\n"
@@ -894,7 +899,8 @@ void ekran_walki(postac* postac1) {
 		break;
 	}
 	Sleep(1000);
-	walka(postac1, wrog, tura);
+	printf("\nTURA WALKI: %d\n",tura);
+	walka(postac1, wrog, tura, kto_pierwszy);
 	
 	tura++;
 	}
@@ -1118,11 +1124,24 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 		"	            <_ >< _>				\n"
 		"	            |  ||  |					\n"
 		"	            |  ||  |					\n"
-		"	           _⧵.:||:./_			\n"
-		"		  /____/ ⧵____⧵		\n\n\n"
+		"	           _⧵.:||:./_			\t"); if(postac1->skillpoints > 0){printf("MASZ %d SKILLPOINTOW", postac1->skillpoints); }printf(
+		"\n		  /____/ ⧵____⧵		\n\n\n"
 		"_____________________________________________________________________________________________________________\n"
 		 );
 }
+
+void skillpoint_distribution(postac* postac1, char move[1]) {
+	model_hero(postac1);
+	printf("Wybierz co ulepszyc - a:attack,  d:def, s: speed\n");
+	scanf_s(" %c", &move[0]);
+	
+	if (move[0] == 'a') { postac1->attack += 1; postac1->skillpoints -= 1; printf("ULEPSZYLES ATTACK!\n");} else
+	if(move[0]== 'd'){  postac1->def += 1; postac1->skillpoints -= 1; printf("ULEPSZYLES DEF!\n");} else
+	if (move[0] == 's') { postac1->speed += 1; postac1->skillpoints -= 1; printf("ULEPSZYLES SPEED!\n"); }
+	else { printf("blad skillpoint distribution"); }
+
+}
+
 void show_ekwipunek(postac* postac1) {
 	printf("Ekwipunek postaci:\n");
 	int last_item_id = -1;
@@ -1353,10 +1372,18 @@ int main(){
 
 	printf ("\t[PODAJ SWOJE IMIE:]\n\t");
 	scanf_s("%9s", nazwa, (unsigned)_countof(nazwa));
+	int c;
+	while ((c = getchar()) != '\n' && c != EOF) {}
 
 	postac* postac1 = generate_postac(nazwa);
 
 	generate_map(mapa, mapx_size, mapy_size, postac1);
+
+	while (postac1->skillpoints > 0) {
+		char move[1];
+		
+		skillpoint_distribution(postac1, move);
+	}
 
 	
 
@@ -1380,9 +1407,11 @@ int main(){
 		
 
 		widok_glowny(mapx_size, mapy_size, mapa, postac1, runda);
-		char move[1];
+		char move[8];
 		printf("Poruszaj się (wsad) albo otwórz ekwipunek (e): ");
 		scanf_s(" %c", &move[0]);
+		
+		
 				
 		if(move[0] == 'e') {			//otwieranie ekwipunku
 			char znak;
