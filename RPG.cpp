@@ -78,7 +78,7 @@ struct postac {
 	item** backpack;
 	int backpack_height;
 	int backpack_width;
-	int effect; // 0 - normalny, 1- trucizna, 3 - głód 
+	int effect; // 0 - normalny, 1- trucizna
 	};
 
 
@@ -173,7 +173,7 @@ postac* generate_postac(char nazwa[10]) {
 	post->health = 20;
 	post->stamina = 10;
 	post->speed = 0;	
-	post->luck = rand()%10;
+	post->luck = 0;
 	post->def = 0;
 	post->hunger = 100;
 	
@@ -842,10 +842,10 @@ void ekran_walki(postac* postac1) {
 			"									ENEMY	|	HERP \n"
 			"										|\n"
 			"	 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀			\t\t\t|\n"
-			"	 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀			\t\tHP %d|\n"
-			"	⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣧⣄⣉⣉⣠⣼⣶⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 		    \t\t\t\t|\n"
-			"	⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣿⡿⣿⣿⣿⣿⢿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀			\t\t\t|\n"
-			"	⠀⠀⠀⠀⠀⠀⠀⣼⣤⣤⣈⠙⠳⢄⣉⣋⡡⠞⠋⣁⣤⣤⣧⠀⠀⠀⠀⠀⠀⠀			\t\t\t|\n"
+			"	 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀			\t\tHP : %d\t|\t%d\n"
+			"	⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣧⣄⣉⣉⣠⣼⣶⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 		    \t\tSPD: %d\t|\t%d\n"
+			"	⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣿⡿⣿⣿⣿⣿⢿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀			\t\tATK: %d\t|\t%d\n"
+			"	⠀⠀⠀⠀⠀⠀⠀⣼⣤⣤⣈⠙⠳⢄⣉⣋⡡⠞⠋⣁⣤⣤⣧⠀⠀⠀⠀⠀⠀⠀			\t\tDEF: %d\t|\t%d\n"
 			"	⠀⢲⣶⣤⣄⡀⢀⣿⣄⠙⠿⣿⣦⣤⡿⢿⣤⣴⣿⠿⠋⣠⣿⠀⢀⣠⣤⣶⡖⠀			\t\t\t|\n"
 			"	⠀⠀⠙⣿⠛⠇⢸⣿⣿⡟⠀⡄⢉⠉⢀⡀⠉⡉⢠⠀⢻⣿⣿⡇⠸⠛⣿⠋⠀			\t\t\t|\n"
 			"	⠀⠀⠀⠘⣷⠀⢸⡏⠻⣿⣤⣤⠂⣠⣿⣿⣄⠑⣤⣤⣿⠟⢹⡇⠀⣾⠃⠀⠀⠀			\t\t\t|\n"
@@ -861,8 +861,8 @@ void ekran_walki(postac* postac1) {
 			"		 / _ ⧵ _ __| | __			\n"
 			"		| | | | '__| |/ /			\n"
 			"		| |_| | |  |    <			\n"
-			"		 ⧵___/|_|  |_ |⧵_⧵			\n", wrog->health
-		);
+			"		 ⧵___/|_|  |_ |⧵_⧵			\n", wrog->health, postac1->health, wrog->AS, postac1->speed,
+			wrog->attack, postac1->attack, wrog->def, postac1->def);
 		break;
 	case 4:
 		printf(
@@ -1036,6 +1036,20 @@ void show_map(char** mapa, int mapx_size, int mapy_size, postac* postac1){
 			printf("\tATK: %d\t\tSTM: %d\n", postac1->attack, postac1->stamina);
 			break;
 		case 8:
+			printf("\tDEF: %d\t\tSTATUS: ", postac1->def); switch (postac1->effect) {
+			case 0:	
+				printf("NORMALNY \n");
+				break;
+			case 1:
+				printf("ZATRUTY \n");
+				break;
+			default:
+				printf("ERROR EFFECT \n");
+				break;
+
+			}							
+			break;
+		case 10:
 			if(postac1->skillpoints > 0){
 				printf("\t[MASZ %d SKILLPOINTOW!!!]\n", postac1->skillpoints);
 			}
@@ -1067,15 +1081,15 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 		}
 		else { printf("[XXX]\n"); }
 	printf(
-		"		     /.--.⧵			[HEALTH] = %d\n"
-		"		    |= == =|		\t[ATTACK] = %d\t\t[LEFT  HAND] = ",  postac1->health, postac1->attack); 
+		"		     /.--.⧵			[HEALTH] = %d/%d\n"
+		"		    |= == =|		\t[ATTACK] = %d\t\t[LEFT  HAND] = ",  postac1->health, postac1->max_hp[postac1->lvl-1], postac1->attack); 
 		if (postac1->left_hand.isEmpty == false) {
 		printf("%s\n", postac1->left_hand.item_name);
 		}
 		else { printf("[XXX]\n"); }
 		printf(
-		"		    | `::` |		\t[X POINTS] = %d		\n"
-		"		  .-;`⧵..../ `;-.	\t[STAMINA] = %d\t\t[RIGHT HAND] = ", postac1->xp, postac1->stamina);
+		"		    | `::` |		\t[X POINTS] = %d/%d		\n"
+		"		  .-;`⧵..../ `;-.	\t[STAMINA] = %d\t\t[RIGHT HAND] = ", postac1->xp, postac1->max_xp[postac1->lvl-1], postac1->stamina);
 		if (postac1->right_hand.isEmpty == false) {
 			printf("%s\n", postac1->right_hand.item_name);
 		}
@@ -1132,14 +1146,16 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 
 void skillpoint_distribution(postac* postac1, char move[1]) {
 	model_hero(postac1);
-	printf("Wybierz co ulepszyc - a:attack,  d:def, s: speed\n");
+	printf("Wybierz co ulepszyc - a:attack,  d:def, s: speed, f:luck\n");
 	scanf_s(" %c", &move[0]);
-	
-	if (move[0] == 'a') { postac1->attack += 1; postac1->skillpoints -= 1; printf("ULEPSZYLES ATTACK!\n");} else
-	if(move[0]== 'd'){  postac1->def += 1; postac1->skillpoints -= 1; printf("ULEPSZYLES DEF!\n");} else
-	if (move[0] == 's') { postac1->speed += 1; postac1->skillpoints -= 1; printf("ULEPSZYLES SPEED!\n"); }
-	else { printf("blad skillpoint distribution"); }
-
+	if(postac1->skillpoints > 0){
+		if (move[0] == 'a') { postac1->attack += 1; postac1->skillpoints -= 1; printf("ULEPSZYLES ATTACK!\n");} else
+		if(move[0]== 'd'){  postac1->def += 1; postac1->skillpoints -= 1; printf("ULEPSZYLES DEF!\n");} else
+		if (move[0] == 's') { postac1->speed += 1; postac1->skillpoints -= 1; printf("ULEPSZYLES SPEED!\n"); } else
+		if (move[0] == 'f' && postac1->skillpoints >= 2) { postac1->skillpoints = postac1->skillpoints - 2; postac1->luck += 1; printf("ULEPSZYLES LUCK!\n");
+		}
+		else { printf("blad skillpoint distribution"); }
+		}
 }
 
 void show_ekwipunek(postac* postac1) {
@@ -1355,6 +1371,35 @@ void no_enemy_check(int mapx, int mapy, char** mapa, int runda) {
 	}
 }
 
+void put_item_on(postac* postac1, char move[1]) {
+	show_ekwipunek(postac1);
+	int last_item_id = -1;
+	
+	
+	printf("\n\t[Wybierz przedmiot do wlozenia na slot(ID)]\n\n");
+	scanf_s(" %c", &move[0]);
+
+	for (int i = 0; i < postac1->backpack_height; i++) {
+		for (int j = 0; j < postac1->backpack_width; j++) {
+			if (postac1->backpack[i][j].id != move[0] ) {
+				
+				switch (postac1->backpack[i][j].typ) {
+
+				case 0:		//armor slot
+					if (postac1->armor_slot.isEmpty == true) {
+						//put_armor_on(postac1);
+						postac1->armor_slot.isEmpty = true;
+						printf("\n\t[WLOZONO PRZEDMIOT NA ARMOR SLOT]\n\n");
+					}
+					else { printf("\n\t[NA ARMOR SLOCIE JEST JUŻ PRZEDMIOT!]\n\n"); }
+					break;
+				
+				}
+			}
+		}
+	}
+}
+
 int main(){
 	
 	SetConsoleOutputCP(CP_UTF8);
@@ -1385,22 +1430,6 @@ int main(){
 		skillpoint_distribution(postac1, move);
 	}
 
-	
-
-	//item* pierscien22 = generate_ring('n');
-	//postac1->backpack[0][0] = *pierscien22;
-	 //Generate a random weapon
-	//item* miecz1 = generate_weapon();
-	// Generate random armor
-	//item* zbroja1 = generate_armor();
-	//item* pierscien = generate_ring('f');
-	//postac1->right_hand.wpn = miecz1;
-	//postac1->armor_slot.arm = zbroja1;
-	//postac1->ring_slot.rg = pierscien;
-	//item* spareSword = generate_weapon();
-	//postac1->ekwipunek = spareSword;
-
-
 	int runda = 1;
 
 	while (postac1->health > 0) {
@@ -1418,6 +1447,19 @@ int main(){
 			do {
 				pokaz_postac(postac1);
 				scanf_s("%c", &znak);
+
+				if (znak == 't') {
+					char znak2[1];
+					do {
+						skillpoint_distribution(postac1, znak2);
+					} while (znak2[0] != 'q');
+				}
+				if (znak == 'w') {
+					char znak2[1];
+					do {
+						put_item_on(postac1,znak2);
+					} while (znak2[0] != 'q');
+				}
 				
 			} while(znak != 'q');
 			system("cls");
