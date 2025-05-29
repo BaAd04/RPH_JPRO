@@ -54,7 +54,9 @@ struct postac {
 	int pojemnosc;
 	int xp;
 	int stamina;
+
 	int hunger;
+	int max_hunger;
 	int posx;
 	int posy;
 	int def;
@@ -237,13 +239,13 @@ item* generate_ring(postac* postac1, int klasa) {
 	rand_ = rand() % 1000;
 	rand_ += postac1->luck;
 	if (rand_ > 0 && rand_ < 200) {
-		rg->AP = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Attack ring");}//to attack ring 20%
+		rg->AP = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Attack ring");} else//to attack ring 20%
 	if (rand_ >= 200 && rand_ < 400) {
-		rg->def = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Deffence ring");}//deff ring 20%
+		rg->def = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Deffence ring");}else//deff ring 20%
 	if (rand_ >= 400 && rand_ < 600) {
-		rg->AS = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Speed ring");} //speed ring 20%
+		rg->AS = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Speed ring");}else //speed ring 20%
 	if (rand_ >= 600 && rand_ < 690) {
-		rg->luck_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl; strcpy_s(rg->name, sizeof(rg->name), "Luck ring");} //luck ring 9%
+		rg->luck_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl; strcpy_s(rg->name, sizeof(rg->name), "Luck ring");}else //luck ring 9%
 	if (rand_ >= 690 && rand_ < 700) {
 		rg->def = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Full ring");			//full ring 1%
 		rg->luck_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl;
@@ -335,11 +337,76 @@ item* generate_potion(postac* postac1, int klasa) {
 }
 item* generate_armor(postac* postac1, int klasa) {
 	item* armr = (item*)malloc(sizeof (item));
-	strcpy_s(armr->name, sizeof(armr->name), "zbroja");
+	armr->isArmor = true;
+	armr->isPotion = false;
+	armr->isRing = false;
+	armr->isWeapon = false;
+	armr->isTwoHanded = false;
+	armr->AP = 0;
+	armr->klasa = klasa;
+	armr->health_reg = 0;
+	armr->hp_modifier = 0;
+	armr->luck_modifier = 0;
+	armr->potion_type = 0;
+	armr->typ = 2;	//typ zbroja
+
+	int armr_type = rand() % 5 + 1;
+
+	int rand_ = rand() % 1000 + 1;
 	armr->lvl = postac1->lvl;
-	armr->armorpoints = rand() % 5 + 1 * armr->lvl;
-	armr->szerokosc = rand() % 5 + 1;
-	armr->klasa = 1;
+	if (rand_ + postac1->luck < 50) { armr->lvl = postac1->lvl + 1; }
+	if (rand_ + postac1->luck < 20) { armr->lvl = postac1->lvl + 2; }
+	if (rand_ + postac1->luck < 1) { armr->lvl = postac1->lvl + 5; }
+
+	if (armr_type == 5) {	//ciezka zbroja
+		strcpy_s(armr->name, sizeof(armr->name), "Ciężka zbroja");
+		armr->AS = -(rand() % 10 + 5) + postac1->luck * 0.1 + armr->lvl * 0.1;	
+		armr->def = rand() % 10 + 1 + postac1->luck * 0.1 + armr->lvl * 5;	//defence
+		armr->armorpoints = rand() % 10 + 1 + postac1->luck * 0.1 + armr->lvl * 5;	//armor (potem dzielony przez 2)
+		armr->weight = rand() % 10 + 10;	//waga zbroi
+		armr->szerokosc = rand() % 5 + 1;	//szerokosc zbroi
+	}else 
+	if(armr_type > 2){	//normalna zbroja
+		strcpy_s(armr->name, sizeof(armr->name), "Normalna zbroja");
+		armr->AS = -(rand() % 5 + 1) + postac1->luck * 0.1 + armr->lvl * 0.1;	
+		armr->def = rand() % 5 + 1 + postac1->luck * 0.1 + armr->lvl * 2;	//defence
+		armr->armorpoints = rand() % 5 + 1 + postac1->luck * 0.1 + armr->lvl * 2;	//armor (potem dzielony przez 2)
+		armr->weight = rand() % 10 + 5;	//waga zbroi
+		armr->szerokosc = rand() % 3 + 1;	//szerokosc zbroi
+	}
+	else {
+		strcpy_s(armr->name, sizeof(armr->name), "Lekka zbroja");
+		armr->AS = -(rand() % 3 + 1) + postac1->luck * 0.1 + armr->lvl * 0.1;
+		armr->def = rand() % 3 + 1 + postac1->luck * 0.1 + armr->lvl;	//defence
+		armr->armorpoints = rand() % 3 + 1 + postac1->luck * 0.1 + armr->lvl;	//armor (potem dzielony przez 2)
+		armr->weight = rand() % 5 + 5;	//waga zbroi
+		armr->szerokosc = rand() % 2 + 1;	//szerokosc zbroi
+			}
+	switch (klasa){
+	case 0://klasa zardzewiale
+		armr->def = armr->def * 0.5;	
+		armr->armorpoints = armr->def * 0.5;
+		break;	
+	case 2:	//klasa rzadkie (klasa normalne nie wymaga zmian)
+		armr->def = armr->def * 1.2 + postac1->luck * 0.1;
+		armr->armorpoints = armr->def * 1.2 + postac1->luck * 0.1;
+		break;
+	case 3:	//klasa epicka
+		armr->def = armr->def * 1.5 + postac1->luck * 0.5;
+		armr->armorpoints = armr->def * 1.5 + postac1->luck * 0.5;
+		break;
+	case 4: //klasa legendarna
+		armr->def = armr->def * 3 + postac1->luck;
+		armr->armorpoints = armr->def * 3 + postac1->luck;
+		break;
+	case 5:
+		armr->def = armr->def * 5 + postac1->luck * 2;
+		armr->armorpoints = armr->def * 5 + postac1->luck * 2;
+		break;
+	default:
+		break;
+	}
+	
 	return armr;
 
 
@@ -522,7 +589,7 @@ void walka(postac* postac1, enemy* wrog, int tura, int kto_pierwszy) {
 			}
 			break;
 		case 2:
-			if (tura % 2 == 0) {		//bohater atakuje 2 razy, tura wroga
+			if (tura % 3  == 0) {		//bohater atakuje 2 razy, tura wroga
 				rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
 				rzutt = rzut + wrog->luck * 0.1;
 
@@ -843,7 +910,7 @@ void ekran_walki(postac* postac1) {
 			"										|\n"
 			"	 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀			\t\t\t|\n"
 			"	 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀			\t\tHP : %d\t|\t%d\n"
-			"	⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣧⣄⣉⣉⣠⣼⣶⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 		    \t\tSPD: %d\t|\t%d\n"
+			"	⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣧⣄⣉⣉⣠⣼⣶⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 		    \t\t\tSPD: %d\t|\t%d\n"
 			"	⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣿⡿⣿⣿⣿⣿⢿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀			\t\tATK: %d\t|\t%d\n"
 			"	⠀⠀⠀⠀⠀⠀⠀⣼⣤⣤⣈⠙⠳⢄⣉⣋⡡⠞⠋⣁⣤⣤⣧⠀⠀⠀⠀⠀⠀⠀			\t\tDEF: %d\t|\t%d\n"
 			"	⠀⢲⣶⣤⣄⡀⢀⣿⣄⠙⠿⣿⣦⣤⡿⢿⣤⣴⣿⠿⠋⣠⣿⠀⢀⣠⣤⣶⡖⠀			\t\t\t|\n"
@@ -1049,9 +1116,9 @@ void show_map(char** mapa, int mapx_size, int mapy_size, postac* postac1){
 
 			}							
 			break;
-		case 10:
+		case 5:
 			if(postac1->skillpoints > 0){
-				printf("\t[MASZ %d SKILLPOINTOW!!!]\n", postac1->skillpoints);
+				printf("\t[MASZ %d SKILLPOINT/OW!!!]\n", postac1->skillpoints);
 			}
 			else {
 				printf("\n");
@@ -1146,7 +1213,7 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 
 void skillpoint_distribution(postac* postac1, char move[1]) {
 	model_hero(postac1);
-	printf("Wybierz co ulepszyc - a:attack,  d:def, s: speed, f:luck\n");
+	printf("Wybierz co ulepszyc - a:attack,  d:def, s: speed, f:luck(2SP)\n");
 	scanf_s(" %c", &move[0]);
 	if(postac1->skillpoints > 0){
 		if (move[0] == 'a') { postac1->attack += 1; postac1->skillpoints -= 1; printf("ULEPSZYLES ATTACK!\n");} else
@@ -1228,7 +1295,7 @@ void pokaz_postac(postac* postac1) {
 	
 	model_hero(postac1);
 	show_ekwipunek(postac1);
-	printf("\nq - wychodzenie, w - wkladanie itemow, e - podejrzyj przedmioty, r - zdejmowanie przedmiotów, t - skillpointy\n");
+	printf("\nq - wychodzenie, w - wkladanie itemow, e - podejrzyj itemy, r - zdejmowanie itemów, t - skillpointy, y - stats\n");
 }
 
 
@@ -1360,14 +1427,16 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 	}	
 }
 
-void no_enemy_check(int mapx, int mapy, char** mapa, int runda) {
+void no_enemy_check(int mapx, int mapy, char** mapa, int runda, postac* postac1) {
 	if (enemycount < 1 && last_fight_round != runda) {
 		int e_posx = rand() % mapx;
 		int e_posy = rand() % mapy;
 
+		if(postac1->posx != e_posx || postac1->posy != e_posy){
 		mapa[e_posx][e_posy] = 'E';
 		enemycount++;
-		printf("\n\t[POJAWIL SIE NOWY WROG!]\n\n");
+		printf("\n\t[POJAWIL SIE NOWY WROG!]\n\n");}
+		
 	}
 }
 
@@ -1470,7 +1539,7 @@ int main(){
 
 		//enemy_check()		//sprawdza czy wrog jest w poblizu i podaje jego dane
 
-		no_enemy_check(mapx_size, mapy_size, mapa, runda);	//jesli na mapie nie ma wroga to tworzy go 
+		no_enemy_check(mapx_size, mapy_size, mapa, runda, postac1);	//jesli na mapie nie ma wroga to tworzy go 
 
 		//effects_impact();		//
 		
