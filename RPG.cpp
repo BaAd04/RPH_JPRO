@@ -587,7 +587,7 @@ void walka(postac* postac1, enemy* wrog, int tura, int kto_pierwszy) {
 			postac1->health = postac1->health - sila_ataku;
 			printf("\t[WROG ATAKUJE]\n");
 			if (powodzenie_ataku <= 6) {		//powinno byc ==, zmienione do testu
-				put_effect(wrog, postac1);	
+				put_effect(wrog, postac1);
 			}
 			atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
 		}
@@ -1168,7 +1168,8 @@ void show_map(char** mapa, int mapx_size, int mapy_size, postac* postac1) {
 			printf("\tATK: %d\t\tSTM: %d\n", postac1->attack, postac1->stamina);
 			break;
 		case 8:
-			printf("\tDEF: %d\t\tSTATUS: ", postac1->def); switch (postac1->effect) {
+			printf("\tDEF: %d\t\tSTATUS: ", postac1->def); 
+			switch (postac1->effect) {
 			case 0:
 				printf("NORMALNY \n");
 				break;
@@ -1242,10 +1243,25 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 	else { printf("[XXX]\n"); }
 	printf(
 		"	       |  |/   ^^    ⧵|  |\t\t[CASH] = %d	\n"
-		"	       ⧵::/|         |⧵::/	\n"
+		"	       ⧵::/|         |⧵::/	\t[STATUS] = ", postac1->cash);
+	switch (postac1->effect) {
+	case 0:
+		printf("[NORMALNY]\n");
+		break; 
+	case 1:
+		printf("[POISON]\n");
+		break;
+	case 2:
+		printf("[FAMINE]\n");
+		break;
+	default:
+		printf("error \n");
+		break;
+	}
+	printf(
 		"	       |||⧵|         |/|||	\n"
 		"	       ''' |___/ ⧵___| '''	\n"
-		"                   ⧵_ |  | _ /	\t\t[POTIONS] = ", postac1->cash);
+		"                   ⧵_ |  | _ /	\t\t[POTIONS] = ");
 	if (postac1->potion_slot.isEmpty == false) {
 		printf("%s ", postac1->potion_slot.item_name);
 	}
@@ -1544,28 +1560,30 @@ void effects_impact(postac* postac1) {
 	{
 	case 0:		//healowanie
 		if (postac1->health == postac1->max_hp[postac1->lvl - 1]) {		//healowanie gdy hp jest pelne (zapelnianie staminy i hunger)
-		
+
 			if (postac1->stamina < postac1->max_stamina && postac1->hunger >= 2) {			//stamina up
 				postac1->stamina++;
 				printf("\n\tSTAMINA UP\n");
 				postac1->hunger = postac1->hunger - 2;
 			}
-			else if(postac1->hunger < postac1->max_hunger)
-			{ postac1->hunger++; }
+			else if (postac1->hunger < postac1->max_hunger)
+			{
+				postac1->hunger++;
+			}
 		}
 		else {		//hp nie jest pelne
 			if (postac1->stamina >= 2) {	//jesli masz stamine sie healowac 
-				postac1->stamina -= 2; 
+				postac1->stamina -= 2;
 				postac1->health++;
 				printf("\n\tHEALING\n");
 			}
-			else if(postac1->hunger>=2){		//nie masz stamine, masz hunger, wiec zmieniasz hunger w stamine
+			else if (postac1->hunger >= 2) {		//nie masz stamine, masz hunger, wiec zmieniasz hunger w stamine
 				postac1->stamina++;
 				printf("\n\tSTAMINA UP\n");
 				postac1->hunger = postac1->hunger - 2;
 			}
 			else { postac1->hunger++; }		//nie masz full hp, nie masz staminy ani hunger (>1)
-			
+
 		}
 		break;
 	case 1:			//poison
@@ -1658,7 +1676,7 @@ int main() {
 
 		no_enemy_check(mapx_size, mapy_size, mapa, runda, postac1);	//jesli na mapie nie ma wroga to tworzy go 
 
-		effects_impact(postac1);	
+		effects_impact(postac1);
 
 		runda++;
 	}
