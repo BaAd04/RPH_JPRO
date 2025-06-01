@@ -484,14 +484,14 @@ void put_effect(enemy* wrog, postac* postac1) {
 	switch (wrog->race) {
 	case 2:		//zombie - 10% szans na poison
 		if (poison_chance >= 90) {
-			printf("\n\t[WROG NALOZYL POISON]\n");
+			printf("\n\t\t\t[WROG NALOZYL POISON]\n");
 			postac1->effect = 1;
 			postac1->effect_duration = poison_duration;
 		}
 		break;
 	case 3:
 		if (poison_chance >= 90) {
-			printf("\n\t[WROG NALOZYL HUNGER]\n");
+			printf("\n\t\t\t[WROG NALOZYL HUNGER]\n");
 			postac1->effect = 2;
 			postac1->hunger = 0;
 			postac1->effect_duration = poison_duration;
@@ -499,13 +499,13 @@ void put_effect(enemy* wrog, postac* postac1) {
 		break;
 	case 4:
 		if (poison_chance >= 75) {
-			printf("\n\t[WROG NALOZYL POISON]\n");
+			printf("\n\t\t\t[WROG NALOZYL POISON]\n");
 			postac1->effect = 1;
 			postac1->effect_duration = poison_duration;
 		}
 		else
 			if (poison_chance >= 50) {
-				printf("\n\t[WROG NALOZYL HUNGER]\n");
+				printf("\n\t\t\t[WROG NALOZYL HUNGER]\n");
 				postac1->effect = 2;
 				postac1->effect_duration = poison_duration;
 			}
@@ -586,7 +586,7 @@ void walka(postac* postac1, enemy* wrog, int tura, int kto_pierwszy) {
 			if (sila_ataku < 0) { sila_ataku = 0; }
 			postac1->health = postac1->health - sila_ataku;
 			printf("\t[WROG ATAKUJE]\n");
-			if (powodzenie_ataku <= 6) {		//powinno byc ==, zmienione do testu
+			if (powodzenie_ataku == 6) {		//powinno byc ==, zmienione do testu
 				put_effect(wrog, postac1);
 			}
 			atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
@@ -617,6 +617,9 @@ void walka(postac* postac1, enemy* wrog, int tura, int kto_pierwszy) {
 			if (sila_ataku < 0) { sila_ataku = 0; }
 			postac1->health = postac1->health - sila_ataku;
 			printf("\t[WROG ATAKUJE]\n", tura);
+			if (powodzenie_ataku == 6) {		//powinno byc ==, zmienione do testu
+				put_effect(wrog, postac1);
+			}
 			atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
 		}
 		else {	//gdy to tura bohatera
@@ -669,7 +672,11 @@ void walka(postac* postac1, enemy* wrog, int tura, int kto_pierwszy) {
 			if (sila_ataku < 0) { sila_ataku = 0; }
 			postac1->health = postac1->health - sila_ataku;
 			printf("\t[WROG ATAKUJE]\n");
+			if (powodzenie_ataku == 6) {		//powinno byc ==, zmienione do testu
+				put_effect(wrog, postac1);
+			}
 			atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
+
 		}
 		else {	//tura postaci
 			rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
@@ -1174,7 +1181,10 @@ void show_map(char** mapa, int mapx_size, int mapy_size, postac* postac1) {
 				printf("NORMALNY \n");
 				break;
 			case 1:
-				printf("ZATRUTY \n");
+				printf("ZATRUTY - %d RUND\n", postac1->effect_duration);
+				break;
+			case 2:
+				printf("FAMINE - %d RUND\n", postac1->effect_duration);
 				break;
 			default:
 				printf("ERROR EFFECT \n");
@@ -1249,16 +1259,16 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 		printf("[NORMALNY]\n");
 		break; 
 	case 1:
-		printf("[POISON]\n");
+		printf("[POISON - %d RUND]\n", postac1->effect_duration);
 		break;
 	case 2:
-		printf("[FAMINE]\n");
+		printf("[FAMINE - %d RUND]\n", postac1->effect_duration);
 		break;
 	default:
 		printf("error \n");
 		break;
 	}
-	printf(
+	printf(	
 		"	       |||⧵|         |/|||	\n"
 		"	       ''' |___/ ⧵___| '''	\n"
 		"                   ⧵_ |  | _ /	\t\t[POTIONS] = ");
@@ -1597,6 +1607,10 @@ void effects_impact(postac* postac1) {
 		break;
 	case 2:				//famine
 		printf("\n\tFAMINE - NO HEALING\n");
+		postac1->effect_duration--;
+		if (postac1->effect_duration == 0) 
+			postac1->effect = 0;
+			printf("\n\tKONIEC POISONA\n");
 		break;
 	default:
 		printf("error switch effect_impact");
