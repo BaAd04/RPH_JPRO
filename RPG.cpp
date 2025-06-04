@@ -42,7 +42,9 @@ struct Slot {
 	bool isEmpty;           // Sprawdzenie, czy slot jest pusty
 	item* wpn;             // Wskaźnik na broń
 
-	Slot() : isEmpty(true), wpn(nullptr), item_name("XXX") {} // Konstruktor domyślny
+	Slot() : isEmpty(true), wpn(nullptr), item_name("XXX") {
+		wpn = (item*)malloc(sizeof(item));
+	} // Konstruktor domyślny
 };
 
 
@@ -99,56 +101,56 @@ struct enemy {
 };
 
 
-enemy* generate_enemy() {
+enemy* generate_enemy(postac* postac1) {
 	enemy* en = (enemy*)malloc(sizeof(enemy));
+
+	en->lvl = rand() % 3 - 1 + postac1->lvl;
 
 	int rand_enemytype = rand() % 10 + 1;
 	if (rand_enemytype > 6) {		//goblin
-		en->lvl = 1;
-		en->health = 3;
-		en->attack = 1;
+		en->health = en->lvl *3;
+		en->attack = en->lvl * 1;
 		en->mana = 0;
 		en->type = 1;
 		en->xpdrop = 5;
-		en->AS = 1;
+		en->AS = en->lvl * 1;
 		en->race = 1;
 		en->luck = 0;
-		en->def = 1;
+		en->def = en->lvl * 1;
 
 	}
 	else if (rand_enemytype > 3) {	//zombie
-		en->lvl = 1;
-		en->health = 5;
-		en->attack = 2;
+		en->health = en->lvl * 5;
+		en->attack = en->lvl * 2;
 		en->mana = 0;
 		en->type = 1;
 		en->xpdrop = 7;
-		en->AS = 1;
+		en->AS = en->lvl * 1;
 		en->race = 2;
 		en->luck = 0;
-		en->def = 3;
+		en->def = en->lvl * 3;
 	}
 	else if (rand_enemytype > 1) {		//ork
-		en->lvl = 2;
-		en->health = 8;
-		en->attack = 5;
+		en->lvl = en->lvl * 2;
+		en->health = en->lvl * 8 /2;
+		en->attack = en->lvl * 5 /2;
 		en->mana = 0;
 		en->type = 2;
 		en->xpdrop = 10;
 		en->race = 3;
 		en->luck = 0;
-		en->def = 5;
-		en->AS = 3;
+		en->def = en->lvl * 5 / 2;
+		en->AS = en->lvl * 3 / 2;
 
 	}
 	else if (rand_enemytype == 1) {		//wizard
-		en->lvl = 5;
-		en->health = 5;
-		en->attack = 8;
+		en->lvl = en->lvl *  5;
+		en->health = en->lvl * 5 / 5;
+		en->attack = en->lvl * 8 /5;
 		en->mana = 10;
 		en->type = 2;
 		en->xpdrop = 25;
-		en->AS = 4;
+		en->AS = en->lvl * 4 / 5;
 		en->race = 4;
 		en->luck = rand() % 5 + 1;
 		en->def = 0;
@@ -350,16 +352,25 @@ item* generate_weapon(postac* postac1, int klasa) {
 item* generate_potion(postac* postac1, int klasa) {
 	item* pot = (item*)malloc(sizeof(item));
 
+	int potion_type = 1;	//0 - nie potion, 1 -  health, 2 - luck boost, 3 - atack boost
 
-
-
-	int potion_type = rand() % 3 + 1;	//0 - nie potion, 1 -  health, 2 - luck boost, 3 - atack boost
-
-	strcpy_s(pot->name, sizeof(pot->name), "Potion");
-	pot->klasa = 1;
+	strcpy_s(pot->name, sizeof(pot->name), "Health Potion");
+	pot->klasa = klasa;
 	pot->szerokosc = 1;
 	pot->weight = 1;
 	pot->armorpoints = 0;
+	pot->AP = 0;
+	pot->AS = 0;
+	pot->def = 0;
+	pot->health_reg =0;
+	pot->hp_modifier = rand() % 5 + 1;
+	pot->isArmor = false;
+	pot->isPotion = true;
+	pot->isRing = false;
+	pot->isTwoHanded = false;
+	pot->isWeapon = false;
+	pot->luck_modifier = 0;
+	pot->typ = 0;
 	return pot;
 }
 item* generate_armor(postac* postac1, int klasa) {
@@ -440,7 +451,59 @@ item* generate_armor(postac* postac1, int klasa) {
 
 }
 
+void clear_potion_slot(postac* postac1, int which){
+	switch (which) {
+	case 1:
+		free(postac1->potion_slot.wpn);
+		break;
+	case 2:
+		free(postac1->potion_slot2.wpn);
+		break;
+	case 3:
+		free(postac1->potion_slot3.wpn);
+		break;
+	case 4:
+		free(postac1->potion_slot4.wpn);
+		break;
+	case 5:
+		free(postac1->potion_slot5.wpn);
+		break;
+	}	
+}
 
+void use_health_potion(postac* postac1){
+	if (postac1->potion_slot.wpn != NULL && postac1->potion_slot.wpn->potion_type == 1) {
+		postac1->health += postac1->potion_slot.wpn->hp_modifier;
+		printf("\n\t\tUZYTO POTION HP - 1 SLOT - %dHP", postac1->potion_slot.wpn->hp_modifier);
+		int which = 1;
+		clear_potion_slot(postac1, which);
+	}
+	else if (postac1->potion_slot2.wpn != NULL && postac1->potion_slot2.wpn->potion_type == 1) {
+		postac1->health += postac1->potion_slot2.wpn->hp_modifier;
+		printf("\n\t\tUZYTO POTION HP - 2 SLOT - %dHP", postac1->potion_slot2.wpn->hp_modifier);
+		int which = 2;
+		clear_potion_slot(postac1, which);
+	}
+	else if (postac1->potion_slot3.wpn != NULL && postac1->potion_slot3.wpn->potion_type == 1) {
+		postac1->health += postac1->potion_slot3.wpn->hp_modifier;
+		printf("\n\t\tUZYTO POTION HP - 3 SLOT - %dHP", postac1->potion_slot3.wpn->hp_modifier);
+		int which = 3;
+		clear_potion_slot(postac1, which);
+	}
+	else if (postac1->potion_slot4.wpn != NULL && postac1->potion_slot4.wpn->potion_type == 1) {
+		postac1->health += postac1->potion_slot4.wpn->hp_modifier;
+		printf("\n\t\tUZYTO POTION HP - 4 SLOT - %dHP", postac1->potion_slot4.wpn->hp_modifier);
+		int which = 4;
+		clear_potion_slot(postac1, which);
+	}
+	else if (postac1->potion_slot5.wpn != NULL && postac1->potion_slot5.wpn->potion_type == 1) {
+		postac1->health += postac1->potion_slot5.wpn->hp_modifier;
+		printf("\n\t\tUZYTO POTION HP - 5 SLOT - %dHP", postac1->potion_slot5.wpn->hp_modifier);
+		int which = 5;
+		clear_potion_slot(postac1, which);
+	}
+
+}
 
 void atak_info(double sila_ataku, int powodzenie_ataku, int powodzenie_obrony) {
 	switch (powodzenie_ataku) {
@@ -599,7 +662,7 @@ void walka(postac* postac1, enemy* wrog, int tura, int kto_pierwszy) {
 			if (sila_ataku < 0) { sila_ataku = 0; }
 			postac1->health = postac1->health - sila_ataku;
 			printf("\t[WROG ATAKUJE]\n");
-			if (powodzenie_ataku == 6) {		//powinno byc ==, zmienione do testu
+			if (powodzenie_ataku == 6 && wrog->race > 1) {		//powinno byc ==, zmienione do testu
 				put_effect(wrog, postac1);
 			}
 			atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
@@ -630,7 +693,7 @@ void walka(postac* postac1, enemy* wrog, int tura, int kto_pierwszy) {
 			if (sila_ataku < 0) { sila_ataku = 0; }
 			postac1->health = postac1->health - sila_ataku;
 			printf("\t[WROG ATAKUJE]\n", tura);
-			if (powodzenie_ataku == 6) {		//powinno byc ==, zmienione do testu
+			if (powodzenie_ataku == 6 && wrog->race > 1) {		//powinno byc ==, zmienione do testu
 				put_effect(wrog, postac1);
 			}
 			atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
@@ -685,7 +748,7 @@ void walka(postac* postac1, enemy* wrog, int tura, int kto_pierwszy) {
 			if (sila_ataku < 0) { sila_ataku = 0; }
 			postac1->health = postac1->health - sila_ataku;
 			printf("\t[WROG ATAKUJE]\n");
-			if (powodzenie_ataku == 6) {		//powinno byc ==, zmienione do testu
+			if (powodzenie_ataku == 6 && wrog->race > 1) {		//powinno byc ==, zmienione do testu
 				put_effect(wrog, postac1);
 			}
 			atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
@@ -721,15 +784,23 @@ void walka(postac* postac1, enemy* wrog, int tura, int kto_pierwszy) {
 	default:
 		break;
 	}
+	if (postac1->health < 1 &&
+		(!postac1->potion_slot.isEmpty ||
+			!postac1->potion_slot2.isEmpty ||
+			!postac1->potion_slot3.isEmpty ||
+			!postac1->potion_slot4.isEmpty ||
+			!postac1->potion_slot5.isEmpty)) {
+		use_health_potion(postac1);
+	}
 }
 
 int item_class_generator(postac* postac1) {
-	int klasa_itema = rand() % 100 + 1 + postac1->luck;	//losowanie klasy przedmiotu
+	int klasa_itema = rand() % 100 + 1 + postac1->luck * 0.5;	//losowanie klasy przedmiotu
 	if (klasa_itema >= 0 && klasa_itema < 21) { klasa_itema = 0; }	//klasa - przerdzewiały  20% szans
-	if (klasa_itema >= 21 && klasa_itema < 71) { klasa_itema = 1; }	//klasa - zwykly 50% szans
-	if (klasa_itema >= 71 && klasa_itema < 91) { klasa_itema = 2; }	//klasa - rzadki 20% szans
-	if (klasa_itema >= 91 && klasa_itema < 99) {
-		klasa_itema = 3; //klasa - epicki 9% szans
+	if (klasa_itema >= 21 && klasa_itema < 91) { klasa_itema = 1; }	//klasa - zwykly 70% szans
+	if (klasa_itema >= 91 && klasa_itema < 97) { klasa_itema = 2; }	//klasa - rzadki 5% szans
+	if (klasa_itema >= 97 && klasa_itema < 99) {	//2%
+		klasa_itema = 3; //klasa - epicki 4% szans
 	}
 	else {
 		klasa_itema = 4;		//klasa - legendarny 1% szans
@@ -834,7 +905,7 @@ void post_fight(postac* postac1, enemy* wrog) {
 	printf("\n\n\t[WROG POKONANY|%dXP|%d$]\n\n", wrog->xpdrop, cash_drop * postac1->luck);
 
 	int item_drop = rand() % 11 + postac1->luck * 0.1;	//losowanie przedmiotu
-	if (item_drop >= 1) {			//to do zmienic 1 na 10
+	if (item_drop >= 10) {			//todo zmienic 1 na 10
 
 		int klasa_itema = item_class_generator(postac1);	//losowanie klasy przedmiotu
 
@@ -905,7 +976,7 @@ void lvlowanie(postac* postac1) {
 }
 
 void ekran_walki(postac* postac1) {
-	enemy* wrog = generate_enemy();
+	enemy* wrog = generate_enemy(postac1);
 	int tura = 1;
 	int kto_pierwszy = 4;
 	printf("\n\n\t[WALKA Z ");
@@ -935,13 +1006,13 @@ void ekran_walki(postac* postac1) {
 		case 1:
 			printf(
 				"										 \n"
-				"						ENEMY	|	HERO \n"
+				"						ENEMY %d	|	HERO %d \n"
 				"							|\n"
 				"	 	    ⣠⣶⣿⣿⣶⣄⠀⠀⠀⠀⠀	⠀⠀⠀⠀⠀	⠀⠀		|\n"
-				"	⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀	\tHP: %d	|	%d\n"
-				"	⠀⠀⠀⠀⠀⠀⠀⠀⢀⡼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢧⡀⠀⠀⠀⠀⠀⠀⠀		⠀	|\n"
-				"	⠀⠢⣤⣀⡀⠀⠀⠀⢿⣧⣄⡉⠻⢿⣿⣿⡿⠟⢉⣠⣼⡿⠀⠀⠀⠀⣀⣤⠔⠀			|\n"
-				"	⠀⠀⠈⢻⣿⣶⠀⣷⠀⠉⠛⠿⠶⡴⢿⡿⢦⠶⠿⠛⠉⠀⣾⠀⣶⣿⡟⠁⠀⠀			|\n"
+				"	⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀	\tHP : %d	|	%d\n"
+				"	⠀⠀⠀⠀⠀⠀⠀⠀⢀⡼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢧⡀⠀⠀⠀⠀⠀⠀⠀	\tSPD: %d	|	%d\n"
+				"	⠀⠢⣤⣀⡀⠀⠀⠀⢿⣧⣄⡉⠻⢿⣿⣿⡿⠟⢉⣠⣼⡿⠀⠀⠀⠀⣀⣤⠔⠀	\tATK: %d	|	%d\n"
+				"	⠀⠀⠈⢻⣿⣶⠀⣷⠀⠉⠛⠿⠶⡴⢿⡿⢦⠶⠿⠛⠉⠀⣾⠀⣶⣿⡟⠁⠀⠀	\tDEF  %d	|	%d\n"
 				"	⠀⠀⠀⠀⠻⣿⡆⠘⡇⠘⠷⠠⠦⠀⣾⣷⠀⠴⠄⠾⠃⢸⠃⢰⣿⠟⠀⠀⠀⠀			|\n"
 				"	⠀⠀⠀⠀⠀⠋⢠⣾⣥⣴⣶⣶⣆⠘⣿⣿⠃⣰⣶⣶⣦⣬⣷⡄⠙⠀⠀⠀⠀			|\n"
 				"	⠀⠀⠀⠀⠀⠀⢋⠛⠻⠿⣿⠟⢹⣆⠸⠇⣰⡏⠻⣿⠿⠟⠛⡙⠀⠀⠀⠀⠀⠀			|\n"
@@ -957,13 +1028,14 @@ void ekran_walki(postac* postac1) {
 				"	/ ___ | ___ | |__ | (_)_ __	⠀\n"
 				"	| |  _ / _ ⧵ | '_ ⧵| | | '_ ⧵	⠀\n"
 				"	| |_| | (_) | |_) | | | | | |		⠀\n"
-				"	⧵____ | ⧵___/|_.__/|_ | _ | _	⠀\n", wrog->health, postac1->health
+				"	⧵____ | ⧵___/|_.__/|_ | _ | _	⠀\n", wrog->lvl, postac1->lvl, wrog->health, postac1->health, wrog->AS, postac1->speed,
+				wrog->attack, postac1->attack, wrog->def, postac1->def
 			);
 			break;
 		case 2:
 			printf(
 				"	        \n"
-				"									ENEMY	|	HERP \n"
+				"									ENEMY %d | HERP %d \n"
 				"										|\n"
 				"	⠀⠀⠀⠀⠀⠀⠀⠀⢀⡠⠖⠊⠉⠉⠉⠉⢉⠝⠉⠓⠦⣄⠀⠀⠀⠀⠀⠀⠀⠀			\t\tHP : %d\t|\t %d\n"
 				"	⠀⠀⠀⠀⠀⠀⢀⡴⣋⠀⠀⣤⣒⡠⢀⠀⠐⠂⠀⠤⠤⠈⠓⢦⡀⠀⠀⠀⠀⠀			\t\tSPD: %d\t|\t %d\n"
@@ -985,14 +1057,14 @@ void ekran_walki(postac* postac1) {
 				"	   |__  /___  _ __ ___ | |__ (_) ___	\n"
 				"	    / // _ ⧵| '_ ` _ ⧵| '_ ⧵| |/ _ ⧵	\n"
 				"	   / /| (_) | | | | | | |_) | |  __/	\n"
-				"	  /____⧵___/|_| |_| |_|_.__/|_|⧵___|	\n", wrog->health, postac1->health, wrog->AS, postac1->speed,
+				"	  /____⧵___/|_| |_| |_|_.__/|_|⧵___|	\n", wrog->lvl, postac1->lvl, wrog->health, postac1->health, wrog->AS, postac1->speed,
 				wrog->attack, postac1->attack, wrog->def, postac1->def);
 
 			break;
 		case 3:
 			printf(
 				"	        \n"
-				"									ENEMY	|	HERP \n"
+				"									ENEMY %d | 	HERP %d \n"
 				"										|\n"
 				"	 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀			\t\t\t|\n"
 				"	 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀			\t\tHP : %d\t|\t%d\n"
@@ -1014,7 +1086,7 @@ void ekran_walki(postac* postac1) {
 				"		 / _ ⧵ _ __| | __			\n"
 				"		| | | | '__| |/ /			\n"
 				"		| |_| | |  |    <			\n"
-				"		 ⧵___/|_|  |_ |⧵_⧵			\n", wrog->health, postac1->health, wrog->AS, postac1->speed,
+				"		 ⧵___/|_|  |_ |⧵_⧵			\n", wrog->lvl, postac1->lvl, wrog->health, postac1->health, wrog->AS, postac1->speed,
 				wrog->attack, postac1->attack, wrog->def, postac1->def);
 			break;
 		case 4:
@@ -1022,7 +1094,7 @@ void ekran_walki(postac* postac1) {
 
 
 				"			     _,-'|		\t|\n"
-				"			 ,-' ._  |		ENEMY	|	HERP \n"
+				"			 ,-' ._  |		ENEMY  %d|	HERP %d \n"
 				"		 . || ,   |####⧵ |			|\n"
 				"		 ⧵.`', /  ⧵####| |		HP : %d \t|\t%d\n"
 				"	   	 =, . =   | ###| |		SPD: %d \t|\t%d\n"
@@ -1045,7 +1117,7 @@ void ekran_walki(postac* postac1) {
 				"	      ⧵ ⧵      / (_)______ _ _ __ __| |\n"
 				"	       ⧵ ⧵ /⧵ / /| |_  / _` | '__/ _` |\n"
 				"		⧵ V  V / | |/ / (_| | | | (_| |	\n"
-				"		 ⧵_/⧵_/  |_/___⧵__,_|_|  ⧵__,_| \n", wrog->health, postac1->health, wrog->AS, postac1->speed,
+				"		 ⧵_/⧵_/  |_/___⧵__,_|_|  ⧵__,_| \n", wrog->lvl, postac1->lvl, wrog->health, postac1->health, wrog->AS, postac1->speed,
 				wrog->attack, postac1->attack, wrog->def, postac1->def);
 			break;
 		default:
@@ -1064,8 +1136,6 @@ void ekran_walki(postac* postac1) {
 	}
 
 }
-
-
 
 void pulapka(postac* postac1) {			//healt attack stamina speed
 	int trap_rand = rand() % 100 + 1;
@@ -1290,23 +1360,23 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 		"	       ''' |___/ ⧵___| '''	\n"
 		"                   ⧵_ |  | _ /	\t\t[POTIONS] = ");
 	if (postac1->potion_slot.isEmpty == false) {
-		printf("%s ", postac1->potion_slot.item_name);
+		printf("%s ", postac1->potion_slot.wpn->name);
 	}
 	else { printf("[XXX]  "); }
 	if (postac1->potion_slot2.isEmpty == false) {
-		printf("%s ", postac1->potion_slot.item_name);
+		printf("%s ", postac1->potion_slot.wpn->name);
 	}
 	else { printf("[XXX]  "); }
 	if (postac1->potion_slot3.isEmpty == false) {
-		printf("%s ", postac1->potion_slot.item_name);
+		printf("%s ", postac1->potion_slot.wpn->name);
 	}
 	else { printf("[XXX]  "); }
 	if (postac1->potion_slot4.isEmpty == false) {
-		printf("%s ", postac1->potion_slot.item_name);
+		printf("%s ", postac1->potion_slot.wpn->name);
 	}
 	else { printf("[XXX]  "); }
 	if (postac1->potion_slot5.isEmpty == false) {
-		printf("%s \n", postac1->potion_slot.item_name);
+		printf("%s \n", postac1->potion_slot.wpn->name);
 	}
 	else { printf("[XXX]  \n"); }
 	printf(
@@ -1383,6 +1453,9 @@ void show_ekwipunek(postac* postac1) {
 				}
 				if (postac1->backpack[i][j].def > 0) {
 					printf("DEF: %d ", postac1->backpack[i][j].def);
+				}
+				if (postac1->backpack[i][j].hp_modifier > 0) {
+					printf("HP: %d ", postac1->backpack[i][j].health_reg);
 				}
 				printf("\n");
 
@@ -1566,13 +1639,93 @@ void put_armor_on(postac* postac1, int i, int j, int id) {
 
     czyszcznie_eq(postac1, id);
 }
+void put_potion_on(postac* postac1, int i, int j, int id) {
+	int which;
+	int areEmpty = 0;
+	if (postac1->potion_slot.isEmpty == true) { printf("\n\t POTION SLOT 1: EMPTY"); areEmpty++; }
+	if (postac1->potion_slot2.isEmpty == true) { printf("\n\t POTION SLOT 2: EMPTY"); areEmpty++;}
+	if(postac1->potion_slot3.isEmpty == true) { printf("\n\t POTION SLOT 3: EMPTY"); areEmpty++; }
+	if (postac1->potion_slot4.isEmpty == true) { printf("\n\t POTION SLOT 4: EMPTY"); areEmpty++; }
+	if (postac1->potion_slot5.isEmpty == true) { printf("\n\t POTION SLOT 5: EMPTY"); areEmpty++; }
 
+	if (areEmpty ==5 ) { printf("BRAK PUSTYCH SLOTOW\n"); }
+	printf("Ktory slot? 1- pierwszy, 2 - drugi ...");
+	scanf_s("%d", &which);
+
+	switch (which) {
+	case 1:
+		if (postac1->potion_slot.wpn == nullptr) {
+			postac1->potion_slot.wpn = (item*)malloc(sizeof(item));
+		}
+		if (postac1->potion_slot.isEmpty == true) {
+			postac1->potion_slot.isEmpty = false;
+			strcpy_s(postac1->potion_slot.wpn->name, sizeof(postac1->potion_slot.wpn->name), postac1->backpack[i][j].name);
+			postac1->potion_slot.wpn->hp_modifier = postac1->backpack[i][j].hp_modifier;
+			postac1->potion_slot.wpn->typ = postac1->backpack[i][j].typ;
+			czyszcznie_eq(postac1, id);
+		}
+		break;
+	case 2:
+		if (postac1->potion_slot2.wpn == nullptr) {
+			postac1->potion_slot2.wpn = (item*)malloc(sizeof(item));
+		}
+		if (postac1->potion_slot2.isEmpty == true) {
+			postac1->potion_slot2.isEmpty = false;
+			strcpy_s(postac1->potion_slot2.wpn->name, sizeof(postac1->potion_slot2.wpn->name), postac1->backpack[i][j].name);
+			postac1->potion_slot2.wpn->hp_modifier = postac1->backpack[i][j].hp_modifier;
+			postac1->potion_slot2.wpn->typ = postac1->backpack[i][j].typ;
+			czyszcznie_eq(postac1, id);
+		}
+		break;
+	case 3:
+		if (postac1->potion_slot3.wpn == nullptr) {
+			postac1->potion_slot3.wpn = (item*)malloc(sizeof(item));
+		}
+		if (postac1->potion_slot3.isEmpty == true) {
+			postac1->potion_slot3.isEmpty = false;
+			strcpy_s(postac1->potion_slot3.wpn->name, sizeof(postac1->potion_slot3.wpn->name), postac1->backpack[i][j].name);
+			postac1->potion_slot3.wpn->hp_modifier = postac1->backpack[i][j].hp_modifier;
+			postac1->potion_slot3.wpn->typ = postac1->backpack[i][j].typ;
+			czyszcznie_eq(postac1, id);
+		}
+		break;
+	case 4:
+		if (postac1->potion_slot4.wpn == nullptr) {
+			postac1->potion_slot4.wpn = (item*)malloc(sizeof(item));
+		}
+		if (postac1->potion_slot4.isEmpty == true) {
+			postac1->potion_slot4.isEmpty = false;
+			strcpy_s(postac1->potion_slot4.wpn->name, sizeof(postac1->potion_slot4.wpn->name), postac1->backpack[i][j].name);
+			postac1->potion_slot4.wpn->hp_modifier = postac1->backpack[i][j].hp_modifier;
+			postac1->potion_slot4.wpn->typ = postac1->backpack[i][j].typ;
+			czyszcznie_eq(postac1, id);
+		}
+		break;
+	case 5:
+		if (postac1->potion_slot5.wpn == nullptr) {
+			postac1->potion_slot5.wpn = (item*)malloc(sizeof(item));
+		}
+		if (postac1->potion_slot5.isEmpty == true) {
+			postac1->potion_slot5.isEmpty = false;
+			strcpy_s(postac1->potion_slot5.wpn->name, sizeof(postac1->potion_slot5.wpn->name), postac1->backpack[i][j].name);
+			postac1->potion_slot5.wpn->hp_modifier = postac1->backpack[i][j].hp_modifier;
+			postac1->potion_slot5.wpn->typ = postac1->backpack[i][j].typ;
+			czyszcznie_eq(postac1, id);
+		}
+		break;
+	default:
+		printf("blad switch ");
+		break;
+	}
+}
 void put_wpn_on(postac* postac1, int i, int j, int id) {
 	char which;
 	if (postac1->right_hand.isEmpty == true) { printf("\n\t LEWA REKA: EMPTY"); }
 	if (postac1->left_hand.isEmpty == true) { printf("\n\t PRAWA REKA: EMPTY"); }
 	if (postac1->right_hand.isEmpty == false && postac1->left_hand.isEmpty == false) { printf("BRAK PUSTYCH RAK\n"); }
 	printf("Ktora reka? p- prawa, l - lewa");
+	int c;
+	while ((c = getchar()) != '\n' && c != EOF) {} // czyści bufor
 	scanf_s("%c", &which);
 	switch (which) {
 	case 'p':
@@ -1624,7 +1777,7 @@ void put_ring_on(postac* postac1, int i, int j, int id) {
 	int which;
 	 if(postac1->ring_slot.isEmpty == true){ printf("\n\t RING 1: EMPTY"); } 
 	 if (postac1->ring_slot2.isEmpty == true) { printf("\n\t RING 2: EMPTY"); }
-	 if (postac1->ring_slot2.isEmpty == true && postac1->ring_slot.isEmpty == true) { printf("BRAK PUSTYCH SLOTOW\n"); }
+	 if (postac1->ring_slot2.isEmpty == false && postac1->ring_slot.isEmpty == false) { printf("BRAK PUSTYCH SLOTOW\n"); }
 	printf("Ktory slot? 1- pierwszy, 2 - drugi");
 	scanf_s("%d", &which);
 	switch (which) {
@@ -1708,11 +1861,9 @@ void no_enemy_check(int mapx, int mapy, char** mapa, int runda, postac* postac1)
 void put_item_on(postac* postac1, char move[1]) {
 	
 	int last_item_id = -1;
-
-
-	
 	int id = 1;
 	do {
+		Sleep(500);
 		system("cls");
 		show_ekwipunek(postac1);
 		printf("\n\t[Wybierz przedmiot do wlozenia na slot - w,s gora dol, d - zatwierdz]\n");
@@ -1723,8 +1874,6 @@ void put_item_on(postac* postac1, char move[1]) {
 	} while (move[0] != 'd' && move[0] != 'q');
 	
 	if(move[0] == 'd'){
-	
-
 	for (int i = 0; i < postac1->backpack_height; i++) {
 		for (int j = 0; j < postac1->backpack_width; j++) {
 			if (postac1->backpack[i][j].id == id) {
@@ -1733,10 +1882,13 @@ void put_item_on(postac* postac1, char move[1]) {
 
 				case 0:
 					printf("potions slot\n");
+					put_potion_on(postac1, i, j, id);
 					break;
 				case 1:	//bron slot
+					if(postac1->speed > postac1->backpack[i][j].AS){
 					put_wpn_on(postac1, i, j, id);
-					printf("\n\t[WLOZONO PRZEDMIOT %s NA SLOT BRONI]\n\n", postac1->backpack[i][j].name);
+					printf("\n\t[WLOZONO PRZEDMIOT %s NA SLOT BRONI]\n\n", postac1->backpack[i][j].name);}
+					else { printf("\nITEM ZBYT CIEZKI\n"); }
 					break;
 				case 2:	//armor slot
 					if (postac1->armor_slot.isEmpty == true) {
@@ -1884,8 +2036,6 @@ int main() {
 		}
 
 		krok(move, mapa, postac1, mapx_size, mapy_size, runda);
-
-		//enemy_check()		//sprawdza czy wrog jest w poblizu i podaje jego dane
 
 		no_enemy_check(mapx_size, mapy_size, mapa, runda, postac1);	//jesli na mapie nie ma wroga to tworzy go 
 
