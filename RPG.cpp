@@ -29,6 +29,7 @@ struct item
 	bool isRing;
 	bool isPotion;
 	int potion_type; // 0 not potion, 1 - health, 
+	int weapon_type; // 0 - not wpn, 1- sword, 2 - axe, 3 - shield,
 	int szerokosc;
 	int wysokosc;
 	bool isTwoHanded; // czy przedmiot jest dwureczny
@@ -242,6 +243,7 @@ item* generate_ring(postac* postac1, int klasa) {
 	rg->hp_modifier = 0;
 	rg->armorpoints = 0;
 	rg->potion_type = 0;
+	rg->weapon_type = 0; //nie weapon
 	rg->weight = 1;
 	rg->typ = 3;
 	rg->szerokosc = 1;
@@ -403,100 +405,110 @@ item* generate_weapon(postac* postac1, int klasa) {
 
 
 
-			switch (rand_type)
-			{
-			case 0://miecz lekki
+	switch (rand_type)
+	{
+	case 0://miecz lekki
 
-				strcpy_s(wpn->name, sizeof(wpn->name), "Lekki miecz");
-				wpn->AP = wpn->lvl * rand() % 3 + 1 + postac1->luck * 0.5;
-				wpn->AS = wpn->lvl * rand() % 2 + 1;
-				wpn->weight = 3;
-				wpn->szerokosc = 3;
-				wpn->wysokosc = 1;
-				break;
-			case 1:	//miecz sredni
-				strcpy_s(wpn->name, sizeof(wpn->name), "Sredni miecz");
-				wpn->AP = wpn->lvl * rand() % 5 + 1 + postac1->luck * 0.5;
-				wpn->AS = wpn->lvl * rand() % 4 + 1;
-				wpn->weight = 5;
-				wpn->szerokosc = 3;
-				wpn->wysokosc = 1;
-				break;
-			case 2:	//miecz ciezki
-				strcpy_s(wpn->name, sizeof(wpn->name), "Ciezki miecz");
-				wpn->AP = wpn->lvl * rand() % 9 + 1 + postac1->luck * 0.5;
-				wpn->AS = wpn->lvl * rand() % 7 + 1;
-				wpn->weight = 9;
-				wpn->szerokosc = 4;
-				wpn->wysokosc = 1;
-				break;
-			case 3:	//lekki topor
-				strcpy_s(wpn->name, sizeof(wpn->name), "Lekka siekiera");
-				wpn->AP = wpn->lvl * rand() % 5 + 1 + postac1->luck * 0.5;
-				wpn->AS = wpn->lvl * rand() % 4 + 1;
-				wpn->weight = 4;
-				wpn->szerokosc = 3;
-				wpn->wysokosc = 1;
-				break;
-			case 4:	//sredni topor
-				strcpy_s(wpn->name, sizeof(wpn->name), "Srednia siekiera");
-				wpn->AP = wpn->lvl * rand() % 7 + 1 + postac1->luck * 0.5;
-				wpn->AS = wpn->lvl * rand() % 6 + 1;
-				wpn->weight = 5;
-				wpn->szerokosc = 3;
-				wpn->wysokosc = 1;
-				break;
-			case 5: //ciezki topor
-				strcpy_s(wpn->name, sizeof(wpn->name), "Ciezka siekiera");
-				wpn->AP = wpn->lvl * rand() % 10 + 1 + postac1->luck * 0.5;
-				wpn->AS = wpn->lvl * rand() % 8 + 1;
-				wpn->weight = 10;
-				wpn->szerokosc = 4;
-				wpn->wysokosc = 1;
-				break;
-			case 6:	//lekka tarcza
-				strcpy_s(wpn->name, sizeof(wpn->name), "Lekka tarcza");
-				wpn->AP = 0;
-				wpn->def = wpn->lvl * rand() % 3 + 1 + postac1->luck * 0.5;
-				wpn->AS = wpn->lvl * rand() % 4 + 1;
-				wpn->weight = 5;
-				wpn->szerokosc = 2;
-				wpn->wysokosc = 1;
-				break;
-			case 7:	//srednia tarcza
-				strcpy_s(wpn->name, sizeof(wpn->name), "Lekka tarcza");
-				wpn->AP = 0;
-				wpn->def = wpn->lvl * rand() % 5 + 1 + postac1->luck * 0.5;
-				wpn->AS = wpn->lvl * rand() % 5 + 1;
-				wpn->weight = 6;
-				wpn->szerokosc = 2;
-				wpn->wysokosc = 2;
-				break;
-			case 8:
-				strcpy_s(wpn->name, sizeof(wpn->name), "Ciezka tarcza");
-				wpn->AP = 0;
-				wpn->def = wpn->lvl * rand() % 7 + 1 + postac1->luck * 0.5;
-				wpn->AS = wpn->lvl * rand() % 6 + 1;
-				wpn->weight = 5;
-				wpn->szerokosc = 3;
-				wpn->wysokosc = 2;
-				break;
-			case 9:
-				strcpy_s(wpn->name, sizeof(wpn->name), "Dwureczny miecz");
-				wpn->AP = wpn->lvl * rand() % 12 + 1 + postac1->luck * 0.5;
-				wpn->AS = wpn->lvl * rand() % 9 + 1;	
-				wpn->weight = 10;
-				wpn->szerokosc = 3;
-				wpn->wysokosc = 2;
-				wpn->isTwoHanded = true;
-				break;
-			default:
-				break;
-			}
+		strcpy_s(wpn->name, sizeof(wpn->name), "Lekki miecz");
+		wpn->AP = wpn->lvl * rand() % 3 + 1 + postac1->luck * 0.5;
+		wpn->AS = wpn->lvl * rand() % 2 + 1;
+		wpn->weight = 3;
+		wpn->szerokosc = 3;
+		wpn->wysokosc = 1;
+		wpn->weapon_type = 1; //sword
+		break;
+	case 1:	//miecz sredni
+		strcpy_s(wpn->name, sizeof(wpn->name), "Sredni miecz");
+		wpn->AP = wpn->lvl * rand() % 5 + 1 + postac1->luck * 0.5;
+		wpn->AS = wpn->lvl * rand() % 4 + 1;
+		wpn->weight = 5;
+		wpn->szerokosc = 3;
+		wpn->wysokosc = 1;
+		wpn->weapon_type = 1; //sword
+		break;
+	case 2:	//miecz ciezki
+		strcpy_s(wpn->name, sizeof(wpn->name), "Ciezki miecz");
+		wpn->AP = wpn->lvl * rand() % 9 + 1 + postac1->luck * 0.5;
+		wpn->AS = wpn->lvl * rand() % 7 + 1;
+		wpn->weight = 9;
+		wpn->szerokosc = 4;
+		wpn->wysokosc = 1;
+		wpn->weapon_type = 1; //sword
+		break;
+	case 3:	//lekki topor
+		strcpy_s(wpn->name, sizeof(wpn->name), "Lekka siekiera");
+		wpn->AP = wpn->lvl * rand() % 5 + 1 + postac1->luck * 0.5;
+		wpn->AS = wpn->lvl * rand() % 4 + 1;
+		wpn->weight = 4;
+		wpn->szerokosc = 3;
+		wpn->wysokosc = 1;
+		wpn->weapon_type = 2; //axe
+		break;
+	case 4:	//sredni topor
+		strcpy_s(wpn->name, sizeof(wpn->name), "Srednia siekiera");
+		wpn->AP = wpn->lvl * rand() % 7 + 1 + postac1->luck * 0.5;
+		wpn->AS = wpn->lvl * rand() % 6 + 1;
+		wpn->weight = 5;
+		wpn->szerokosc = 3;
+		wpn->wysokosc = 1;
+		wpn->weapon_type = 2; //axe
+		break;
+	case 5: //ciezki topor
+		strcpy_s(wpn->name, sizeof(wpn->name), "Ciezka siekiera");
+		wpn->AP = wpn->lvl * rand() % 10 + 1 + postac1->luck * 0.5;
+		wpn->AS = wpn->lvl * rand() % 8 + 1;
+		wpn->weight = 10;
+		wpn->szerokosc = 4;
+		wpn->wysokosc = 1;
+		wpn->weapon_type = 2; //axe
+		break;
+	case 6:	//lekka tarcza
+		strcpy_s(wpn->name, sizeof(wpn->name), "Lekka tarcza");
+		wpn->AP = 0;
+		wpn->def = wpn->lvl * rand() % 3 + 1 + postac1->luck * 0.5;
+		wpn->AS = wpn->lvl * rand() % 4 + 1;
+		wpn->weight = 5;
+		wpn->szerokosc = 2;
+		wpn->wysokosc = 1;
+		wpn->weapon_type = 3; //shield
+		break;
+	case 7:	//srednia tarcza
+		strcpy_s(wpn->name, sizeof(wpn->name), "Lekka tarcza");
+		wpn->AP = 0;
+		wpn->def = wpn->lvl * rand() % 5 + 1 + postac1->luck * 0.5;
+		wpn->AS = wpn->lvl * rand() % 5 + 1;
+		wpn->weight = 6;
+		wpn->szerokosc = 2;
+		wpn->wysokosc = 2;
+		wpn->weapon_type = 3; //shield
+		break;
+	case 8:
+		strcpy_s(wpn->name, sizeof(wpn->name), "Ciezka tarcza");
+		wpn->AP = 0;
+		wpn->def = wpn->lvl * rand() % 7 + 1 + postac1->luck * 0.5;
+		wpn->AS = wpn->lvl * rand() % 6 + 1;
+		wpn->weight = 5;
+		wpn->szerokosc = 3;
+		wpn->wysokosc = 2;
+		wpn->weapon_type = 3; //shield
+		break;
+	case 9:
+		strcpy_s(wpn->name, sizeof(wpn->name), "Dwureczny miecz");
+		wpn->AP = wpn->lvl * rand() % 12 + 1 + postac1->luck * 0.5;
+		wpn->AS = wpn->lvl * rand() % 9 + 1;
+		wpn->weight = 10;
+		wpn->szerokosc = 3;
+		wpn->wysokosc = 2;
+		wpn->isTwoHanded = true;
+		wpn->weapon_type = 1; //sword
+		break;
+	default:
+		break;
+	}
 
-			wpn->klasa = klasa;
-			return wpn;
-		}
+	wpn->klasa = klasa;
+	return wpn;
+}
 item* generate_potion(postac* postac1, int klasa) {
 	item* pot = (item*)malloc(sizeof(item));
 
@@ -507,6 +519,7 @@ item* generate_potion(postac* postac1, int klasa) {
 	pot->szerokosc = 1;
 	pot->weight = 1;
 	pot->armorpoints = 0;
+	pot->weapon_type = 0; //nie weapon
 	pot->AP = 0;
 	pot->AS = 0;
 	pot->def = 0;
@@ -534,6 +547,7 @@ item* generate_armor(postac* postac1, int klasa) {
 	armr->hp_modifier = 0;
 	armr->luck_modifier = 0;
 	armr->potion_type = 0;
+	armr->weapon_type = 0; //nie weapon
 	armr->typ = 2;	//typ zbroja
 
 	int armr_type = rand() % 5 + 1;
@@ -1004,6 +1018,124 @@ void pick_item(item* newItem, postac* postac1) {
 		printf("HP: %d ", newItem->hp_modifier);
 	}
 	printf("]");
+	switch (newItem->typ)
+	{
+	case 3:	//pierscien
+		printf(
+			"          __ \n"
+			"	      _\/__ \n"
+			"	    //----\\ \n"
+			"	   ||      || \n"
+			"	   ||      || \n"
+			"       \\____// \n"
+			"         ---- \n"
+				"	");
+		break;
+	case 1:	//broń
+		switch (newItem->weapon_type)
+		{
+			case 0:	//miecz
+				printf(
+					"\n"
+",. \n"
+ "\%`.		\n"
+  "`.%`.\n"
+   " `.%`.	\n"
+    "  `.%`.			\n"
+     "   `.%`.			\n"
+      "    `.%`.    __	\n"
+       "     `.%`.  \ \ \n"
+        "      `.%`./_/ \n"
+         "       `./ /. \n"
+          "     __/\/:/;. \n"
+           "    \__/  `:/;.\n"
+            "           `:/;.,    \n"
+             "           `:/ ; \n"
+              "             `' \n"	);
+				break;
+			case 1:	//topór
+				printf(
+					"\n"
+
+					", :\ / :.		\n"
+					"//  \_()_/  \\	\n"
+				   "||   |    |   ||	\n"
+				   "||   |    |   ||	\n"
+				   "||   |____|   ||	\n"
+				   "\\  / || \  //	\n"
+				   "`:/   ||  \; '	\n"
+				   "	  ||			\n"
+				   "      ||		\n"
+				   "	  XX	\n"
+				   "      XX	\n"
+				   "      XX	\n"
+				   "      XX	\n"
+				   "      OO	\n");
+
+			case 2:	//shield
+				printf(
+					"\n"
+					
+"\_________________/	\n"
+"|       | |       |	\n"
+"|       | |       |	\n"
+"|       | |       |	\n"
+"|_______| |_______|	\n"
+"|_______   _______|	\n"
+"|       | |       |	\n"
+"|       | |       |	\n"
+" \      | |      /		\n"
+"  \     | |     /		\n"
+"   \    | |    /		\n"
+"    \   | |   /		\n"
+"     \  | |  /			\n"
+"      \ | | /			\n"
+"       \| |/			\n"
+"        \_/			\n");
+					
+					
+		default:
+			break;
+		}
+		break;
+	case 2:	//zbroja
+		printf(
+
+			"*****************##******************\n"
+			"**************#**#*#*#***************\n"
+			"**************#*******#**************\n"
+			"**************####*####**************\n"
+			"**************#*#***#*#**************\n"
+			"**************###***###**************\n"
+			"*************#*#**#*####*************\n"
+			"******######*#*#*###**########*******\n"
+			"******###**#**########*#*#**###******\n"
+			"*****#****#***#**********#*****#*****\n"
+			"*****##***********************##*****\n"
+			"*****#####*****#**********######*****\n"
+			"*****##*#*#**%********#**###***#*****\n"
+			"*****#**#*##*************#*#***#*****\n"
+			"*****#**#*#*****************#**#*****\n"
+			"****##**#*#**************#*##*##*****\n"
+			"****##**#*#**************#*##*###****\n"
+			"****#***#*#******#%#******###**##****\n"
+			"****%######**************##*###%*****\n"
+			"****#***#*#******###*******#*#*#*****\n"
+			"****#***##*****##***##*****#*#*#*****\n"
+			"***##**###****#*#***#*#*****##*##****\n"
+			"****#*##*######*#***#*#####*##*##****\n"
+			"*****#**#*#*****#***#*****#*#**#*****\n"
+			"**********#**************************\n"
+			"*************************************\n"
+			"****************%%#%%#***************\n"
+		);
+		break;
+	case 0:	//potion
+
+		break;
+	default:
+		break;
+	}
 	printf("\ng - wez do ekwipunku, inny klawisz - porzuc [NIE MOZNA COFNAC]\n");
 	char move[2];
 	char c;
@@ -1011,14 +1143,10 @@ void pick_item(item* newItem, postac* postac1) {
 	scanf_s("%c", &move[0], 1);
 	if (move[0] == 'g') {
 		int szerokosc = newItem->szerokosc;
-		//postac1->backpack[0][0] = *newItem;
 		for (int i = 0; i < postac1->backpack_height; i++) {
 			for (int j = 0; j < postac1->backpack_width; j++) {
-				if (postac1->backpack[i][j].id == 0  && szerokosc > 0) {//sprawdzanie czy jest puste
-					//for (int ii = i; ii < newItem->szerokosc; ii++)
-						//for (int jj = j; jj < newItem->wysokosc; jj++)
-							//if (postac1->backpack[i][j] != 0)			//szerokosc + wysokosc
-								//find_new_position();
+				if (postac1->backpack[i][j].id == 0 && szerokosc > 0) {//sprawdzanie czy jest puste
+					
 					//postac1->backpack[i][j] = *newItem;
 					postac1->backpack[i][j].id = item_id;
 					postac1->backpack[i][j].AP = newItem->AP;
@@ -1059,7 +1187,7 @@ void post_fight(postac* postac1, enemy* wrog) {
 	printf("\n\n\t[WROG POKONANY|%dXP|%d$]\n\n", wrog->xpdrop, cash_drop * postac1->luck);
 
 	int item_drop = rand() % 11 + postac1->luck * 0.1;	//losowanie przedmiotu
-	if (item_drop >= 1) {			//todo zmienic 1 na 10
+	if (item_drop >= 10) {			//todo zmienic 1 na 10
 
 		int klasa_itema = item_class_generator(postac1);	//losowanie klasy przedmiotu
 
@@ -2147,13 +2275,7 @@ int main() {
 	while ((c = getchar()) != '\n' && c != EOF) {}
 
 	postac* postac1 = generate_postac(nazwa);
-	
-	/// 
-	
-	int klasa_itema = item_class_generator(postac1);
-	item* newItem = generate_ring(postac1, klasa_itema);
-	pick_item(newItem, postac1);
-	///
+
 	generate_map(mapa, mapx_size, mapy_size, postac1);
 
 	while (postac1->skillpoints > 0) {
