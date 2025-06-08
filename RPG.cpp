@@ -49,6 +49,31 @@ struct Slot {
 	} // Konstruktor domyślny
 };
 
+struct Staty {
+	int enemies_slayed;	//done
+	int orcs_slayed;	//done
+	int goblins_slayed;	//done
+	int zombie_slayed;	//done
+	int wizard_slayed;	//done
+	int dmg_given;		//done
+	int dmg_taken;		//done
+	int hits_given;		//done
+	int hits_taken;		//done
+	int items_picked;	//done
+	int potions_used;	//done
+	int hp_healed;		//done
+	int poisons_got;	//done
+	int poisond_dmg_got;	//done
+	int hungers_got;	//done
+	int xp_got;		//done
+	int moved;		//done
+	int moved_up;	//done
+	int moved_down;	//done
+	int moved_left;	//done
+	int moved_right;	//done
+	int cash_got;		//done
+	int skillpoints_got;	//done
+};
 
 struct postac {
 	char name[10];
@@ -86,6 +111,7 @@ struct postac {
 	int backpack_width;
 	int effect; // 0 - normalny, 1- trucizna
 	int effect_duration;
+	Staty* statystyki; // Struktura do przechowywania statystyk postaci
 };
 
 
@@ -223,6 +249,11 @@ postac* generate_postac(char nazwa[10]) {
 		for (int j = 0; j < post->backpack_width; j++) {
 			post->backpack[i][j].id = 0;
 		}
+	}
+
+	post->statystyki = (Staty*)malloc(sizeof(Staty));
+	if (post->statystyki != NULL) {
+		memset(post->statystyki, 0, sizeof(Staty)); // Initialize all fields to zero
 	}
 
 	return post;
@@ -613,6 +644,42 @@ item* generate_armor(postac* postac1, int klasa) {
 
 }
 
+void show_stats(postac* postac1, char move[1]) {
+			printf("\n\t\t\t[STATYSTYKI GRACZA]\n\n"
+		"\t\t\tNazwa: %s\tPoziom: %d\n"
+		"\t\t\tPokonani wrogowie: %d\n"
+		"\t\t\t\tGobliny: %d\n"
+		"\t\t\t\tZombie: %d\n"
+		"\t\t\t\tOrki: %d\n"
+		"\t\t\t\tWizardy: %d\n"
+		"\t\t\tUderzono: %d/%d DMG\n"
+		"\t\t\tPrzyjeto uderzen: %d/%d DMG\n"
+		"\t\t\tPunkty umiejetnosci: %d\n"
+		"\t\t\tZdobyte pieniadze: %d\n"
+		"\t\t\tPodniesione przedmioty: %d\n"
+		"\t\t\tWypite mikstury: %d\n"
+		"\t\t\tWyleczone zdrowie: %d\n"
+		"\t\t\tOtrzymane zatrucie: %d/%d DMG\n"
+		"\t\t\tOtrzymany glod: %d\n"
+		"\t\t\tOtrzymane doswiadczenie: %d\n"
+		"\t\t\tOtrzymane pieniadze: %d\n"
+		"\t\t\tWykonane ruchy: %d\n"
+		"\t\t\t\tWykonane ruchy w gore: %d\n"
+		"\t\t\t\tWykonane ruchy w dol: %d\n"
+		"\t\t\t\tWykonane ruchy w lewo: %d\n"
+		"\t\t\t\tWykonane ruchy w prawo: %d\n"
+
+		"\n", postac1->name, postac1->lvl, postac1->statystyki->enemies_slayed, postac1->statystyki->goblins_slayed, postac1->statystyki->zombie_slayed, postac1->statystyki->orcs_slayed
+			, postac1->statystyki->wizard_slayed, postac1->statystyki->hits_given, postac1->statystyki->dmg_given, postac1->statystyki->hits_taken, postac1->statystyki->dmg_taken, 
+				postac1->statystyki->skillpoints_got, postac1->statystyki->cash_got, postac1->statystyki->items_picked, postac1->statystyki->potions_used, postac1->statystyki->hp_healed
+			, postac1->statystyki->poisons_got, postac1->statystyki->poisond_dmg_got, postac1->statystyki->hungers_got, postac1->statystyki->xp_got, postac1->statystyki->cash_got
+			, postac1->statystyki->moved, postac1->statystyki->moved_up, postac1->statystyki->moved_down, postac1->statystyki->moved_left, postac1->statystyki->moved_right);
+
+		scanf_s(" %c", &move[0]);
+
+
+	
+}
 void clear_potion_slot(postac* postac1, int which) {
 	switch (which) {
 	case 1:
@@ -637,30 +704,35 @@ void use_health_potion(postac* postac1) {
 	if (postac1->potion_slot.wpn != NULL && postac1->potion_slot.wpn->potion_type == 1) {
 		postac1->health += postac1->potion_slot.wpn->hp_modifier;
 		printf("\n\t\tUZYTO POTION HP - 1 SLOT - %dHP", postac1->potion_slot.wpn->hp_modifier);
+		postac1->statystyki->potions_used++;
 		int which = 1;
 		clear_potion_slot(postac1, which);
 	}
 	else if (postac1->potion_slot2.wpn != NULL && postac1->potion_slot2.wpn->potion_type == 1) {
 		postac1->health += postac1->potion_slot2.wpn->hp_modifier;
 		printf("\n\t\tUZYTO POTION HP - 2 SLOT - %dHP", postac1->potion_slot2.wpn->hp_modifier);
+		postac1->statystyki->potions_used++;
 		int which = 2;
 		clear_potion_slot(postac1, which);
 	}
 	else if (postac1->potion_slot3.wpn != NULL && postac1->potion_slot3.wpn->potion_type == 1) {
 		postac1->health += postac1->potion_slot3.wpn->hp_modifier;
 		printf("\n\t\tUZYTO POTION HP - 3 SLOT - %dHP", postac1->potion_slot3.wpn->hp_modifier);
+		postac1->statystyki->potions_used++;
 		int which = 3;
 		clear_potion_slot(postac1, which);
 	}
 	else if (postac1->potion_slot4.wpn != NULL && postac1->potion_slot4.wpn->potion_type == 1) {
 		postac1->health += postac1->potion_slot4.wpn->hp_modifier;
 		printf("\n\t\tUZYTO POTION HP - 4 SLOT - %dHP", postac1->potion_slot4.wpn->hp_modifier);
+		postac1->statystyki->potions_used++;
 		int which = 4;
 		clear_potion_slot(postac1, which);
 	}
 	else if (postac1->potion_slot5.wpn != NULL && postac1->potion_slot5.wpn->potion_type == 1) {
 		postac1->health += postac1->potion_slot5.wpn->hp_modifier;
 		printf("\n\t\tUZYTO POTION HP - 5 SLOT - %dHP", postac1->potion_slot5.wpn->hp_modifier);
+		postac1->statystyki->potions_used++;
 		int which = 5;
 		clear_potion_slot(postac1, which);
 	}
@@ -717,22 +789,25 @@ void atak_info(double sila_ataku, int powodzenie_ataku, int powodzenie_obrony) {
 }
 
 void put_effect(enemy* wrog, postac* postac1) {
-	int poison_chance = rand() % 100 + 1 - postac1->luck;
-	int poison_duration = rand() % 10 + 1 - postac1->luck * 0.1;
+	int poison_chance = rand() % 100 - 1 - postac1->luck;
+	int poison_duration = rand() % 10 - 1 - postac1->luck * 0.1;
 	switch (wrog->race) {
 	case 2:		//zombie - 10% szans na poison
 		if (poison_chance >= 90) {
 			printf("\n\t\t\t[WROG NALOZYL POISON]\n");
 			postac1->effect = 1;
 			postac1->effect_duration = poison_duration;
+			postac1->statystyki->poisons_got++;
+			postac1->statystyki->poisond_dmg_got += poison_duration;
 		}
-		break;
+			break;
 	case 3:
 		if (poison_chance >= 90) {
 			printf("\n\t\t\t[WROG NALOZYL HUNGER]\n");
 			postac1->effect = 2;
 			postac1->hunger = 0;
 			postac1->effect_duration = poison_duration;
+			postac1->statystyki->hungers_got++;	
 		}
 		break;
 	case 4:
@@ -740,239 +815,253 @@ void put_effect(enemy* wrog, postac* postac1) {
 			printf("\n\t\t\t[WROG NALOZYL POISON]\n");
 			postac1->effect = 1;
 			postac1->effect_duration = poison_duration;
+			postac1->statystyki->poisons_got++;
+			postac1->statystyki->poisond_dmg_got += poison_duration;
 		}
 		else
 			if (poison_chance >= 50) {
 				printf("\n\t\t\t[WROG NALOZYL HUNGER]\n");
 				postac1->effect = 2;
 				postac1->effect_duration = poison_duration;
+				postac1->statystyki->hungers_got++;
 			}
 		break;
 	default:
 		printf("error switch effect put");
 		break;
 
-	}
-}
-
-void walka(postac* postac1, enemy* wrog, int tura, int kto_pierwszy) {
-
-	if (wrog->AS <= postac1->speed)
-	{
-		kto_pierwszy = 0;
-		if (postac1->speed >= 3 * wrog->AS) {
-			kto_pierwszy = 2;
 		}
 	}
-	else {
-		kto_pierwszy = 1;
-	}
-	double rzut;	//rzut koscia
-	double rzutt;	//rzut po działaniu luck
-	double sila_ataku;
-	int powodzenie_ataku;	//wskaznik potrzebny do wyrzucania komunikatow na ekran
-	int powodzenie_obrony;
-	switch (kto_pierwszy)
-	{
-	case 0:						//gracz ma pierwszy atak
-		if (tura % 2 == 1) {		//atakuje gracz
-			rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
-			rzutt = rzut + postac1->luck * 0.1;
 
-			if (rzutt >= 5.5) { sila_ataku = postac1->attack + postac1->luck; powodzenie_ataku = 6; }		//6
-			if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = postac1->attack;                 powodzenie_ataku = 5; }		//5
-			if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = postac1->attack * 0.5;           powodzenie_ataku = 4; }					//3,4
-			if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.1 * postac1->attack;           powodzenie_ataku = 2; }	//2
-			if (rzutt < 1.5) { sila_ataku = 0.0;                             powodzenie_ataku = 1; }		//1
+	void walka(postac * postac1, enemy * wrog, int tura, int kto_pierwszy) {
 
-			rzut = rand() % 6 + 1;		//nastepuje rzut obroncy
-			rzutt = rzut + 0.1 * wrog->luck;
-
-			if (rzutt >= 5.5) { sila_ataku = 0.4 * sila_ataku;   powodzenie_obrony = 6; }		//6
-			if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = 0.5 * sila_ataku;   powodzenie_obrony = 5; }		//5
-			if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = 0.7 * sila_ataku;   powodzenie_obrony = 4; }					//3,4
-			if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.9 * sila_ataku;   powodzenie_obrony = 2; }	//2
-			if (rzutt < 1.5) { powodzenie_obrony = 1; }		//1
-			sila_ataku = sila_ataku - 0.1 * wrog->def;
-
-			if (sila_ataku < 0) { sila_ataku = 0; }
-
-			wrog->health = wrog->health - sila_ataku;
-			printf("\t[ATAKUJESZ]\n", tura);
-			atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
-		}
-		else {	//gdy to tura wroga
-			rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
-			rzutt = rzut + wrog->luck * 0.1;
-
-			if (rzutt >= 5.5) { sila_ataku = wrog->attack + wrog->luck;					  powodzenie_ataku = 6; }		//6
-			if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = wrog->attack;                 powodzenie_ataku = 5; }		//5
-			if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = wrog->attack * 0.5;           powodzenie_ataku = 4; }					//3,4
-			if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.1 * wrog->attack;           powodzenie_ataku = 2; }	//2
-			if (rzutt < 1.5) { sila_ataku = 0.0;										  powodzenie_ataku = 1; }		//1
-
-			rzut = rand() % 6 + 1;
-			rzutt = rzut + 0.1 * postac1->luck;
-
-			if (rzutt >= 5.5) { sila_ataku = 0.4 * sila_ataku;   powodzenie_obrony = 6; }		//6
-			if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = 0.5 * sila_ataku;   powodzenie_obrony = 5; }		//5
-			if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = 0.7 * sila_ataku;   powodzenie_obrony = 4; }					//3,4
-			if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.9 * sila_ataku;   powodzenie_obrony = 2; }	//2
-			if (rzutt < 1.5) { powodzenie_obrony = 1; }		//1
-
-			sila_ataku = sila_ataku - 0.1 * postac1->def;
-			if (sila_ataku < 0) { sila_ataku = 0; }
-			postac1->health = postac1->health - sila_ataku;
-			printf("\t[WROG ATAKUJE]\n");
-			if (powodzenie_ataku == 6 && wrog->race > 1) {		//powinno byc ==, zmienione do testu
-				put_effect(wrog, postac1);
+		if (wrog->AS <= postac1->speed)
+		{
+			kto_pierwszy = 0;
+			if (postac1->speed >= 3 * wrog->AS) {
+				kto_pierwszy = 2;
 			}
-			atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
 		}
-		break;
+		else {
+			kto_pierwszy = 1;
+		}
+		double rzut;	//rzut koscia
+		double rzutt;	//rzut po działaniu luck
+		double sila_ataku;
+		int powodzenie_ataku;	//wskaznik potrzebny do wyrzucania komunikatow na ekran
+		int powodzenie_obrony;
+		switch (kto_pierwszy)
+		{
+		case 0:						//gracz ma pierwszy atak
+			if (tura % 2 == 1) {		//atakuje gracz
+				rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
+				rzutt = rzut + postac1->luck * 0.1;
 
-	case 1:
-		if (tura % 2 == 1) {		//wrog atakuje pierwszy, tura wroga
-			rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
-			rzutt = rzut + wrog->luck * 0.1;
+				if (rzutt >= 5.5) { sila_ataku = postac1->attack + postac1->luck; powodzenie_ataku = 6; }		//6
+				if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = postac1->attack;                 powodzenie_ataku = 5; }		//5
+				if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = postac1->attack * 0.5;           powodzenie_ataku = 4; }					//3,4
+				if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.1 * postac1->attack;           powodzenie_ataku = 2; }	//2
+				if (rzutt < 1.5) { sila_ataku = 0.0;                             powodzenie_ataku = 1; }		//1
 
-			if (rzutt >= 5.5) { sila_ataku = wrog->attack + wrog->luck;					  powodzenie_ataku = 6; }		//6
-			if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = wrog->attack;                 powodzenie_ataku = 5; }		//5
-			if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = wrog->attack * 0.5;           powodzenie_ataku = 4; }					//3,4
-			if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.1 * wrog->attack;           powodzenie_ataku = 2; }	//2
-			if (rzutt < 1.5) { sila_ataku = 0.0;										  powodzenie_ataku = 1; }		//1
+				rzut = rand() % 6 + 1;		//nastepuje rzut obroncy
+				rzutt = rzut + 0.1 * wrog->luck;
 
-			rzut = rand() % 6 + 1;			//nastepuje rzut obroncy
-			rzutt = rzut + 0.1 * postac1->luck;
+				if (rzutt >= 5.5) { sila_ataku = 0.4 * sila_ataku;   powodzenie_obrony = 6; }		//6
+				if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = 0.5 * sila_ataku;   powodzenie_obrony = 5; }		//5
+				if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = 0.7 * sila_ataku;   powodzenie_obrony = 4; }					//3,4
+				if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.9 * sila_ataku;   powodzenie_obrony = 2; }	//2
+				if (rzutt < 1.5) { powodzenie_obrony = 1; }		//1
+				sila_ataku = sila_ataku - 0.1 * wrog->def;
 
-			if (rzutt >= 5.5) { sila_ataku = 0.4 * sila_ataku;   powodzenie_obrony = 6; }		//6
-			if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = 0.5 * sila_ataku;   powodzenie_obrony = 5; }		//5
-			if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = 0.7 * sila_ataku;   powodzenie_obrony = 4; }					//3,4
-			if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.9 * sila_ataku;   powodzenie_obrony = 2; }	//2
-			if (rzutt < 1.5) { powodzenie_obrony = 1; }		//1
-
-			sila_ataku = sila_ataku - 0.1 * postac1->def;
-			if (sila_ataku < 0) { sila_ataku = 0; }
-			postac1->health = postac1->health - sila_ataku;
-			printf("\t[WROG ATAKUJE]\n", tura);
-			if (powodzenie_ataku == 6 && wrog->race > 1) {		//powinno byc ==, zmienione do testu
-				put_effect(wrog, postac1);
+				if (sila_ataku < 0) { sila_ataku = 0; }
+				postac1->statystyki->hits_given++;
+				postac1->statystyki->dmg_given += sila_ataku;
+				wrog->health = wrog->health - sila_ataku;
+				printf("\t[ATAKUJESZ]\n", tura);
+				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
 			}
-			atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
-		}
-		else {	//gdy to tura bohatera
-			rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
-			rzutt = rzut + postac1->luck * 0.1;
+			else {	//gdy to tura wroga
+				rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
+				rzutt = rzut + wrog->luck * 0.1;
 
-			if (rzutt >= 5.5) { sila_ataku = postac1->attack + postac1->luck; powodzenie_ataku = rzut; }		//6
-			if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = postac1->attack;                 powodzenie_ataku = rzut; }		//5
-			if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = postac1->attack * 0.5;           powodzenie_ataku = rzut; }					//3,4
-			if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.1 * postac1->attack;           powodzenie_ataku = rzut; }	//2
-			if (rzutt < 1.5) { sila_ataku = 0.0;										  powodzenie_ataku = rzut; }		//1
+				if (rzutt >= 5.5) { sila_ataku = wrog->attack + wrog->luck;					  powodzenie_ataku = 6; }		//6
+				if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = wrog->attack;                 powodzenie_ataku = 5; }		//5
+				if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = wrog->attack * 0.5;           powodzenie_ataku = 4; }					//3,4
+				if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.1 * wrog->attack;           powodzenie_ataku = 2; }	//2
+				if (rzutt < 1.5) { sila_ataku = 0.0;										  powodzenie_ataku = 1; }		//1
 
-			rzut = rand() % 6 + 1;
-			rzutt = rzut + 0.1 * wrog->luck;
+				rzut = rand() % 6 + 1;
+				rzutt = rzut + 0.1 * postac1->luck;
 
-			if (rzutt >= 5.5) { sila_ataku = 0.4 * sila_ataku;   powodzenie_obrony = rzut; }		//6
-			if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = 0.5 * sila_ataku;   powodzenie_obrony = rzut; }		//5
-			if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = 0.7 * sila_ataku;   powodzenie_obrony = rzut; }					//3,4
-			if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.9 * sila_ataku;   powodzenie_obrony = rzut; }	//2
-			if (rzutt < 1.5) { powodzenie_obrony = rzut; }		//1
+				if (rzutt >= 5.5) { sila_ataku = 0.4 * sila_ataku;   powodzenie_obrony = 6; }		//6
+				if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = 0.5 * sila_ataku;   powodzenie_obrony = 5; }		//5
+				if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = 0.7 * sila_ataku;   powodzenie_obrony = 4; }					//3,4
+				if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.9 * sila_ataku;   powodzenie_obrony = 2; }	//2
+				if (rzutt < 1.5) { powodzenie_obrony = 1; }		//1
 
-			sila_ataku = sila_ataku - 0.1 * wrog->def;
-			if (sila_ataku < 0) { sila_ataku = 0; }
-			wrog->health = wrog->health - sila_ataku;
-			printf("\t[ATAKUJESZ]\n", tura);
-			atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
-		}
-		break;
-	case 2:
-		if (tura % 3 == 0) {		//bohater atakuje 2 razy, tura wroga
-			rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
-			rzutt = rzut + wrog->luck * 0.1;
-
-			if (rzutt >= 5.5) { sila_ataku = wrog->attack + wrog->luck;					powodzenie_ataku = rzut; }		//6
-			if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = wrog->attack;                 powodzenie_ataku = rzut; }		//5
-			if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = wrog->attack * 0.5;           powodzenie_ataku = rzut; }					//3,4
-			if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.1 * wrog->attack;           powodzenie_ataku = rzut; }	//2
-			if (rzutt < 1.5) { sila_ataku = 0.0;                             powodzenie_ataku = rzut; }		//1
-
-			rzut = rand() % 6 + 1;			//nastepuje rzut obroncy
-			rzutt = rzut + 0.1 * postac1->luck;
-
-			if (rzutt >= 5.5) { sila_ataku = 0.4 * sila_ataku;   powodzenie_obrony = rzut; }		//6
-			if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = 0.5 * sila_ataku;   powodzenie_obrony = rzut; }		//5
-			if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = 0.7 * sila_ataku;   powodzenie_obrony = rzut; }					//3,4
-			if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.9 * sila_ataku;   powodzenie_obrony = rzut; }	//2
-			if (rzutt < 1.5) { powodzenie_obrony = rzut; }		//1
-
-			sila_ataku = sila_ataku - 0.1 * postac1->def;
-			if (sila_ataku < 0) { sila_ataku = 0; }
-			postac1->health = postac1->health - sila_ataku;
-			printf("\t[WROG ATAKUJE]\n");
-			if (powodzenie_ataku == 6 && wrog->race > 1) {		//powinno byc ==, zmienione do testu
-				put_effect(wrog, postac1);
+				postac1->statystyki->hits_taken++;
+				postac1->statystyki->dmg_taken += sila_ataku;
+				sila_ataku = sila_ataku - 0.1 * postac1->def;
+				if (sila_ataku < 0) { sila_ataku = 0; }
+				postac1->health = postac1->health - sila_ataku;
+				printf("\t[WROG ATAKUJE]\n");
+				if (powodzenie_ataku == 6 && wrog->race > 1) {		//powinno byc ==, zmienione do testu
+					put_effect(wrog, postac1);
+				}
+				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
 			}
-			atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
+			break;
 
+		case 1:
+			if (tura % 2 == 1) {		//wrog atakuje pierwszy, tura wroga
+				rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
+				rzutt = rzut + wrog->luck * 0.1;
+
+				if (rzutt >= 5.5) { sila_ataku = wrog->attack + wrog->luck;					  powodzenie_ataku = 6; }		//6
+				if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = wrog->attack;                 powodzenie_ataku = 5; }		//5
+				if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = wrog->attack * 0.5;           powodzenie_ataku = 4; }					//3,4
+				if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.1 * wrog->attack;           powodzenie_ataku = 2; }	//2
+				if (rzutt < 1.5) { sila_ataku = 0.0;										  powodzenie_ataku = 1; }		//1
+
+				rzut = rand() % 6 + 1;			//nastepuje rzut obroncy
+				rzutt = rzut + 0.1 * postac1->luck;
+
+				if (rzutt >= 5.5) { sila_ataku = 0.4 * sila_ataku;   powodzenie_obrony = 6; }		//6
+				if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = 0.5 * sila_ataku;   powodzenie_obrony = 5; }		//5
+				if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = 0.7 * sila_ataku;   powodzenie_obrony = 4; }					//3,4
+				if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.9 * sila_ataku;   powodzenie_obrony = 2; }	//2
+				if (rzutt < 1.5) { powodzenie_obrony = 1; }		//1
+
+				postac1->statystyki->hits_taken++;
+				postac1->statystyki->dmg_taken += sila_ataku;
+				sila_ataku = sila_ataku - 0.1 * postac1->def;
+				if (sila_ataku < 0) { sila_ataku = 0; }
+				postac1->health = postac1->health - sila_ataku;
+				printf("\t[WROG ATAKUJE]\n", tura);
+				if (powodzenie_ataku == 6 && wrog->race > 1) {		//powinno byc ==, zmienione do testu
+					put_effect(wrog, postac1);
+				}
+				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
+			}
+			else {	//gdy to tura bohatera
+				rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
+				rzutt = rzut + postac1->luck * 0.1;
+
+				if (rzutt >= 5.5) { sila_ataku = postac1->attack + postac1->luck; powodzenie_ataku = rzut; }		//6
+				if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = postac1->attack;                 powodzenie_ataku = rzut; }		//5
+				if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = postac1->attack * 0.5;           powodzenie_ataku = rzut; }					//3,4
+				if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.1 * postac1->attack;           powodzenie_ataku = rzut; }	//2
+				if (rzutt < 1.5) { sila_ataku = 0.0;										  powodzenie_ataku = rzut; }		//1
+
+				rzut = rand() % 6 + 1;
+				rzutt = rzut + 0.1 * wrog->luck;
+
+				if (rzutt >= 5.5) { sila_ataku = 0.4 * sila_ataku;   powodzenie_obrony = rzut; }		//6
+				if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = 0.5 * sila_ataku;   powodzenie_obrony = rzut; }		//5
+				if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = 0.7 * sila_ataku;   powodzenie_obrony = rzut; }					//3,4
+				if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.9 * sila_ataku;   powodzenie_obrony = rzut; }	//2
+				if (rzutt < 1.5) { powodzenie_obrony = rzut; }		//1
+
+				postac1->statystyki->hits_given++;
+				postac1->statystyki->dmg_given += sila_ataku;
+				sila_ataku = sila_ataku - 0.1 * wrog->def;
+				if (sila_ataku < 0) { sila_ataku = 0; }
+				wrog->health = wrog->health - sila_ataku;
+				printf("\t[ATAKUJESZ]\n", tura);
+				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
+			}
+			break;
+		case 2:
+			if (tura % 3 == 0) {		//bohater atakuje 2 razy, tura wroga
+				rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
+				rzutt = rzut + wrog->luck * 0.1;
+
+				if (rzutt >= 5.5) { sila_ataku = wrog->attack + wrog->luck;					powodzenie_ataku = rzut; }		//6
+				if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = wrog->attack;                 powodzenie_ataku = rzut; }		//5
+				if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = wrog->attack * 0.5;           powodzenie_ataku = rzut; }					//3,4
+				if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.1 * wrog->attack;           powodzenie_ataku = rzut; }	//2
+				if (rzutt < 1.5) { sila_ataku = 0.0;                             powodzenie_ataku = rzut; }		//1
+
+				rzut = rand() % 6 + 1;			//nastepuje rzut obroncy
+				rzutt = rzut + 0.1 * postac1->luck;
+
+				if (rzutt >= 5.5) { sila_ataku = 0.4 * sila_ataku;   powodzenie_obrony = rzut; }		//6
+				if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = 0.5 * sila_ataku;   powodzenie_obrony = rzut; }		//5
+				if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = 0.7 * sila_ataku;   powodzenie_obrony = rzut; }					//3,4
+				if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.9 * sila_ataku;   powodzenie_obrony = rzut; }	//2
+				if (rzutt < 1.5) { powodzenie_obrony = rzut; }		//1
+
+				postac1->statystyki->hits_taken++;
+				postac1->statystyki->dmg_taken += sila_ataku;
+				sila_ataku = sila_ataku - 0.1 * postac1->def;
+				if (sila_ataku < 0) { sila_ataku = 0; }
+				postac1->health = postac1->health - sila_ataku;
+				printf("\t[WROG ATAKUJE]\n");
+				if (powodzenie_ataku == 6 && wrog->race > 1) {		//powinno byc ==, zmienione do testu
+					put_effect(wrog, postac1);
+				}
+				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
+
+			}
+			else {	//tura postaci
+				rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
+				rzutt = rzut + postac1->luck * 0.1;
+
+				if (rzutt >= 5.5) { sila_ataku = postac1->attack + wrog->luck; powodzenie_ataku = rzut; }		//6
+				if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = postac1->attack;                 powodzenie_ataku = rzut; }		//5
+				if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = postac1->attack * 0.5;           powodzenie_ataku = rzut; }					//3,4
+				if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.1 * postac1->attack;           powodzenie_ataku = rzut; }	//2
+				if (rzutt < 1.5) { sila_ataku = 0.0;										  powodzenie_ataku = rzut; }		//1
+
+				rzut = rand() % 6 + 1;		//nastepuje rzut obroncy
+				rzutt = rzut + 0.1 * wrog->luck;
+
+				if (rzutt >= 5.5) { sila_ataku = 0.4 * sila_ataku;   powodzenie_obrony = rzut; }		//6
+				if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = 0.5 * sila_ataku;   powodzenie_obrony = rzut; }		//5
+				if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = 0.7 * sila_ataku;   powodzenie_obrony = rzut; }					//3,4
+				if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.9 * sila_ataku;   powodzenie_obrony = rzut; }	//2
+				if (rzutt < 1.5) { powodzenie_obrony = rzut; }		//1
+
+				postac1->statystyki->hits_given++;
+				postac1->statystyki->dmg_given += sila_ataku;
+				sila_ataku = sila_ataku - 0.1 * wrog->def;
+				if (sila_ataku < 0) { sila_ataku = 0; }
+				wrog->health = wrog->health - sila_ataku;
+				printf("\t[ATAKUJESZ]\n");
+				atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
+			}
+
+			break;
+		default:
+			break;
 		}
-		else {	//tura postaci
-			rzut = rand() % 6 + 1;				//nastepuje rzut atakujacego
-			rzutt = rzut + postac1->luck * 0.1;
-
-			if (rzutt >= 5.5) { sila_ataku = postac1->attack + wrog->luck; powodzenie_ataku = rzut; }		//6
-			if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = postac1->attack;                 powodzenie_ataku = rzut; }		//5
-			if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = postac1->attack * 0.5;           powodzenie_ataku = rzut; }					//3,4
-			if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.1 * postac1->attack;           powodzenie_ataku = rzut; }	//2
-			if (rzutt < 1.5) { sila_ataku = 0.0;										  powodzenie_ataku = rzut; }		//1
-
-			rzut = rand() % 6 + 1;		//nastepuje rzut obroncy
-			rzutt = rzut + 0.1 * wrog->luck;
-
-			if (rzutt >= 5.5) { sila_ataku = 0.4 * sila_ataku;   powodzenie_obrony = rzut; }		//6
-			if (rzutt >= 4.5 && rzutt < 5.5) { sila_ataku = 0.5 * sila_ataku;   powodzenie_obrony = rzut; }		//5
-			if (rzutt >= 2.5 && rzutt < 4.5) { sila_ataku = 0.7 * sila_ataku;   powodzenie_obrony = rzut; }					//3,4
-			if (rzutt >= 1.5 && rzutt < 2.5) { sila_ataku = 0.9 * sila_ataku;   powodzenie_obrony = rzut; }	//2
-			if (rzutt < 1.5) { powodzenie_obrony = rzut; }		//1
-
-			sila_ataku = sila_ataku - 0.1 * wrog->def;
-			if (sila_ataku < 0) { sila_ataku = 0; }
-			wrog->health = wrog->health - sila_ataku;
-			printf("\t[ATAKUJESZ]\n");
-			atak_info(sila_ataku, powodzenie_ataku, powodzenie_obrony);
-		}
-
-		break;
-	default:
-		break;
-	}
-	if (postac1->health < 1 &&
-		(!postac1->potion_slot.isEmpty ||
-			!postac1->potion_slot2.isEmpty ||
-			!postac1->potion_slot3.isEmpty ||
-			!postac1->potion_slot4.isEmpty ||
-			!postac1->potion_slot5.isEmpty)) {
-		use_health_potion(postac1);
-	}
-}
-
-int item_class_generator(postac* postac1) {
-	int klasa_itema = rand() % 100 + 1 + postac1->luck * 0.5;	//losowanie klasy przedmiotu
-	if (klasa_itema >= 0 && klasa_itema < 21) { klasa_itema = 0; }	//klasa - przerdzewiały  20% szans
-	if (klasa_itema >= 21 && klasa_itema < 91) { klasa_itema = 1; }	//klasa - zwykly 70% szans
-	if (klasa_itema >= 91 && klasa_itema < 97) { klasa_itema = 2; }	//klasa - rzadki 5% szans
-	if (klasa_itema >= 97 && klasa_itema < 99) {	//2%
-		klasa_itema = 3; //klasa - epicki 4% szans
-	}
-	else {
-		klasa_itema = 4;		//klasa - legendarny 1% szans
-		int destroyer_class = rand() % 100 + 1;	//losowanie klasy przedmiotu
-		if (destroyer_class == 2) {
-			klasa_itema = 5;	//klasa - destroyer 0.01 * 0.01 szans
+		if (postac1->health < 1 &&
+			(!postac1->potion_slot.isEmpty ||
+				!postac1->potion_slot2.isEmpty ||
+				!postac1->potion_slot3.isEmpty ||
+				!postac1->potion_slot4.isEmpty ||
+				!postac1->potion_slot5.isEmpty)) {
+			use_health_potion(postac1);
 		}
 	}
-	return klasa_itema;
-}
+
+	int item_class_generator(postac * postac1) {
+		int klasa_itema = rand() % 100 + 1 + postac1->luck * 0.5;	//losowanie klasy przedmiotu
+		if (klasa_itema >= 0 && klasa_itema < 21) { klasa_itema = 0; }	//klasa - przerdzewiały  20% szans
+		if (klasa_itema >= 21 && klasa_itema < 91) { klasa_itema = 1; }	//klasa - zwykly 70% szans
+		if (klasa_itema >= 91 && klasa_itema < 97) { klasa_itema = 2; }	//klasa - rzadki 5% szans
+		if (klasa_itema >= 97 && klasa_itema < 99) {	//2%
+			klasa_itema = 3; //klasa - epicki 4% szans
+		}
+		else {
+			klasa_itema = 4;		//klasa - legendarny 1% szans
+			int destroyer_class = rand() % 100 + 1;	//losowanie klasy przedmiotu
+			if (destroyer_class == 2) {
+				klasa_itema = 5;	//klasa - destroyer 0.01 * 0.01 szans
+			}
+		}
+		return klasa_itema;
+	}
 
 void pick_item(item* newItem, postac* postac1) {
 	printf("\n\t[WYLECIAŁ ");
@@ -1143,6 +1232,7 @@ void pick_item(item* newItem, postac* postac1) {
 	scanf_s("%c", &move[0], 1);
 	if (move[0] == 'g') {
 		int szerokosc = newItem->szerokosc;
+		postac1->statystyki->items_picked++;
 		for (int i = 0; i < postac1->backpack_height; i++) {
 			for (int j = 0; j < postac1->backpack_width; j++) {
 				if (postac1->backpack[i][j].id == 0 && szerokosc > 0) {//sprawdzanie czy jest puste
@@ -1182,7 +1272,8 @@ void post_fight(postac* postac1, enemy* wrog) {
 	postac1->xp = postac1->xp + wrog->xpdrop;
 	int cash_drop = rand() % 10 + 1 * wrog->type;
 	postac1->cash = postac1->cash + cash_drop * postac1->luck;
-
+	postac1->statystyki->cash_got += cash_drop * postac1->luck;
+	postac1->statystyki->xp_got += wrog->xpdrop;
 
 	printf("\n\n\t[WROG POKONANY|%dXP|%d$]\n\n", wrog->xpdrop, cash_drop * postac1->luck);
 
@@ -1225,6 +1316,7 @@ void lvlowanie(postac* postac1) {
 
 	postac1->skillpoints = postac1->skillpoints + postac1->lvl;
 	postac1->xp = postac1->xp - postac1->max_xp[postac1->lvl - 1];
+	postac1->statystyki->skillpoints_got ++;
 	printf("\n\t[LVLUJESZ!!]\n\t[DOSTAJESZ SKILLPOINT]\n");
 
 	int losowanie_powerupa = rand() % 10 + 1;
@@ -1249,6 +1341,7 @@ void lvlowanie(postac* postac1) {
 	case 5:
 		postac1->skillpoints++;
 		printf("\n\t[DOSTAJESZ DODATKOWY SKILLPOINT]\n");
+		postac1->statystyki->skillpoints_got++;
 		break;
 	default:
 		break;
@@ -1409,6 +1502,24 @@ void ekran_walki(postac* postac1) {
 		printf("\nTURA WALKI: %d\n", tura);
 		walka(postac1, wrog, tura, kto_pierwszy);
 
+		if(wrog->health <= 0) {
+			postac1->statystyki->enemies_slayed++;
+			switch (wrog->race) {
+			case 1:	//goblin
+				postac1->statystyki->goblins_slayed++;
+				break;
+			case 2:	//zombie
+				postac1->statystyki->zombie_slayed++;
+				break;
+			case 3:	//ork
+				postac1->statystyki->orcs_slayed++;
+				break;
+			case 4:	//wizard
+				postac1->statystyki->wizard_slayed++;
+				break;
+			}
+			break;
+		}
 		tura++;
 	}
 	if (postac1->health > 0) { post_fight(postac1, wrog); }
@@ -1783,10 +1894,12 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 		// Sprawdzenie, czy nie wychodzimy poza górną krawędź mapy
 		if (postac1->posx - 1 < 0) {
 			printf("\n\t[WYCHODZISZ POZA MAPE!]\n\n");
+			
 			return;
 		}
 		if (mapa[postac1->posx - 1][postac1->posy] == '|') {
 			printf("\n\t[WCHODZISZ W SCIANE!]\n\n");
+			
 			return;
 		}
 		if (mapa[postac1->posx - 1][postac1->posy] == 'T') {
@@ -1796,10 +1909,13 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 		}
 		if (mapa[postac1->posx - 1][postac1->posy] == 'E') {
 			printf("\n\t[WPADASZ NA WROGA!]\n\n");
+			
 			last_fight_round = runda;
 			enemycount--;
 			ekran_walki(postac1);
 		}
+		postac1->statystyki->moved++;
+		postac1->statystyki->moved_up++;
 		mapa[postac1->posx][postac1->posy] = '.';
 		postac1->posx--;
 		mapa[postac1->posx][postac1->posy] = 'P';
@@ -1813,10 +1929,12 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 		// Sprawdzenie, czy nie wychodzimy poza górną krawędź mapy
 		if (postac1->posx + 1 > mapx_size - 1) {
 			printf("\n\t[WYCHODZISZ POZA MAPE!]\n\n");
+			
 			return;
 		}
 		if (mapa[postac1->posx + 1][postac1->posy] == '|') {
 			printf("\n\t[WCHODZISZ W SCIANE!]\n\n");
+			
 			return;
 		}
 		if (mapa[postac1->posx + 1][postac1->posy] == 'T') {
@@ -1830,6 +1948,8 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 			enemycount--;
 			ekran_walki(postac1);
 		}
+		postac1->statystyki->moved++;
+		postac1->statystyki->moved_down++;
 		mapa[postac1->posx][postac1->posy] = '.';
 		postac1->posx++;
 		mapa[postac1->posx][postac1->posy] = 'P';
@@ -1843,10 +1963,12 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 		// Sprawdzenie, czy nie wychodzimy poza górną krawędź mapy
 		if (postac1->posy - 1 < 0) {
 			printf("\n\t[WYCHODZISZ POZA MAPE!]\n\n");
+			
 			return;
 		}
 		if (mapa[postac1->posx][postac1->posy - 1] == '|') {
 			printf("\n\t[WCHODZISZ W SCIANE!]\n\n");
+			
 			return;
 		}
 		if (mapa[postac1->posx][postac1->posy - 1] == 'T') {
@@ -1860,6 +1982,8 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 			enemycount--;
 			ekran_walki(postac1);
 		}
+		postac1->statystyki->moved++;
+		postac1->statystyki->moved_left++;
 		mapa[postac1->posx][postac1->posy] = '.';
 		postac1->posy--;
 		mapa[postac1->posx][postac1->posy] = 'P';
@@ -1870,14 +1994,17 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 		// Sprawdzenie, czy nie wychodzimy poza górną krawędź mapy
 		if (postac1->posy + 1 > mapy_size - 1) {
 			printf("\n\t[WYCHODZISZ POZA MAPE!]\n\n");
+			
 			return;
 		}
 		if (mapa[postac1->posx][postac1->posy + 1] == '|') {
 			printf("\n\t[WCHODZISZ W SCIANE!]\n\n");
+			
 			return;
 		}
 		if (mapa[postac1->posx][postac1->posy + 1] == 'T') {
 			printf("\n\t[WPADASZ W PULAPKE!]\n\n");
+
 			trapcount--;
 			pulapka(postac1);
 		}
@@ -1887,6 +2014,8 @@ void krok(char* move, char** mapa, postac* postac1, int mapx_size, int mapy_size
 			enemycount--;
 			ekran_walki(postac1);
 		}
+		postac1->statystyki->moved++;
+		postac1->statystyki->moved_right++;
 		mapa[postac1->posx][postac1->posy] = '.';
 		postac1->posy++;
 		mapa[postac1->posx][postac1->posy] = 'P';
@@ -2219,6 +2348,7 @@ void effects_impact(postac* postac1) {
 			if (postac1->stamina >= 2) {	//jesli masz stamine sie healowac 
 				postac1->stamina -= 2;
 				postac1->health++;
+				postac1->statystyki->hp_healed++;
 				printf("\n\tHEALING\n");
 			}
 			else if (postac1->hunger >= 2) {		//nie masz stamine, masz hunger, wiec zmieniasz hunger w stamine
@@ -2280,7 +2410,7 @@ int main() {
 
 	while (postac1->skillpoints > 0) {
 		char move[1];
-
+		postac1->statystyki->skillpoints_got = 20;
 		skillpoint_distribution(postac1, move);
 	}
 
@@ -2314,6 +2444,13 @@ int main() {
 						put_item_on(postac1, znak2);
 					} while (znak2[0] != 'q');
 				}
+				if (znak == 'y') {
+					char znak2[1];
+					do {
+						system("cls");
+						show_stats(postac1, znak2);
+					} while (znak2[0] != 'q');
+				}
 
 			} while (znak != 'q');
 			system("cls");
@@ -2333,6 +2470,8 @@ int main() {
 		"   | |  _  / _ \\ |  |\\/| |  _|   | | | \\ \\ / /|  _|  | |_) | \n"
 		"   | |_| |/ ___ \\|  |  | | |___  | |_| |\\ V / | |___ | _ <  \n"
 		"    ____/_/    \\_\\_ |  |_| _____| \\___ / \\_/  |_____ | _ | \\_\\ \n");
+	char znak1[1];
+	show_stats(postac1, znak1);
 
 	free(postac1->ekwipunek);
 
