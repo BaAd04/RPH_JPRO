@@ -162,7 +162,7 @@ enemy* generate_enemy(postac* postac1) {
 	else if (rand_enemytype > 1) {		//ork
 		en->lvl = en->lvl * 2;
 		en->health = en->lvl * 8 / 2;
-		en->attack = en->lvl * 5 / 2;
+		en->attack = en->lvl * 5 / 3;
 		en->mana = 0;
 		en->type = 2;
 		en->xpdrop = 10;
@@ -175,7 +175,7 @@ enemy* generate_enemy(postac* postac1) {
 	else if (rand_enemytype == 1) {		//wizard
 		en->lvl = en->lvl * 5;
 		en->health = en->lvl * 5 / 5;
-		en->attack = en->lvl * 8 / 5;
+		en->attack = en->lvl * 8 / 6;
 		en->mana = 10;
 		en->type = 2;
 		en->xpdrop = 25;
@@ -595,7 +595,8 @@ item* generate_armor(postac* postac1, int klasa) {
 		armr->def = rand() % 10 + 1 + postac1->luck * 0.1 + armr->lvl * 5;	//defence
 		armr->armorpoints = rand() % 10 + 1 + postac1->luck * 0.1 + armr->lvl * 5;	//armor (potem dzielony przez 2)
 		armr->weight = rand() % 10 + 10;	//waga zbroi
-		armr->szerokosc = rand() % 5 + 1;	//szerokosc zbroi
+		armr->szerokosc = 3;	//szerokosc zbroi
+		armr->wysokosc = 2;	//wysokosc zbroi
 	}
 	else
 		if (armr_type > 2) {	//normalna zbroja
@@ -604,7 +605,8 @@ item* generate_armor(postac* postac1, int klasa) {
 			armr->def = rand() % 5 + 1 + postac1->luck * 0.1 + armr->lvl * 2;	//defence
 			armr->armorpoints = rand() % 5 + 1 + postac1->luck * 0.1 + armr->lvl * 2;	//armor (potem dzielony przez 2)
 			armr->weight = rand() % 10 + 5;	//waga zbroi
-			armr->szerokosc = rand() % 3 + 1;	//szerokosc zbroi
+			armr->szerokosc = 3;	//szerokosc zbroi
+			armr->wysokosc = 2;	//wysokosc zbroi
 		}
 		else {
 			strcpy_s(armr->name, sizeof(armr->name), "Lekka zbroja");
@@ -612,7 +614,8 @@ item* generate_armor(postac* postac1, int klasa) {
 			armr->def = rand() % 3 + 1 + postac1->luck * 0.1 + armr->lvl;	//defence
 			armr->armorpoints = rand() % 3 + 1 + postac1->luck * 0.1 + armr->lvl;	//armor (potem dzielony przez 2)
 			armr->weight = rand() % 5 + 5;	//waga zbroi
-			armr->szerokosc = rand() % 2 + 1;	//szerokosc zbroi
+			armr->szerokosc = 3;	//szerokosc zbroi
+			armr->wysokosc = 2;	//wysokosc zbroi
 		}
 	switch (klasa) {
 	case 0://klasa zardzewiale
@@ -1063,6 +1066,110 @@ void put_effect(enemy* wrog, postac* postac1) {
 		return klasa_itema;
 	}
 
+	void put_it_in(postac* postac1, item* newItem, int i, int j) {
+		int szerokosc= newItem->szerokosc  ;
+		int wysokosc = newItem->wysokosc ;
+		switch (newItem->szerokosc) {
+		case 1:
+			postac1->backpack[i][j] = *newItem;
+			postac1->backpack[i][j].id = item_id;
+			free(newItem);
+			item_id++;
+			break;
+		case 2:
+			if(newItem->wysokosc == 1 && postac1->backpack_width >= j + 1) {//2x1
+				if(postac1->backpack[i][j + 1].id == 0){
+				postac1->backpack[i][j] = *newItem;
+				postac1->backpack[i][j].id = item_id;
+
+				postac1->backpack[i][j + 1] = *newItem;
+				postac1->backpack[i][j + 1].id = item_id;
+				free(newItem);
+				item_id++;} 
+			}else
+			if(newItem->wysokosc == 2 && postac1->backpack_width >= j + 1 && postac1->backpack_height >= j + 1) {//2x2
+				if(postac1->backpack[i][j + 1].id == 0 && postac1->backpack[i + 1][j].id == 0 && postac1->backpack[i + 1][j + 1].id == 0){
+				postac1->backpack[i][j] = *newItem;
+				postac1->backpack[i][j].id = item_id;
+
+				postac1->backpack[i][j + 1] = *newItem;
+				postac1->backpack[i][j + 1].id = item_id;
+
+				postac1->backpack[i + 1][j] = *newItem;
+				postac1->backpack[i + 1][j].id = item_id;
+
+				postac1->backpack[i + 1][j + 1] = *newItem;
+				postac1->backpack[i + 1][j + 1].id = item_id;
+
+				free(newItem);
+				item_id++;
+				}
+			}
+			break;
+		case 3:
+			if (newItem->wysokosc == 1 && postac1->backpack_width >= j + 2) {//3x1
+				if(postac1->backpack[i][j + 1].id == 0 && postac1->backpack[i][j + 2].id == 0){
+				postac1->backpack[i][j] = *newItem;
+				postac1->backpack[i][j].id = item_id;
+
+				postac1->backpack[i][j + 1] = *newItem;
+				postac1->backpack[i][j + 1].id = item_id;
+
+				postac1->backpack[i][j + 2] = *newItem;
+				postac1->backpack[i][j + 2].id = item_id;
+				free(newItem);
+				item_id++;
+				}
+			}else
+				if (newItem->wysokosc == 2 && postac1->backpack_width >= j + 2 && postac1->backpack_height >= i + 1) {//3x2
+					if (postac1->backpack[i][j + 1].id == 0 && postac1->backpack[i][j + 2].id == 0 && postac1->backpack[i+1][j].id == 0 && postac1->backpack[i + 1][j + 1].id == 0 && postac1->backpack[i + 1][j+2].id == 0) {
+						postac1->backpack[i][j] = *newItem;
+						postac1->backpack[i][j].id = item_id;
+
+						postac1->backpack[i][j+1] = *newItem;
+						postac1->backpack[i][j+1].id = item_id;
+
+						postac1->backpack[i][j+2] = *newItem;
+						postac1->backpack[i][j+2].id = item_id;
+
+						postac1->backpack[i+1][j] = *newItem;
+						postac1->backpack[i+1][j].id = item_id;
+
+						postac1->backpack[i + 1][j+1] = *newItem;
+						postac1->backpack[i + 1][j+1].id = item_id;
+
+						postac1->backpack[i + 1][j+2] = *newItem;
+						postac1->backpack[i + 1][j+2].id = item_id;
+						free(newItem);
+						item_id++;
+				}
+			 }
+			break;
+		case 4:
+			if (newItem->wysokosc == 1 && postac1->backpack_width >= j+3) {//4x1
+				if (postac1->backpack[i][j + 1].id == 0 && postac1->backpack[i][j + 2].id == 0 && postac1->backpack[i][j + 3].id == 0) {
+					postac1->backpack[i][j] = *newItem;
+					postac1->backpack[i][j].id = item_id;
+
+					postac1->backpack[i][j + 1] = *newItem;
+					postac1->backpack[i][j + 1].id = item_id;
+
+					postac1->backpack[i][j + 2] = *newItem;
+					postac1->backpack[i][j + 2].id = item_id;
+
+					postac1->backpack[i][j + 3] = *newItem;
+					postac1->backpack[i][j + 3].id = item_id;
+					free(newItem);
+					item_id++;
+				}
+			}
+			break;
+		default:
+			printf("Błąd w funkcji put_it_in, nieznana szerokość przedmiotu %d", szerokosc);
+			break;
+		}
+
+	}
 void pick_item(item* newItem, postac* postac1) {
 	printf("\n\t[WYLECIAŁ ");
 	switch (newItem->klasa) {
@@ -1231,40 +1338,19 @@ void pick_item(item* newItem, postac* postac1) {
 	while ((c = getchar()) != '\n' && c != EOF) {}
 	scanf_s("%c", &move[0], 1);
 	if (move[0] == 'g') {
+
 		int szerokosc = newItem->szerokosc;
 		postac1->statystyki->items_picked++;
 		for (int i = 0; i < postac1->backpack_height; i++) {
 			for (int j = 0; j < postac1->backpack_width; j++) {
-				if (postac1->backpack[i][j].id == 0 && szerokosc > 0) {//sprawdzanie czy jest puste
+				if (postac1->backpack[i][j].id == 0) {//sprawdzanie czy jest puste
 					
-					//postac1->backpack[i][j] = *newItem;
-					postac1->backpack[i][j].id = item_id;
-					postac1->backpack[i][j].AP = newItem->AP;
-					postac1->backpack[i][j].AS = newItem->AS;
-					strcpy_s(postac1->backpack[i][j].name, sizeof(postac1->backpack[i][j].name), newItem->name);
-					postac1->backpack[i][j].weight = newItem->weight;
-					postac1->backpack[i][j].def = newItem->def;
-					postac1->backpack[i][j].armorpoints = newItem->armorpoints;
-					postac1->backpack[i][j].lvl = newItem->lvl;
-					postac1->backpack[i][j].health_reg = newItem->health_reg;
-					postac1->backpack[i][j].luck_modifier = newItem->luck_modifier;
-					postac1->backpack[i][j].hp_modifier = newItem->hp_modifier;
-					postac1->backpack[i][j].isWeapon = newItem->isWeapon;
-					postac1->backpack[i][j].isArmor = newItem->isArmor;
-					postac1->backpack[i][j].isRing = newItem->isRing;
-					postac1->backpack[i][j].isPotion = newItem->isPotion;
-					postac1->backpack[i][j].potion_type = newItem->potion_type;
-					postac1->backpack[i][j].szerokosc = newItem->szerokosc;
-					postac1->backpack[i][j].klasa = newItem->klasa;
-					postac1->backpack[i][j].typ = newItem->typ;
-					postac1->backpack[i][j].isTwoHanded = newItem->isTwoHanded;
-					szerokosc--;
-					item_id++;
-					return;
+					put_it_in(postac1, newItem, i, j);
+					if (newItem == nullptr) { return; }
 				}
+
 			}
 		}
-
 	}
 }
 
