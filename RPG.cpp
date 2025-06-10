@@ -132,8 +132,12 @@ struct enemy {
 enemy* generate_enemy(postac* postac1) {
 	enemy* en = (enemy*)malloc(sizeof(enemy));
 
-	en->lvl = rand() % 3 - 1 + postac1->lvl;
-	if (en->lvl < 1) { en->lvl = 1; }
+	en->lvl = postac1->lvl;
+	if(postac1->lvl > 5){
+		en->lvl = postac1->lvl / 2;
+	}
+	if (en->lvl > 10) { en->lvl = 4; }	//minimalny poziom wroga to 1
+
 
 	int rand_enemytype = rand() % 10 + 1;
 	if (rand_enemytype > 6) {		//goblin
@@ -161,15 +165,15 @@ enemy* generate_enemy(postac* postac1) {
 	}
 	else if (rand_enemytype > 1) {		//ork
 		en->lvl = en->lvl * 2;
-		en->health = en->lvl * 8 / 2;
+		en->health = en->lvl * 8 / 3;
 		en->attack = en->lvl * 5 / 3;
 		en->mana = 0;
 		en->type = 2;
 		en->xpdrop = 10;
 		en->race = 3;
 		en->luck = 0;
-		en->def = en->lvl * 5 / 2;
-		en->AS = en->lvl * 3 / 2;
+		en->def = en->lvl * 5 / 4;
+		en->AS = en->lvl * 3 / 4;
 
 	}
 	else if (rand_enemytype == 1) {		//wizard
@@ -436,6 +440,8 @@ item* generate_weapon(postac* postac1, int klasa) {
 
 
 
+
+
 	switch (rand_type)
 	{
 	case 0://miecz lekki
@@ -536,8 +542,39 @@ item* generate_weapon(postac* postac1, int klasa) {
 	default:
 		break;
 	}
-
 	wpn->klasa = klasa;
+
+	switch (klasa){
+	case 0://klasa zardzewiale
+		wpn->AP = wpn->AP * 0.5;
+		wpn->def =wpn->def * 0.5;
+		wpn->AS = wpn->AS * 0.5;
+		break;
+	case 2:	//klasa rzadkie (klasa normalne nie wymaga zmian)
+		wpn->def = wpn->def * 1.2 + postac1->luck * 0.1;
+		wpn->AP = wpn->AP * 1.2 + postac1->luck * 0.1;
+		wpn->AS = wpn->AS * 1.2 + postac1->luck * 0.1;
+		break;
+	case 3:	//klasa epicka	150% + 05luck
+		wpn->def = wpn->def * 1.5 + postac1->luck * 0.5;
+		wpn->AP = wpn->AP * 1.5 + postac1->luck * 0.5;
+		wpn->AS = wpn->AS * 1.5 + postac1->luck * 0.5;
+		break;
+	case 4: //klasa legendarna	300% + luck
+		wpn->def = wpn->def * 3 + postac1->luck ;
+		wpn->AP = wpn->AP * 3 + postac1->luck ;
+		wpn->AS = wpn->AS * 3 + postac1->luck ;
+		break;
+	case 5:	//destroyer 500% + 200luck
+		wpn->def = wpn->def * 5 + postac1->luck * 2;
+		wpn->AP = wpn->AP * 5 + postac1->luck * 2;
+		wpn->AS = wpn->AS * 5 + postac1->luck * 2;
+		break;
+	default:
+		break;
+}
+
+	
 	return wpn;
 }
 item* generate_potion(postac* postac1, int klasa) {
@@ -794,6 +831,7 @@ void atak_info(double sila_ataku, int powodzenie_ataku, int powodzenie_obrony) {
 void put_effect(enemy* wrog, postac* postac1) {
 	int poison_chance = rand() % 100 - 1 - postac1->luck;
 	int poison_duration = rand() % 10 - 1 - postac1->luck * 0.1;
+	if (poison_duration <= 0) { poison_duration = 1; }
 	switch (wrog->race) {
 	case 2:		//zombie - 10% szans na poison
 		if (poison_chance >= 90) {
@@ -1049,11 +1087,11 @@ void put_effect(enemy* wrog, postac* postac1) {
 	}
 
 	int item_class_generator(postac * postac1) {
-		int klasa_itema = rand() % 100 + 1 + postac1->luck * 0.5;	//losowanie klasy przedmiotu
-		if (klasa_itema >= 0 && klasa_itema < 21) { klasa_itema = 0; }	//klasa - przerdzewiały  20% szans
-		if (klasa_itema >= 21 && klasa_itema < 91) { klasa_itema = 1; }	//klasa - zwykly 70% szans
-		if (klasa_itema >= 91 && klasa_itema < 97) { klasa_itema = 2; }	//klasa - rzadki 5% szans
-		if (klasa_itema >= 97 && klasa_itema < 99) {	//2%
+		int klasa_itema = rand() % 1000 + 1 + postac1->luck;	//losowanie klasy przedmiotu
+		if (klasa_itema >= 0 && klasa_itema < 201) { klasa_itema = 0; }	//klasa - przerdzewiały  20% szans
+		if (klasa_itema >= 201 && klasa_itema < 910) { klasa_itema = 1; }	//klasa - zwykly 70% szans
+		if (klasa_itema >= 910 && klasa_itema < 970) { klasa_itema = 2; }	//klasa - rzadki 5% szans
+		if (klasa_itema >= 970 && klasa_itema < 1000) {	//2%
 			klasa_itema = 3; //klasa - epicki 4% szans
 		}
 		else {
@@ -1074,6 +1112,7 @@ void put_effect(enemy* wrog, postac* postac1) {
 			postac1->backpack[i][j] = *newItem;
 			postac1->backpack[i][j].id = item_id;
 			free(newItem);
+			newItem = nullptr;
 			item_id++;
 			break;
 		case 2:
@@ -1085,6 +1124,7 @@ void put_effect(enemy* wrog, postac* postac1) {
 				postac1->backpack[i][j + 1] = *newItem;
 				postac1->backpack[i][j + 1].id = item_id;
 				free(newItem);
+				newItem = nullptr;
 				item_id++;} 
 			}else
 			if(newItem->wysokosc == 2 && postac1->backpack_width >= j + 1 && postac1->backpack_height >= j + 1) {//2x2
@@ -1102,6 +1142,7 @@ void put_effect(enemy* wrog, postac* postac1) {
 				postac1->backpack[i + 1][j + 1].id = item_id;
 
 				free(newItem);
+				newItem = nullptr;
 				item_id++;
 				}
 			}
@@ -1118,6 +1159,7 @@ void put_effect(enemy* wrog, postac* postac1) {
 				postac1->backpack[i][j + 2] = *newItem;
 				postac1->backpack[i][j + 2].id = item_id;
 				free(newItem);
+				newItem = nullptr;
 				item_id++;
 				}
 			}else
@@ -1141,6 +1183,7 @@ void put_effect(enemy* wrog, postac* postac1) {
 						postac1->backpack[i + 1][j+2] = *newItem;
 						postac1->backpack[i + 1][j+2].id = item_id;
 						free(newItem);
+						newItem = nullptr;
 						item_id++;
 				}
 			 }
@@ -1160,12 +1203,13 @@ void put_effect(enemy* wrog, postac* postac1) {
 					postac1->backpack[i][j + 3] = *newItem;
 					postac1->backpack[i][j + 3].id = item_id;
 					free(newItem);
+					newItem = nullptr;
 					item_id++;
 				}
 			}
 			break;
 		default:
-			printf("Błąd w funkcji put_it_in, nieznana szerokość przedmiotu %d", szerokosc);
+			//printf("Błąd w funkcji put_it_in, nieznana szerokość przedmiotu %d", szerokosc);
 			break;
 		}
 
@@ -1214,6 +1258,7 @@ void pick_item(item* newItem, postac* postac1) {
 		printf("HP: %d ", newItem->hp_modifier);
 	}
 	printf("]");
+
 	switch (newItem->typ)
 	{
 	case 3:	//pierscien
@@ -1224,13 +1269,13 @@ void pick_item(item* newItem, postac* postac1) {
 			"	   ||      || \n"
 			"	   ||      || \n"
 			"       \\____// \n"
-			"         ---- \n"
+			"      \t ---- \n"
 				"	");
 		break;
 	case 1:	//broń
 		switch (newItem->weapon_type)
 		{
-			case 0:	//miecz
+			case 1:	//miecz
 				printf(
 					"\n"
 ",. \n"
@@ -1249,7 +1294,7 @@ void pick_item(item* newItem, postac* postac1) {
              "           `:/ ; \n"
               "             `' \n"	);
 				break;
-			case 1:	//topór
+			case 2:	//topór
 				printf(
 					"\n"
 
@@ -1268,7 +1313,7 @@ void pick_item(item* newItem, postac* postac1) {
 				   "      XX	\n"
 				   "      OO	\n");
 
-			case 2:	//shield
+			case 3:	//shield
 				printf(
 					"\n"
 					
@@ -1327,9 +1372,24 @@ void pick_item(item* newItem, postac* postac1) {
 		);
 		break;
 	case 0:	//potion
+		printf("\n"
+			"	   _____\n"
+			"`.___,' \n"
+			"(_____)\n"
+			"     <     >\n"
+			"      )---(\n"
+			"     /     \ \n"
+			"    /       \\n"
+			"   |         |\n"
+			"   |         |\n"
+			"   |_________|\n"
+			"    |_______|\n"
+			"     |     |\n"
+			"     '-----'\n");
 
 		break;
 	default:
+		printf("blad switch ascii itema");
 		break;
 	}
 	printf("\ng - wez do ekwipunku, inny klawisz - porzuc [NIE MOZNA COFNAC]\n");
@@ -1364,7 +1424,7 @@ void post_fight(postac* postac1, enemy* wrog) {
 	printf("\n\n\t[WROG POKONANY|%dXP|%d$]\n\n", wrog->xpdrop, cash_drop * postac1->luck);
 
 	int item_drop = rand() % 11 + postac1->luck * 0.1;	//losowanie przedmiotu
-	if (item_drop >= 10) {			//todo zmienic 1 na 10
+	if (item_drop >= 1) {			//todo zmienic 1 na 10
 
 		int klasa_itema = item_class_generator(postac1);	//losowanie klasy przedmiotu
 
@@ -1555,11 +1615,11 @@ void ekran_walki(postac* postac1) {
 
 
 				"			     _,-'|		\t|\n"
-				"			 ,-' ._  |		ENEMY  %d|	HERP %d \n"
+				"			 ,-' ._  |		ENEMY %d|	HERP %d \n"
 				"		 . || ,   |####⧵ |			|\n"
 				"		 ⧵.`', /  ⧵####| |		HP : %d \t|\t%d\n"
 				"	   	 =, . =   | ###| |		SPD: %d \t|\t%d\n"
-				"		 / || ⧵ , -'⧵#/,'`.		ATK: %d \t|\t%d\n"
+				"		 / || ⧵ , -'⧵#/,'`.		ATK: %d |\t%d\n"
 				"		   || ,  '   `,,. `.   \t\tDEF: %d\t|\t%d\n"
 				"		  , | ____, ' , ,;' ⧵| |		|\n"
 				"		 (3 | ⧵    _/|/'   _| |		\n"
@@ -1782,6 +1842,167 @@ void show_map(char** mapa, int mapx_size, int mapy_size, postac* postac1) {
 	printf("\n");
 }
 void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznosci od broni
+	int model = 0; //1 - dwureczny miecz, 2- miecz w prawej, 3 - miecz w lewej, 4, tarcza w prawej, 5 tarcza w lewej, 6 topor w prawej, 7 topor w lewej, 8 miecz prawa + tarcza, 9 miecz lewa + tarcza, 10 topor prawa+ tarcza, 11 topor lewa + tarcza, 12 miecz prawa + topor, 13 miecz lewa + topor, 14 dwa miecze, 15 dwie tarcze, 16 dwa topory
+	if (postac1->right_hand.isEmpty == false && postac1->right_hand.wpn->isTwoHanded == true) { model = 1; }
+	if (postac1->right_hand.isEmpty == false && postac1->left_hand.isEmpty == true) {//tylko prawa dlon
+		if (postac1->right_hand.wpn->weapon_type == 1) { model = 2; } //miecz w prawej
+		if (postac1->right_hand.wpn->weapon_type == 2) { model = 6; }//topor w prawej
+		if (postac1->right_hand.wpn->weapon_type == 3) { model = 4; }	//tarcza w prawej
+	}
+	if (postac1->right_hand.isEmpty == true && postac1->left_hand.isEmpty == false) {	//lewa pelna prawa pusta
+		if (postac1->left_hand.wpn->weapon_type == 1) { model = 3; } //miecz w lewej
+		if (postac1->left_hand.wpn->weapon_type == 2) { model = 7; } //topor w lewej
+		if (postac1->left_hand.wpn->weapon_type == 3) { model = 5; } //miecz w lewej
+	}
+	if (postac1->right_hand.isEmpty == false && postac1->left_hand.isEmpty == false && postac1->left_hand.wpn->isTwoHanded == false) {//obie dlonie zajete
+		if (postac1->right_hand.wpn->weapon_type == 1 && postac1->left_hand.wpn->weapon_type == 3) { model = 8; }	//miecz prawa + tarcza
+		if (postac1->right_hand.wpn->weapon_type == 3 && postac1->left_hand.wpn->weapon_type == 1) { model = 9; }	//miecz lewa + tarcza
+
+		if (postac1->right_hand.wpn->weapon_type == 2 && postac1->left_hand.wpn->weapon_type == 3) { model = 10; }	//topor prawa + tarcza
+		if (postac1->right_hand.wpn->weapon_type == 3 && postac1->left_hand.wpn->weapon_type == 2) { model = 11; }	//topor lewa + tarcza
+
+		if (postac1->right_hand.wpn->weapon_type == 1 && postac1->left_hand.wpn->weapon_type == 2) { model = 12; }	// miezce prawa + topor
+		if (postac1->right_hand.wpn->weapon_type == 2 && postac1->left_hand.wpn->weapon_type == 1) { model = 13; }	//miecz lewa + topor
+
+		if (postac1->right_hand.wpn->weapon_type == 1 && postac1->left_hand.wpn->weapon_type == 1) { model = 14; }	//dwa miezce
+		if (postac1->right_hand.wpn->weapon_type == 3 && postac1->left_hand.wpn->weapon_type == 3) { model = 15; }	//dwie tarcze
+		if (postac1->right_hand.wpn->weapon_type == 2 && postac1->left_hand.wpn->weapon_type == 2) { model = 16; }	//dwa topory
+	}
+
+
+	switch (model) {
+	case 1:	//dwureczny miecz
+		printf("\n"
+			"              {}	\n"
+			"             {{}}	\n"
+			"             {{}}	\n"
+			"              {}	\n"
+			"            .-''-.	\n"
+			"           /  __  \	\n"
+			"          /.-'  '-.\	\n"
+			"          \::.  .::/	\n"
+			"           \'    '/	\n"
+			"      __ ___)    (___ __	\n"
+			"    .'   \\        //   `.	\n"
+			"   /     | '-.__.-' |     \	\n"
+			"   |     |  '::::'  |     |	\n"
+			"   |    /    '::'    \    |	\n"
+			"   |_.-;\     __     /;-._|	\n"
+			"   \.'^`\\    \/    //`^'./	\n"
+			"   /   _.-._ _||_ _.-._   \	\n"
+			"  `\___\    '-..-'    /___/`	\n"
+			"       /'---.  `\.---'\		\n"
+			"      ||    |`\\\|    ||	\n"
+			"      ||    | || |    ||	\n"
+			"      |;.__.' || '.__.;|	\n"
+			"      |       ||       |	\n"
+			"      {{{{{{{{||}}}}}}}}	\n"
+			"       |      ||      |	\n"
+			"       |.-==-.||.-==-.|	\n"
+			"       <.    .||.    .>	\n"
+			"        \'=='/||\'=='/		\n"
+			"        |   / || \   |		\n"
+			"        |   | || |   |		\n"
+			"        |   | || |   |		\n"
+			"        /^^\| || |/^^\		\n"
+			"       /   .' || '.   \	\n"
+			"      /   /   ||   \   \	\n"
+			"     (__.'    \/    '.__)	\n");
+		break;
+	case 2:	//miecz prawa
+		printf("\n"
+			" /\	\n"
+			" ||	\n"
+			" ||	\n"
+			" ||	\n"
+			" ||           {}	\n"
+			" ||          .--.	\n"
+			" ||         /.--.\	\n"
+			" ||         |====|	\n"
+			" ||         |`::`|	\n"
+			"_||_    .-;`\..../`;-. \n"
+			" /\\   /  |...::...|  \ \n"
+			" |:'\ |   /'''::'''\   | \n"
+			"  \ /\;-,/\   ::   /\--; \n"
+			"   \ <` >  >._::_.<,<__> \n"
+			"    `""`  /   ^^   \|  | \n"
+			"          |        |\::/ \n"
+			"          |        |/||| \n"
+			"          |___/\___| ''' \n"
+			"           \_ || _/	\n"
+			"           <_ >< _>  \n"
+			"           |  ||  | \n"
+			"           |  ||  |	\n"
+			"          _\.:||:./_	\n"
+			"         /____/\____\	\n");
+		break;
+	case 3://miecz lewa
+
+		printf("\n"
+			" 		               /\	\n"
+			"		               ||	\n"
+			"				       ||	\n"
+			"					   ||	\n"
+			"      	   {}	       ||	\n"
+			"         .--.	       ||		\n"
+			"        /.--.\	       ||	\n"
+			"        |====|	       ||	\n"
+			"        |`::`|	       ||	\n"
+			"   .-;`\..../`;-.    _||_	\n"
+			"  /  |...::...|  \   //\	\n"
+			"  |   /'''::'''\   | /`:|	\n"
+			"  ;--'\   ::   /\,-;/\ /	\n"
+			"  <__>,>._::_.<  < `> /	\n"
+			"  |  |/   ^^   \  `""`		\n"
+			"  \::/|        |			\n"
+			"  |||\|        |			\n"
+			"  ''' |___/\___|			\n"
+			"       \_ || _/			\n"
+			"       <_ >< _>			\n"
+			"       |  ||  |			\n"
+			"       |  ||  |			\n"
+			"      _\.:||:./_			\n"
+			"     /____/\____\			\n");
+		break;
+	case 4: //tarcza w prawej
+		break;
+
+
+
+
+
+	case 8:	//miecz w prawej + tarcza
+		printf("\n"
+
+			" /\	\n"
+			" ||	\n"
+			" ||	\n"
+			" ||			\n"
+			" ||           {}	\n"
+			" ||          .--.	\n"
+			" ||         /.--.\	\n"
+			" ||         |====|	\n"
+			" ||         |`::`|	\n"
+			"_||_    .-;`\..../`;_.-^-._	\n"
+			" /\\   /  |...::..|`   :   `|	\n"
+			" |:'\ |   /'''::''|   .:.   |	\n"
+			"  \ /\;-,/\   ::  |..:::::..|	\n"
+			"   \ <` >  >._::_.| ':::::' |	\n"
+			"    `""`  /   ^^  |   ':'   |	\n"
+			"          |       \    :    /	\n"
+			"          |        \   :   /	\n"
+			"          |___/\___|`-.:.-`	\n"
+			"           \_ || _/    `		\n"
+			"           <_ >< _>			\n"
+			"           |  ||  |			\n"
+			"           |  ||  |			\n"
+			"          _\.:||:./_			\n"
+			"        /____/\____\			\n");
+
+		break;
+
+
+	default:
 	printf(
 		"		       {}			[IMIE] = %s\n"
 		"		      .--.		    \t[LEVEL] = %d\t\t[ARMOR-SLOT] = ", postac1->name, postac1->lvl);
@@ -1856,6 +2077,8 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 	else { printf("[XXX]  "); }
 	if (postac1->potion_slot5.isEmpty == false) {
 		printf("%s \n", postac1->potion_slot.wpn->name);
+
+
 	}
 	else { printf("[XXX]  \n"); }
 	printf(
@@ -1866,6 +2089,8 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 			"\n		  /____/ ⧵____⧵		\n\n\n"
 			"_____________________________________________________________________________________________________________\n"
 		);
+	break;
+	}
 }
 
 void skillpoint_distribution(postac* postac1, char move[1]) {
@@ -1891,7 +2116,7 @@ void show_ekwipunek(postac* postac1) {
 	int last_item_id = -1;
 	for (int i = 0; i < postac1->backpack_height; i++) {
 		for (int j = 0; j < postac1->backpack_width; j++) {
-			if (postac1->backpack[i][j].id != 0 && postac1->backpack[i][j].id != last_item_id) {
+			if (postac1->backpack[i][j].id != 0 && postac1->backpack[i][j].id > last_item_id) {
 				last_item_id = postac1->backpack[i][j].id; // Zapamiętaj ostatni ID przedmiotu
 				printf("\n%d  ", postac1->backpack[i][j].id);
 				switch (postac1->backpack[i][j].klasa) {
@@ -1934,7 +2159,7 @@ void show_ekwipunek(postac* postac1) {
 					printf("DEF: %d ", postac1->backpack[i][j].def);
 				}
 				if (postac1->backpack[i][j].hp_modifier > 0) {
-					printf("HP: %d ", postac1->backpack[i][j].health_reg);
+					printf("HP: %d ", postac1->backpack[i][j].hp_modifier);
 				}
 				printf("\n");
 
@@ -1948,6 +2173,180 @@ void show_ekwipunek(postac* postac1) {
 
 }
 
+void take_down_item(postac* postac1, char move[1]) {
+	printf("\n\t[ZDEJMOWANIE ITEMOW]\n");
+
+	if (postac1->armor_slot.isEmpty == false) {	//wyrzucenie danych posiadanego armora
+		printf("a - %s, %d DEF %d ARMORPOINT\n", postac1->armor_slot.wpn->name, postac1->armor_slot.wpn->def, postac1->armor_slot.wpn->armorpoints);
+	}
+	if (!postac1->right_hand.isEmpty && postac1->right_hand.wpn->isTwoHanded == true) {	//wyrzucenie danych posiadanego miecza dwurecznego
+		printf("t - %s, %d AP, %d AS\n", postac1->right_hand.wpn->name, postac1->right_hand.wpn->AP, postac1->right_hand.wpn->AS);
+	}else{
+		if (postac1->right_hand.isEmpty == false) {
+			printf("r - %s", postac1->right_hand.wpn->name);
+			if (postac1->right_hand.wpn->AP > 0) { printf("%d AP ", postac1->right_hand.wpn->AP); }
+			if (postac1->right_hand.wpn->AS > 0) { printf("%d AS ", postac1->right_hand.wpn->AS); }
+			if (postac1->right_hand.wpn->def > 0) { printf("%d def ", postac1->right_hand.wpn->def); }
+			printf("\n");
+		}
+		if (postac1->left_hand.isEmpty == false) {
+			printf("l - %s", postac1->left_hand.wpn->name);
+			if (postac1->left_hand.wpn->AP > 0) { printf("%d AP ", postac1->left_hand.wpn->AP); }
+			if (postac1->left_hand.wpn->AS > 0) { printf("%d AS ", postac1->left_hand.wpn->AS); }
+			if (postac1->left_hand.wpn->def > 0) { printf("%d def ", postac1->left_hand.wpn->def); }
+			printf("\n");
+		}	
+	}
+	if (postac1->left_hand.isEmpty == false) {
+		printf("l - %s", postac1->left_hand.wpn->name);
+		if (postac1->left_hand.wpn->AP > 0) { printf("%d AP ", postac1->left_hand.wpn->AP); }
+		if (postac1->left_hand.wpn->AS > 0) { printf("%d AS ", postac1->left_hand.wpn->AS); }
+		if (postac1->left_hand.wpn->def > 0) { printf("%d def ", postac1->left_hand.wpn->def); }
+		printf("\n");
+	}
+	if (postac1->ring_slot.isEmpty == false) {	//wyrzucenie danych posiadanego pierścienia
+		printf("i - %s, %d LUCK\n", postac1->ring_slot.wpn->name, postac1->ring_slot.wpn->luck_modifier);
+	}
+	if (postac1->ring_slot2.isEmpty == false) {	//wyrzucenie danych posiadanego drugiego pierścienia
+		printf("o - %s, %d LUCK\n", postac1->ring_slot2.wpn->name, postac1->ring_slot2.wpn->luck_modifier);
+	}
+
+
+	if (postac1->potion_slot.isEmpty == false) {	//wyrzucenie danych posiadanej mikstury
+		printf("z - %s, %d HP\n", postac1->potion_slot.wpn->name, postac1->potion_slot.wpn->health_reg);
+	}
+	if (postac1->potion_slot2.isEmpty == false) {	//wyrzucenie danych posiadanej mikstury
+		printf("x - %s, %d HP\n", postac1->potion_slot2.wpn->name, postac1->potion_slot2.wpn->health_reg);
+	}
+	if (postac1->potion_slot3.isEmpty == false) {	//wyrzucenie danych posiadanej mikstury
+		printf("c - %s, %d HP\n", postac1->potion_slot3.wpn->name, postac1->potion_slot3.wpn->health_reg);
+	}
+	if (postac1->potion_slot4.isEmpty == false) {	//wyrzucenie danych posiadanej mikstury
+		printf("v - %s, %d HP\n", postac1->potion_slot4.wpn->name, postac1->potion_slot4.wpn->health_reg);
+	}
+	if (postac1->potion_slot5.isEmpty == false) {	//wyrzucenie danych posiadanej mikstury
+		printf("b - %s, %d HP\n", postac1->potion_slot5.wpn->name, postac1->potion_slot5.wpn->health_reg);
+	}
+	scanf_s(" %c", &move[0]);
+
+	switch (move[0])
+	{
+	case 'a':	//zdjecie armora
+		if (postac1->armor_slot.isEmpty == false) {
+			printf("\n\t[ZDJMUJESZ ARMOR %s]\n", postac1->armor_slot.wpn->name);
+			item* newItem = postac1->armor_slot.wpn;	//przypisanie itemu do zmiennej newItem
+			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			
+			postac1->armor_slot.isEmpty = true;	
+		}
+		else { printf("\n\t[ARMOR SLOT JEST PUSTY!]\n"); }
+		break;
+	case 'r':	//zdjecie prawej reki
+		if (postac1->right_hand.isEmpty == false) {
+			printf("\n\t[ZDJMUJESZ PRAWY PRZEDMIOT %s]\n", postac1->right_hand.wpn->name);
+			item* newItem = postac1->right_hand.wpn;	//przypisanie itemu do zmiennej newItem
+			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			
+			postac1->right_hand.isEmpty = true;
+		}
+		else { printf("\n\t[PRAWA REKA JEST PUSTA!]\n"); }
+		break;
+	case 'l':	//zdjecie lewej reki
+		if (postac1->left_hand.isEmpty == false) {
+			printf("\n\t[ZDJMUJESZ LEWY PRZEDMIOT %s]\n", postac1->left_hand.wpn->name);
+			item* newItem = postac1->left_hand.wpn;	//przypisanie itemu do zmiennej newItem
+			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			
+			postac1->left_hand.isEmpty = true;
+		}
+		else { printf("\n\t[LEWA REKA JEST PUSTA!]\n"); }
+		break;
+	case 'i':	//zdjecie pierwszego pierścionka
+		if (postac1->ring_slot.isEmpty == false) {
+			printf("\n\t[ZDJMUJESZ PIERŚCIONEK %s]\n", postac1->ring_slot.wpn->name);
+			item* newItem = postac1->ring_slot.wpn;	//przypisanie itemu do zmiennej newItem
+			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			
+			postac1->ring_slot.isEmpty = true;
+		}
+		else { printf("\n\t[PIERŚCIONEK SLOT JEST PUSTY!]\n"); }
+		break;
+	case 'o':	//zdjecie drugiego pierścionka
+		if (postac1->ring_slot2.isEmpty == false) {
+			printf("\n\t[ZDJMUJESZ DRUGI PIERŚCIONEK %s]\n", postac1->ring_slot2.wpn->name);
+			item* newItem = postac1->ring_slot2.wpn;	//przypisanie itemu do zmiennej newItem
+			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			
+			postac1->ring_slot2.isEmpty = true;
+		}
+		else { printf("\n\t[DRUGI PIERŚCIONEK SLOT JEST PUSTY!]\n"); }
+		break;
+	case 't':	//zdjecie dwurecznego
+		if (postac1->right_hand.wpn->isTwoHanded == true) {
+			printf("\n\t[ZDJMUJESZ DWURECZNY PRZEDMIOT %s]\n", postac1->right_hand.wpn->name);
+			item* newItem = postac1->right_hand.wpn;	//przypisanie itemu do zmiennej newItem
+			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			
+			postac1->right_hand.isEmpty = true;
+			postac1->left_hand.isEmpty = true;	//zdjecie przedmiotu z lewej reki, jesli dwureczny
+		}
+		else { printf("\n\t[PRZEDMIOT NIE JEST DWURECZNY!]\n"); }
+		break;
+	case 'z':	//zdjecie mikstury 1
+		if (postac1->potion_slot.isEmpty == false) {
+			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot.wpn->name);
+			item* newItem = postac1->potion_slot.wpn;	//przypisanie itemu do zmiennej newItem
+			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			
+			postac1->potion_slot.isEmpty = true;
+		}
+		else { printf("\n\t[PIERWSZY SLOT MIKSTURY JEST PUSTY!]\n"); }
+		break;
+	case 'x':	//zdjecie mikstury 2
+		if (postac1->potion_slot2.isEmpty == false) {
+			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot2.wpn->name);
+			item* newItem = postac1->potion_slot2.wpn;	//przypisanie itemu do zmiennej newItem
+			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			
+			postac1->potion_slot2.isEmpty = true;
+		}
+		else { printf("\n\t[DRUGI SLOT MIKSTURY JEST PUSTY!]\n"); }
+		break;
+	case 'c':	//zdjecie mikstury 3
+		if (postac1->potion_slot3.isEmpty == false) {
+			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot3.wpn->name);
+			item* newItem = postac1->potion_slot3.wpn;	//przypisanie itemu do zmiennej newItem
+			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			
+			postac1->potion_slot3.isEmpty = true;
+		}
+		else { printf("\n\t[TRZECI SLOT MIKSTURY JEST PUSTY!]\n"); }
+		break;
+	case 'v':	//zdjecie mikstury 4
+		if (postac1->potion_slot4.isEmpty == false) {
+			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot4.wpn->name);
+			item* newItem = postac1->potion_slot4.wpn;	//przypisanie itemu do zmiennej newItem
+			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			
+			postac1->potion_slot4.isEmpty = true;
+		}
+		else { printf("\n\t[CZWARTY SLOT MIKSTURY JEST PUSTY!]\n"); }
+		break;
+	case 'b':	//zdjecie mikstury 5
+		if (postac1->potion_slot5.isEmpty == false) {
+			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot5.wpn->name);
+			item* newItem = postac1->potion_slot5.wpn;	//przypisanie itemu do zmiennej newItem
+			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			
+			postac1->potion_slot5.isEmpty = true;
+		}
+		else { printf("\n\t[PIĄTY SLOT MIKSTURY JEST PUSTY!]\n"); }
+		break;
+	default:
+		printf("\n\t[ZLE WYBRANY PRZEDMIOT DO ZDJECIA]\n");
+		break;
+	}
+}
 void pokaz_postac(postac* postac1) {
 	system("cls");
 	printf("\n"
@@ -1959,7 +2358,7 @@ void pokaz_postac(postac* postac1) {
 
 	model_hero(postac1);
 	show_ekwipunek(postac1);
-	printf("\nq - wychodzenie, w - wkladanie itemow, e - podejrzyj itemy, r - zdejmowanie itemów, t - skillpointy, y - stats\n");
+	printf("\nq - wychodzenie, w - wkladanie itemow, e - zdejmowanie itemów, r - skillpointy, t - stats\n");
 }
 
 
@@ -2216,58 +2615,83 @@ void put_potion_on(postac* postac1, int i, int j, int id) {
 	}
 }
 void put_wpn_on(postac* postac1, int i, int j, int id) {
-	char which;
-	if (postac1->right_hand.isEmpty == true) { printf("\n\t LEWA REKA: EMPTY"); }
-	if (postac1->left_hand.isEmpty == true) { printf("\n\t PRAWA REKA: EMPTY"); }
-	if (postac1->right_hand.isEmpty == false && postac1->left_hand.isEmpty == false) { printf("BRAK PUSTYCH RAK\n"); }
-	printf("Ktora reka? p- prawa, l - lewa");
-	int c;
-	while ((c = getchar()) != '\n' && c != EOF) {} // czyści bufor
-	scanf_s("%c", &which);
-	switch (which) {
-	case 'p':
-		if (postac1->right_hand.isEmpty == true) {
-			if (postac1->right_hand.wpn == nullptr) {
-				postac1->right_hand.wpn = (item*)malloc(sizeof(item));
+	if (postac1->backpack[i][j].AS > postac1->speed) {
+				printf("\n\t[Zbyt duza predkosc broni, nie mozesz jej uzyc]\n");
+				return;
+	}
+	else {
+		if (postac1->backpack[i][j].isTwoHanded == true) {
+			if (postac1->right_hand.isEmpty == true && postac1->left_hand.isEmpty == true) {
+				if (postac1->right_hand.wpn == nullptr) {
+					postac1->right_hand.wpn = (item*)malloc(sizeof(item));
+				}
+				if (postac1->left_hand.wpn == nullptr) {
+					postac1->left_hand.wpn = (item*)malloc(sizeof(item));
+				}
+				*postac1->right_hand.wpn = postac1->backpack[i][j];
+				*postac1->left_hand.wpn = postac1->backpack[i][j];
+				czyszcznie_eq(postac1, id);
+				postac1->attack += postac1->right_hand.wpn->AP;
+				postac1->speed -= postac1->right_hand.wpn->AS;
 			}
-			strcpy_s(postac1->right_hand.wpn->name, sizeof(postac1->ring_slot.wpn->name), postac1->backpack[i][j].name);
-			postac1->right_hand.wpn->AS = postac1->backpack[i][j].AS;
-			postac1->right_hand.wpn->AP = postac1->backpack[i][j].AP;
-			postac1->right_hand.wpn->klasa = postac1->backpack[i][j].klasa;
-			postac1->right_hand.wpn->typ = postac1->backpack[i][j].typ;
+			else {
+				printf("\n\tBron dwureczna, brak wolnej dloni");
 
-			postac1->attack += postac1->right_hand.wpn->AP;
-			postac1->speed -= postac1->right_hand.wpn->AS;
-
-			czyszcznie_eq(postac1, id);
+			}
 		}
 		else {
-			printf("reka zajeta");
-		}
-		break;
-	case 'l':
-		if (postac1->left_hand.isEmpty == true) {
-			if (postac1->left_hand.wpn == nullptr) {
-				postac1->left_hand.wpn = (item*)malloc(sizeof(item));
+			char which;
+			if (postac1->right_hand.isEmpty == true) { printf("\n\t LEWA REKA: EMPTY"); }
+			if (postac1->left_hand.isEmpty == true) { printf("\n\t PRAWA REKA: EMPTY"); }
+			if (postac1->right_hand.isEmpty == false && postac1->left_hand.isEmpty == false) { printf("BRAK PUSTYCH RAK\n"); }
+			printf("Ktora reka? p- prawa, l - lewa");
+			int c;
+			while ((c = getchar()) != '\n' && c != EOF) {} // czyści bufor
+			scanf_s("%c", &which);
+			switch (which) {
+			case 'p':
+				if (postac1->right_hand.isEmpty == true) {
+					if (postac1->right_hand.wpn == nullptr) {
+						postac1->right_hand.wpn = (item*)malloc(sizeof(item));
+					}
+					*postac1->right_hand.wpn = postac1->backpack[i][j];
+					postac1->right_hand.isEmpty = false;
+					czyszcznie_eq(postac1, id);
+
+					postac1->attack += postac1->right_hand.wpn->AP;
+					postac1->speed -= postac1->right_hand.wpn->AS;
+					postac1->def += postac1->right_hand.wpn->def;
+
+				}
+				else {
+					printf("reka zajeta");
+				}
+				break;
+			case 'l':
+				if (postac1->left_hand.isEmpty == true) {
+					if (postac1->left_hand.wpn == nullptr) {
+						postac1->left_hand.wpn = (item*)malloc(sizeof(item));
+					}
+					if (postac1->backpack[i][j].isTwoHanded == false) {
+						*postac1->left_hand.wpn = postac1->backpack[i][j];
+						postac1->left_hand.isEmpty = false;
+						czyszcznie_eq(postac1, id);
+
+						postac1->attack += postac1->left_hand.wpn->AP;
+						postac1->speed -= postac1->left_hand.wpn->AS;
+						postac1->def += postac1->left_hand.wpn->def;
+					}
+				}
+				else {
+					printf("reka zajeta");
+				}
+				break;
+			default:
+
+				break;
+
 			}
-			strcpy_s(postac1->left_hand.wpn->name, sizeof(postac1->left_hand.wpn->name), postac1->backpack[i][j].name);
-			postac1->left_hand.wpn->AS = postac1->backpack[i][j].AS;
-			postac1->left_hand.wpn->AP = postac1->backpack[i][j].AP;
-			postac1->left_hand.wpn->klasa = postac1->backpack[i][j].klasa;
-			postac1->left_hand.wpn->typ = postac1->backpack[i][j].typ;
-
-			postac1->attack += postac1->right_hand.wpn->AP;
-			postac1->speed -= postac1->right_hand.wpn->AS;
-
-			czyszcznie_eq(postac1, id);
 		}
-		else {
-			printf("reka zajeta");
-		}
-		break;
-	default:
-
-		break;
 	}
 }
 void put_ring_on(postac* postac1, int i, int j, int id) {
@@ -2518,25 +2942,33 @@ int main() {
 				pokaz_postac(postac1);
 				scanf_s("%c", &znak, 1);
 
-				if (znak == 't') {
-					char znak2[1];
-					do {
-						skillpoint_distribution(postac1, znak2);
-					} while (znak2[0] != 'q');
-				}
 				if (znak == 'w') {
 					char znak2[1];
 					do {
 						put_item_on(postac1, znak2);
 					} while (znak2[0] != 'q');
 				}
-				if (znak == 'y') {
+				if (znak == 'e') {
+					char znak2[1];
+					do {
+						take_down_item(postac1, znak2);
+					} while (znak2[0] != 'q');
+				}
+				if (znak == 'r') {
+					char znak2[1];
+					do {
+						skillpoint_distribution(postac1, znak2);
+					} while (znak2[0] != 'q');
+				}
+				
+				if (znak == 't') {
 					char znak2[1];
 					do {
 						system("cls");
 						show_stats(postac1, znak2);
 					} while (znak2[0] != 'q');
 				}
+				
 
 			} while (znak != 'q');
 			system("cls");
