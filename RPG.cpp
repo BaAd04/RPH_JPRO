@@ -548,27 +548,26 @@ item* generate_weapon(postac* postac1, int klasa) {
 	case 0://klasa zardzewiale
 		wpn->AP = wpn->AP * 0.5;
 		wpn->def =wpn->def * 0.5;
-		wpn->AS = wpn->AS * 0.5;
+		
 		break;
 	case 2:	//klasa rzadkie (klasa normalne nie wymaga zmian)
 		wpn->def = wpn->def * 1.2 + postac1->luck * 0.1;
 		wpn->AP = wpn->AP * 1.2 + postac1->luck * 0.1;
-		wpn->AS = wpn->AS * 1.2 + postac1->luck * 0.1;
+		
 		break;
 	case 3:	//klasa epicka	150% + 05luck
 		wpn->def = wpn->def * 1.5 + postac1->luck * 0.5;
 		wpn->AP = wpn->AP * 1.5 + postac1->luck * 0.5;
-		wpn->AS = wpn->AS * 1.5 + postac1->luck * 0.5;
+		
 		break;
 	case 4: //klasa legendarna	300% + luck
 		wpn->def = wpn->def * 3 + postac1->luck ;
 		wpn->AP = wpn->AP * 3 + postac1->luck ;
-		wpn->AS = wpn->AS * 3 + postac1->luck ;
+		
 		break;
 	case 5:	//destroyer 500% + 200luck
 		wpn->def = wpn->def * 5 + postac1->luck * 2;
 		wpn->AP = wpn->AP * 5 + postac1->luck * 2;
-		wpn->AS = wpn->AS * 5 + postac1->luck * 2;
 		break;
 	default:
 		break;
@@ -1239,6 +1238,7 @@ void pick_item(item* newItem, postac* postac1) {
 		printf("blad switcha %s ", newItem->name);
 		break;
 	}
+	printf("%LVL ", newItem->lvl);
 	if (newItem->AP > 0) {
 		printf("ATK: %d ", newItem->AP);
 	}
@@ -1873,15 +1873,35 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 	switch (model) {
 	case 1:	//dwureczny miecz
 		printf("\n"
-			"              {}	\n"
-			"             {{}}	\n"
-			"             {{}}	\n"
-			"              {}	\n"
+			"              {}	[IMIE] = %s\n"
+			"             {{}}	\t[LEVEL] = %d\t\t[ARMOR-SLOT] = ", postac1->name, postac1->lvl);
+		if (postac1->armor_slot.isEmpty == false) {
+			printf("%s\n", postac1->armor_slot.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
+			"             {{}}			[HEALTH] = %d/%d\n"
+			"              {}	\t[ATTACK] = %d\t\t[LEFT  HAND] = ", postac1->health, postac1->max_hp[postac1->lvl - 1], postac1->attack);
+		if (postac1->left_hand.isEmpty == false) {
+			printf("%s\n", postac1->left_hand.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
 			"            .-''-.	\n"
-			"           /  __  \	\n"
+			"           /  __  \	\t[STAMINA] = %d\t\t[RIGHT HAND] = ", postac1->xp, postac1->max_xp[postac1->lvl - 1], postac1->stamina);
+		if (postac1->right_hand.isEmpty == false) {
+			printf("%s\n", postac1->right_hand.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
 			"          /.-'  '-.\	\n"
-			"          \::.  .::/	\n"
-			"           \'    '/	\n"
+			"          \::.  .::/	\t[DEF] = %d\t\t[FIRST RING] = ", postac1->hunger, postac1->def);
+		if (postac1->ring_slot.isEmpty == false) {
+			printf("%s\n", postac1->ring_slot.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
+			"           \'    '/	\t[SPEED] = %d\n"
 			"      __ ___)    (___ __	\n"
 			"    .'   \\        //   `.	\n"
 			"   /     | '-.__.-' |     \	\n"
@@ -1911,15 +1931,35 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 		break;
 	case 2:	//miecz prawa
 		printf("\n"
-			" /\	\n"
+			" /\	[IMIE] = %s\n"
+			" ||	\t[LEVEL] = %d\t\t[ARMOR-SLOT] = ", postac1->name, postac1->lvl);
+		if (postac1->armor_slot.isEmpty == false) {
+			printf("%s\n", postac1->armor_slot.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
 			" ||	\n"
-			" ||	\n"
-			" ||	\n"
+			" ||	\t[ATTACK] = %d\t\t[LEFT  HAND] = ", postac1->health, postac1->max_hp[postac1->lvl - 1], postac1->attack);
+		if (postac1->left_hand.isEmpty == false) {
+			printf("%s\n", postac1->left_hand.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
 			" ||           {}	\n"
-			" ||          .--.	\n"
+			" ||          .--.	\t[STAMINA] = %d\t\t[RIGHT HAND] = ", postac1->xp, postac1->max_xp[postac1->lvl - 1], postac1->stamina);
+		if (postac1->right_hand.isEmpty == false) {
+			printf("%s\n", postac1->right_hand.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
 			" ||         /.--.\	\n"
-			" ||         |====|	\n"
-			" ||         |`::`|	\n"
+			" ||         |====|	\t[DEF] = %d\t\t[FIRST RING] = ", postac1->hunger, postac1->def);
+		if (postac1->ring_slot.isEmpty == false) {
+			printf("%s\n", postac1->ring_slot.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
+			" ||         |`::`|	\t[SPEED] = %d\n"
 			"_||_    .-;`\..../`;-. \n"
 			" /\\   /  |...::...|  \ \n"
 			" |:'\ |   /'''::'''\   | \n"
@@ -1939,15 +1979,35 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 	case 3://miecz lewa
 
 		printf("\n"
-			" 		               /\	\n"
-			"		               ||	\n"
-			"				       ||	\n"
-			"					   ||	\n"
+			" 		               /\	[IMIE] = %s\n"
+			"		               ||	\t[LEVEL] = %d\t\t[ARMOR-SLOT] = ", postac1->name, postac1->lvl);
+		if (postac1->armor_slot.isEmpty == false) {
+			printf("%s\n", postac1->armor_slot.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
+			"				       ||			[HEALTH] = %d/%d\n"
+			"					   ||	\t[ATTACK] = %d\t\t[LEFT  HAND] = ", postac1->health, postac1->max_hp[postac1->lvl - 1], postac1->attack);
+		if (postac1->left_hand.isEmpty == false) {
+			printf("%s\n", postac1->left_hand.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
 			"      	   {}	       ||	\n"
-			"         .--.	       ||		\n"
+			"         .--.	       ||		\t[STAMINA] = %d\t\t[RIGHT HAND] = ", postac1->xp, postac1->max_xp[postac1->lvl - 1], postac1->stamina);
+		if (postac1->right_hand.isEmpty == false) {
+			printf("%s\n", postac1->right_hand.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
 			"        /.--.\	       ||	\n"
-			"        |====|	       ||	\n"
-			"        |`::`|	       ||	\n"
+			"        |====|	       ||	\t[DEF] = %d\t\t[FIRST RING] = ", postac1->hunger, postac1->def);
+		if (postac1->ring_slot.isEmpty == false) {
+			printf("%s\n", postac1->ring_slot.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
+			"        |`::`|	       ||	\t[SPEED] = %d\n"
 			"   .-;`\..../`;-.    _||_	\n"
 			"  /  |...::...|  \   //\	\n"
 			"  |   /'''::'''\   | /`:|	\n"
@@ -1974,15 +2034,35 @@ void model_hero(postac* postac1) {					//model asci bedzie sie roznil w zaleznos
 	case 8:	//miecz w prawej + tarcza
 		printf("\n"
 
-			" /\	\n"
-			" ||	\n"
-			" ||	\n"
-			" ||			\n"
+			" /\	[IMIE] = %s\n"
+			" ||	\t[LEVEL] = %d\t\t[ARMOR-SLOT] = ", postac1->name, postac1->lvl);
+		if (postac1->armor_slot.isEmpty == false) {
+			printf("%s\n", postac1->armor_slot.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
+			" ||				[HEALTH] = %d/%d\n"
+			" ||			\t[ATTACK] = %d\t\t[LEFT  HAND] = ", postac1->health, postac1->max_hp[postac1->lvl - 1], postac1->attack);
+		if (postac1->left_hand.isEmpty == false) {
+			printf("%s\n", postac1->left_hand.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
 			" ||           {}	\n"
-			" ||          .--.	\n"
+			" ||          .--.	\t[STAMINA] = %d\t\t[RIGHT HAND] = ", postac1->xp, postac1->max_xp[postac1->lvl - 1], postac1->stamina);
+		if (postac1->right_hand.isEmpty == false) {
+			printf("%s\n", postac1->right_hand.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
 			" ||         /.--.\	\n"
-			" ||         |====|	\n"
-			" ||         |`::`|	\n"
+			" ||         |====|	\t[DEF] = %d\t\t[FIRST RING] = ", postac1->hunger, postac1->def);
+		if (postac1->ring_slot.isEmpty == false) {
+			printf("%s\n", postac1->ring_slot.wpn->name);
+		}
+		else { printf("[XXX]\n"); }
+		printf(
+			" ||         |`::`|	\t[SPEED] = %d\n"
 			"_||_    .-;`\..../`;_.-^-._	\n"
 			" /\\   /  |...::..|`   :   `|	\n"
 			" |:'\ |   /'''::''|   .:.   |	\n"
@@ -2143,6 +2223,7 @@ void show_ekwipunek(postac* postac1) {
 					break;
 				}
 				printf(" %s ", postac1->backpack[i][j].name);
+				printf("%d LVL ", postac1->backpack[i][j].lvl);
 				if (postac1->backpack[i][j].AP > 0) {
 					printf("ATK: %d ", postac1->backpack[i][j].AP);
 				}
@@ -2525,10 +2606,10 @@ void put_armor_on(postac* postac1, int i, int j, int id) {
 	if (postac1->armor_slot.wpn == nullptr) {
 		postac1->armor_slot.wpn = (item*)malloc(sizeof(item));
 	}
-	postac1->armor_slot.isEmpty = false;
-	strcpy_s(postac1->armor_slot.wpn->name, sizeof(postac1->armor_slot.wpn->name), postac1->backpack[i][j].name);
-	postac1->armor_slot.wpn->armorpoints = postac1->backpack[i][j].armorpoints;
-	postac1->armor_slot.wpn->def = postac1->backpack[i][j].def;
+	if (postac1->armor_slot.isEmpty == true){
+		postac1->armor_slot.isEmpty = false; 
+		*(postac1->armor_slot.wpn) = postac1->backpack[i][j]; }
+	
 
 	postac1->def += postac1->armor_slot.wpn->def;
 	postac1->def += postac1->armor_slot.wpn->def * 0.5;
@@ -2555,9 +2636,7 @@ void put_potion_on(postac* postac1, int i, int j, int id) {
 		}
 		if (postac1->potion_slot.isEmpty == true) {
 			postac1->potion_slot.isEmpty = false;
-			strcpy_s(postac1->potion_slot.wpn->name, sizeof(postac1->potion_slot.wpn->name), postac1->backpack[i][j].name);
-			postac1->potion_slot.wpn->hp_modifier = postac1->backpack[i][j].hp_modifier;
-			postac1->potion_slot.wpn->typ = postac1->backpack[i][j].typ;
+			*(postac1->potion_slot.wpn) = postac1->backpack[i][j];
 			czyszcznie_eq(postac1, id);
 		}
 		break;
@@ -2567,9 +2646,7 @@ void put_potion_on(postac* postac1, int i, int j, int id) {
 		}
 		if (postac1->potion_slot2.isEmpty == true) {
 			postac1->potion_slot2.isEmpty = false;
-			strcpy_s(postac1->potion_slot2.wpn->name, sizeof(postac1->potion_slot2.wpn->name), postac1->backpack[i][j].name);
-			postac1->potion_slot2.wpn->hp_modifier = postac1->backpack[i][j].hp_modifier;
-			postac1->potion_slot2.wpn->typ = postac1->backpack[i][j].typ;
+			*(postac1->potion_slot2.wpn) = postac1->backpack[i][j];
 			czyszcznie_eq(postac1, id);
 		}
 		break;
@@ -2579,9 +2656,7 @@ void put_potion_on(postac* postac1, int i, int j, int id) {
 		}
 		if (postac1->potion_slot3.isEmpty == true) {
 			postac1->potion_slot3.isEmpty = false;
-			strcpy_s(postac1->potion_slot3.wpn->name, sizeof(postac1->potion_slot3.wpn->name), postac1->backpack[i][j].name);
-			postac1->potion_slot3.wpn->hp_modifier = postac1->backpack[i][j].hp_modifier;
-			postac1->potion_slot3.wpn->typ = postac1->backpack[i][j].typ;
+			*(postac1->potion_slot3.wpn) = postac1->backpack[i][j];
 			czyszcznie_eq(postac1, id);
 		}
 		break;
@@ -2591,9 +2666,7 @@ void put_potion_on(postac* postac1, int i, int j, int id) {
 		}
 		if (postac1->potion_slot4.isEmpty == true) {
 			postac1->potion_slot4.isEmpty = false;
-			strcpy_s(postac1->potion_slot4.wpn->name, sizeof(postac1->potion_slot4.wpn->name), postac1->backpack[i][j].name);
-			postac1->potion_slot4.wpn->hp_modifier = postac1->backpack[i][j].hp_modifier;
-			postac1->potion_slot4.wpn->typ = postac1->backpack[i][j].typ;
+			*(postac1->potion_slot4.wpn) = postac1->backpack[i][j];
 			czyszcznie_eq(postac1, id);
 		}
 		break;
@@ -2603,9 +2676,7 @@ void put_potion_on(postac* postac1, int i, int j, int id) {
 		}
 		if (postac1->potion_slot5.isEmpty == true) {
 			postac1->potion_slot5.isEmpty = false;
-			strcpy_s(postac1->potion_slot5.wpn->name, sizeof(postac1->potion_slot5.wpn->name), postac1->backpack[i][j].name);
-			postac1->potion_slot5.wpn->hp_modifier = postac1->backpack[i][j].hp_modifier;
-			postac1->potion_slot5.wpn->typ = postac1->backpack[i][j].typ;
+			*(postac1->potion_slot5.wpn) = postac1->backpack[i][j];
 			czyszcznie_eq(postac1, id);
 		}
 		break;
@@ -2641,10 +2712,11 @@ void put_wpn_on(postac* postac1, int i, int j, int id) {
 		}
 		else {
 			char which;
-			if (postac1->right_hand.isEmpty == true) { printf("\n\t LEWA REKA: EMPTY"); }
-			if (postac1->left_hand.isEmpty == true) { printf("\n\t PRAWA REKA: EMPTY"); }
+			if (postac1->right_hand.isEmpty == true) { printf("\n\t PRAWA REKA: EMPTY"); }
+			if (postac1->left_hand.isEmpty == true) { printf("\n\t LEWA REKA: EMPTY"); }
 			if (postac1->right_hand.isEmpty == false && postac1->left_hand.isEmpty == false) { printf("BRAK PUSTYCH RAK\n"); }
-			printf("Ktora reka? p- prawa, l - lewa");
+
+			printf("\nKtora reka? p- prawa, l - lewa\n");
 			int c;
 			while ((c = getchar()) != '\n' && c != EOF) {} // czyści bufor
 			scanf_s("%c", &which);
@@ -2709,13 +2781,7 @@ void put_ring_on(postac* postac1, int i, int j, int id) {
 		}
 		if (postac1->ring_slot.isEmpty == true) {
 			postac1->ring_slot.isEmpty = false;
-			strcpy_s(postac1->ring_slot.wpn->name, sizeof(postac1->ring_slot.wpn->name), postac1->backpack[i][j].name);
-			postac1->ring_slot.wpn->AS = postac1->backpack[i][j].AS;
-			postac1->ring_slot.wpn->def = postac1->backpack[i][j].def;
-			postac1->ring_slot.wpn->hp_modifier = postac1->backpack[i][j].hp_modifier;
-			postac1->ring_slot.wpn->AP = postac1->backpack[i][j].AP;
-			postac1->ring_slot.wpn->luck_modifier = postac1->backpack[i][j].luck_modifier;
-			postac1->ring_slot.wpn->typ = postac1->backpack[i][j].typ;
+			*(postac1->ring_slot.wpn) = postac1->backpack[i][j];
 
 			postac1->attack += postac1->ring_slot.wpn->AP;
 			postac1->speed += postac1->ring_slot.wpn->AS;
@@ -2737,12 +2803,7 @@ void put_ring_on(postac* postac1, int i, int j, int id) {
 		if (postac1->ring_slot2.isEmpty == true) {
 			postac1->ring_slot2.isEmpty = false;
 			strcpy_s(postac1->ring_slot2.wpn->name, sizeof(postac1->ring_slot2.wpn->name), postac1->backpack[i][j].name);
-			postac1->ring_slot2.wpn->AS = postac1->backpack[i][j].AS;
-			postac1->ring_slot2.wpn->def = postac1->backpack[i][j].def;
-			postac1->ring_slot2.wpn->hp_modifier = postac1->backpack[i][j].hp_modifier;
-			postac1->ring_slot2.wpn->AP = postac1->backpack[i][j].AP;
-			postac1->ring_slot2.wpn->luck_modifier = postac1->backpack[i][j].luck_modifier;
-			postac1->ring_slot2.wpn->typ = postac1->backpack[i][j].typ;
+			*(postac1->ring_slot2.wpn) = postac1->backpack[i][j];
 
 			postac1->attack += postac1->ring_slot2.wpn->AP;
 			postac1->speed += postac1->ring_slot2.wpn->AS;
@@ -2892,38 +2953,70 @@ void effects_impact(postac* postac1) {
 	}
 }
 
+void show_saves() {
+	WIN32_FIND_DATA findFileData;
+	HANDLE hFind;
+
+	const char* folder = "saves";	//folder w ktorym szukamy 
+
+	char searchPath[MAX_PATH];	//droga do plikow
+	snprintf(searchPath, MAX_PATH, "%s\\*", folder);
+
+	//hFind = FindFirstFile(searchPath, &findFileData);	
+
+	if (hFind == INVALID_HANDLE_VALUE) {
+		printf("Błąd otwarcia folderu: %s\n", folder);
+		
+	}
+
+	do {
+		if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+			printf("Plik: %s\n", findFileData.cFileName);
+		}
+	} while (FindNextFile(hFind, &findFileData));
+
+	FindClose(hFind);
+	}
+
 int main() {
 
 	SetConsoleOutputCP(CP_UTF8);
 	srand(time(NULL));
-
-	int mapx_size = 10;
-	int mapy_size = 15;
-
-	char nazwa[10];
-
-	char** mapa = (char**)malloc(sizeof(char*) * mapx_size);
-	for (int i = 0; i < mapx_size; i++) {
-		mapa[i] = (char*)malloc(sizeof(char) * mapy_size);
-	}
+	
 
 
+	bool isSave = false;
 
-	printf("\t[PODAJ SWOJE IMIE:]\n\t");
-	scanf_s("%9s", nazwa, (unsigned)_countof(nazwa));
-	int c;
-	while ((c = getchar()) != '\n' && c != EOF) {}
+	//show_saves();
 
-	postac* postac1 = generate_postac(nazwa);
 
-	generate_map(mapa, mapx_size, mapy_size, postac1);
+		int mapx_size = 10;
+		int mapy_size = 15;
 
-	while (postac1->skillpoints > 0) {
-		char move[1];
-		postac1->statystyki->skillpoints_got = 20;
-		skillpoint_distribution(postac1, move);
-	}
+		char nazwa[10];
 
+		char** mapa = (char**)malloc(sizeof(char*) * mapx_size);
+		for (int i = 0; i < mapx_size; i++) {
+			mapa[i] = (char*)malloc(sizeof(char) * mapy_size);
+		}
+
+
+
+		printf("\t[PODAJ SWOJE IMIE:]\n\t");
+		scanf_s("%9s", nazwa, (unsigned)_countof(nazwa));
+		int c;
+		while ((c = getchar()) != '\n' && c != EOF) {}
+	
+		postac* postac1 = generate_postac(nazwa);
+
+		generate_map(mapa, mapx_size, mapy_size, postac1);
+
+		while (postac1->skillpoints > 0) {
+			char move[1];
+			postac1->statystyki->skillpoints_got = 20;
+			skillpoint_distribution(postac1, move);
+		}
+	
 	int runda = 1;
 
 	while (postac1->health > 0) {
