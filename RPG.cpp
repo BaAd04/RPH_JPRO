@@ -1207,7 +1207,9 @@ void put_effect(enemy* wrog, postac* postac1) {
 		}
 
 	}
-void pick_item(item* newItem, postac* postac1) {
+void pick_item(item* newItem, postac* postac1, int in) {
+	char move[2];
+	if (in == 1) {	//jesli in ==1 to pytaj czy chce wlozyc item
 	printf("\n\t[WYLECIAŁ ");
 	switch (newItem->klasa) {
 	case 0:
@@ -1387,11 +1389,12 @@ void pick_item(item* newItem, postac* postac1) {
 		break;
 	}
 	printf("\ng - wez do ekwipunku, inny klawisz - porzuc [NIE MOZNA COFNAC]\n");
-	char move[2];
+	
 	char c;
 	while ((c = getchar()) != '\n' && c != EOF) {}
 	scanf_s("%c", &move[0], 1);
-	if (move[0] == 'g') {
+	}
+	if (move[0] == 'g' || in==0) {	//jesli in 0 to nie pytaj
 
 		int szerokosc = newItem->szerokosc;
 		postac1->statystyki->items_picked++;
@@ -1428,23 +1431,23 @@ void post_fight(postac* postac1, enemy* wrog) {
 		if (type_rand >= 0 && type_rand < 2) {	//20% na bron			0,1
 			item_type = 1;
 			item* newItem = generate_weapon(postac1, klasa_itema);
-			pick_item(newItem, postac1);
+			pick_item(newItem, postac1, 1);
 
 		}
 		else if (type_rand >= 2 && type_rand < 4) {	//zbroja 20%		2,3
 			item_type = 2;
 			item* newItem = generate_armor(postac1, klasa_itema);
-			pick_item(newItem, postac1);
+			pick_item(newItem, postac1, 1);
 		}
 		else if (type_rand >= 4 && type_rand < 7) {	//potion 30%	4,5, 6
 			item_type = 0;
 			item* newItem = generate_potion(postac1, klasa_itema);
-			pick_item(newItem, postac1);
+			pick_item(newItem, postac1, 1);
 		}
 		else if (type_rand >= 6 && type_rand < 10) {	// pierścień 30%	7,8,9
 			item_type = 3;
 			item* newItem = generate_ring(postac1, klasa_itema);
-			pick_item(newItem, postac1);
+			pick_item(newItem, postac1, 1);
 		}
 
 	}
@@ -2310,7 +2313,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->armor_slot.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ ARMOR %s]\n", postac1->armor_slot.wpn->name);
 			item* newItem = postac1->armor_slot.wpn;	//przypisanie itemu do zmiennej newItem
-			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->armor_slot.isEmpty = true;	
 		}
@@ -2320,7 +2323,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->right_hand.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ PRAWY PRZEDMIOT %s]\n", postac1->right_hand.wpn->name);
 			item* newItem = postac1->right_hand.wpn;	//przypisanie itemu do zmiennej newItem
-			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->right_hand.isEmpty = true;
 		}
@@ -2330,7 +2333,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->left_hand.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ LEWY PRZEDMIOT %s]\n", postac1->left_hand.wpn->name);
 			item* newItem = postac1->left_hand.wpn;	//przypisanie itemu do zmiennej newItem
-			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->left_hand.isEmpty = true;
 		}
@@ -2340,7 +2343,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->ring_slot.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ PIERŚCIONEK %s]\n", postac1->ring_slot.wpn->name);
 			item* newItem = postac1->ring_slot.wpn;	//przypisanie itemu do zmiennej newItem
-			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->ring_slot.isEmpty = true;
 		}
@@ -2350,7 +2353,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->ring_slot2.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ DRUGI PIERŚCIONEK %s]\n", postac1->ring_slot2.wpn->name);
 			item* newItem = postac1->ring_slot2.wpn;	//przypisanie itemu do zmiennej newItem
-			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->ring_slot2.isEmpty = true;
 		}
@@ -2360,7 +2363,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->right_hand.wpn->isTwoHanded == true) {
 			printf("\n\t[ZDJMUJESZ DWURECZNY PRZEDMIOT %s]\n", postac1->right_hand.wpn->name);
 			item* newItem = postac1->right_hand.wpn;	//przypisanie itemu do zmiennej newItem
-			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->right_hand.isEmpty = true;
 			postac1->left_hand.isEmpty = true;	//zdjecie przedmiotu z lewej reki, jesli dwureczny
@@ -2371,7 +2374,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->potion_slot.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot.wpn->name);
 			item* newItem = postac1->potion_slot.wpn;	//przypisanie itemu do zmiennej newItem
-			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->potion_slot.isEmpty = true;
 		}
@@ -2381,7 +2384,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->potion_slot2.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot2.wpn->name);
 			item* newItem = postac1->potion_slot2.wpn;	//przypisanie itemu do zmiennej newItem
-			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->potion_slot2.isEmpty = true;
 		}
@@ -2391,7 +2394,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->potion_slot3.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot3.wpn->name);
 			item* newItem = postac1->potion_slot3.wpn;	//przypisanie itemu do zmiennej newItem
-			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->potion_slot3.isEmpty = true;
 		}
@@ -2401,7 +2404,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->potion_slot4.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot4.wpn->name);
 			item* newItem = postac1->potion_slot4.wpn;	//przypisanie itemu do zmiennej newItem
-			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->potion_slot4.isEmpty = true;
 		}
@@ -2411,7 +2414,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->potion_slot5.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot5.wpn->name);
 			item* newItem = postac1->potion_slot5.wpn;	//przypisanie itemu do zmiennej newItem
-			pick_item(newItem, postac1);	//dodanie itemu do ekwipunku
+			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->potion_slot5.isEmpty = true;
 		}
@@ -2923,8 +2926,8 @@ void save_game(postac* postac1, char** mapa, int mapx_size, int mapy_size, int r
 		printf("Nie mozna otworzyc pliku do zapisu.\n");
 		return;
 	}
-	fprintf(file, " %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",	//postac
-		postac1->lvl, postac1->health, postac1->attack, postac1->xp, postac1->stamina, postac1->hunger, postac1->posx, postac1->posy, postac1->def, postac1->speed,
+	fprintf(file, "%s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",	//postac
+		postac1->name, postac1->lvl, postac1->health, postac1->attack, postac1->xp, postac1->stamina, postac1->hunger, postac1->posx, postac1->posy, postac1->def, postac1->speed,
 		postac1->luck, postac1->skillpoints, postac1->cash, postac1->backpack_height, postac1->backpack_width, postac1->effect, postac1->effect_duration, runda);
 	fprintf(file, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",	//staty
 		postac1->statystyki->enemies_slayed, postac1->statystyki->goblins_slayed, postac1->statystyki->zombie_slayed, postac1->statystyki->orcs_slayed, postac1->statystyki->wizard_slayed, postac1->statystyki->hits_given, postac1->statystyki->dmg_given, postac1->statystyki->hits_taken, postac1->statystyki->dmg_taken, postac1->statystyki->skillpoints_got, postac1->statystyki->cash_got, postac1->statystyki->items_picked, postac1->statystyki->potions_used, postac1->statystyki->hp_healed, postac1->statystyki->poisons_got, postac1->statystyki->poisond_dmg_got, postac1->statystyki->hungers_got, postac1->statystyki->xp_got, postac1->statystyki->moved, postac1->statystyki->moved_up, postac1->statystyki->moved_down, postac1->statystyki->moved_left, postac1->statystyki->moved_right);
@@ -2984,7 +2987,7 @@ void save_game(postac* postac1, char** mapa, int mapx_size, int mapy_size, int r
 	}
 	else { fprintf(file, "0 \n"); }	//j
 
-	for (int i = 0; i < mapx_size; i++) {
+	for (int i = 0; i < mapx_size; i++) {	//zapisanie mapy
 		for (int j = 0; j < mapy_size; j++) {
 			fprintf(file, "%c", mapa[i][j]);
 		}
@@ -2995,7 +2998,7 @@ void save_game(postac* postac1, char** mapa, int mapx_size, int mapy_size, int r
 		for (int j = 0; j < postac1->backpack_width; j++) {
 			if (postac1->backpack[i][j].id != 0 && postac1->backpack[i][j].id > last_item_id) {
 				last_item_id = postac1->backpack[i][j].id;
-				fprintf(file, "%d %d %d %d %d %d %d %d %d %d %d %s %d %d %d %b %d\n", postac1->backpack[i][j].lvl, postac1->backpack[i][j].typ, postac1->backpack[i][j].klasa, postac1->backpack[i][j].AP , postac1->backpack[i][j].AS,
+				fprintf(file, "%d %d %d %d %d %d %d %d %d %d %d %s %d %d %d %b %d\n", postac1->backpack[i][j].typ, postac1->backpack[i][j].lvl, postac1->backpack[i][j].klasa, postac1->backpack[i][j].AP , postac1->backpack[i][j].AS,
 					postac1->backpack[i][j].def, postac1->backpack[i][j].armorpoints, postac1->backpack[i][j].hp_modifier, postac1->backpack[i][j].potion_type, postac1->backpack[i][j].weapon_type, 
 					postac1->backpack[i][j].name, postac1->backpack[i][j].luck_modifier, postac1->backpack[i][j].szerokosc, postac1->backpack[i][j].wysokosc, postac1->backpack[i][j].isTwoHanded, postac1->backpack[i][j].weight
 				);
@@ -3019,6 +3022,13 @@ void load_game() {
 	printf("Który save wczytac? (pelna nazwa)");
 
 	fopen_s(&file, "saves/save.txt", "r");
+	if (file == NULL) {
+		// Plik nie istnieje, więc go utwórz
+		fopen_s(&file, "saves/save.txt", "w");
+		if (file != NULL) {
+			fclose(file);
+		}
+	}
 	char linia[9];
 	printf("\nDostępne zapisy:\n");
 	while (fgets(linia, sizeof(linia), file) != NULL) {
@@ -3066,7 +3076,8 @@ void load_game() {
 
 	fopen_s(&file, filepath, "r");
 	
-	fscanf_s(file, " %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",	//postac
+	fscanf_s(file, "%9s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",	//postac
+		postac1->name, (unsigned)_countof(postac1->name),
 		&postac1->lvl, &postac1->health, &postac1->attack, &postac1->xp, &postac1->stamina, &postac1->hunger, &postac1->posx, &postac1->posy,
 		&postac1->def, &postac1->speed, &postac1->luck, &postac1->skillpoints, &postac1->cash, &postac1->backpack_height, &postac1->backpack_width, 
 		&postac1->effect, &postac1->effect_duration, &runda);
@@ -3101,8 +3112,8 @@ void load_game() {
 
 	fgets(buffer, sizeof(buffer), file);
 	if (buffer[0] != '0') {			//prawa dlon
-		postac1->armor_slot.wpn = (item*)malloc(sizeof(item));
-		postac1->armor_slot.isEmpty = false;
+		postac1->right_hand.wpn = (item*)malloc(sizeof(item));
+		postac1->right_hand.isEmpty = false;
 		sscanf_s(buffer, "%d %s %d %d %d %d %d %d\n", 
 			&postac1->right_hand.wpn->lvl, 
 			postac1->right_hand.wpn->name, (unsigned)_countof(postac1->right_hand.wpn->name),
@@ -3244,7 +3255,55 @@ void load_game() {
 		}
 	}
 
+	//wczytywanie przedmiotow z plecaka
+	while (fgets(buffer, sizeof(buffer), file) != NULL && buffer[0] != '\0' && buffer[0] != '\n') {
+		int lvl, typ, klasa, AP, AS, def, armorpoints, hp_modifier, potion_type, weapon_type, luck_modifier, szerokosc, wysokosc, isTwoHanded, weight;
+		char name[20];
+		int scanned = sscanf_s(buffer, "%d %d %d %d %d %d %d %d %d %d %19s %d %d %d %d %d",
+			&lvl, &typ, &klasa, &AP, &AS, &def, &armorpoints, &hp_modifier, &potion_type, &weapon_type,
+			name, (unsigned)_countof(name), &luck_modifier, &szerokosc, &wysokosc, &isTwoHanded, &weight);
 
+		if (scanned < 17) {
+			// Niepoprawna linia, pomiń
+			continue;
+		}
+		item* newItem = (item*)malloc(sizeof(item));
+		memset(newItem, 0, sizeof(item));
+		newItem->lvl = lvl;
+		newItem->typ = typ;
+		newItem->klasa = klasa;
+		newItem->AP = AP;
+		newItem->AS = AS;
+		newItem->def = def;
+		newItem->armorpoints = armorpoints;
+		newItem->hp_modifier = hp_modifier;
+		newItem->potion_type = potion_type;
+		newItem->weapon_type = weapon_type;
+		strcpy_s(newItem->name, sizeof(newItem->name), name);
+		newItem->luck_modifier = luck_modifier;
+		newItem->szerokosc = szerokosc;
+		newItem->wysokosc = wysokosc;
+		newItem->isTwoHanded = isTwoHanded;
+		newItem->weight = weight;
+
+		// Ustaw flagi typów
+		newItem->isWeapon = (typ == 1);
+		newItem->isArmor = (typ == 2);
+		newItem->isRing = (typ == 3);
+		newItem->isPotion = (typ == 0);
+		for (int i = 0; i < postac1->backpack_height; i++) {
+			for (int j = 0; j < postac1->backpack_width; j++) {
+				if (postac1->backpack[i][j].id == 0) {
+					pick_item(newItem, postac1, 0); // Dodaj przedmiot do plecaka
+					free(newItem);
+					newItem = nullptr;
+					goto next_item; // przejdź do kolejnej linii
+				}
+			}
+		next_item:
+			continue;
+		}
+	}
 
 	fclose(file);
 
