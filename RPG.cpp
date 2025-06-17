@@ -2928,402 +2928,36 @@ void put_item_on(postac* postac1, char move[1]) {
 	}
 }
 /*
-void save_game(postac* postac1, char** mapa, int mapx_size, int mapy_size, int runda) {
-	FILE* file;
-	char savefile[32];
-	snprintf(savefile, sizeof(savefile), "saves/%s.txt", postac1->name);
-	fopen_s(&file, savefile, "w");
-	if (file == NULL) {
-		printf("Nie mozna otworzyc pliku do zapisu.\n");
-		return;
-	}
-	fprintf(file, "%s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",	//postac
-		postac1->name, postac1->lvl, postac1->health, postac1->attack, postac1->xp, postac1->stamina, postac1->hunger, postac1->posx, postac1->posy, postac1->def, postac1->speed,
-		postac1->luck, postac1->skillpoints, postac1->cash, postac1->backpack_height, postac1->backpack_width, postac1->effect, postac1->effect_duration, runda);
-	fprintf(file, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",	//staty
-		postac1->statystyki->enemies_slayed, postac1->statystyki->goblins_slayed, postac1->statystyki->zombie_slayed, postac1->statystyki->orcs_slayed, postac1->statystyki->wizard_slayed, postac1->statystyki->hits_given, postac1->statystyki->dmg_given, postac1->statystyki->hits_taken, postac1->statystyki->dmg_taken, postac1->statystyki->skillpoints_got, postac1->statystyki->cash_got, postac1->statystyki->items_picked, postac1->statystyki->potions_used, postac1->statystyki->hp_healed, postac1->statystyki->poisons_got, postac1->statystyki->poisond_dmg_got, postac1->statystyki->hungers_got, postac1->statystyki->xp_got, postac1->statystyki->moved, postac1->statystyki->moved_up, postac1->statystyki->moved_down, postac1->statystyki->moved_left, postac1->statystyki->moved_right);
-	
-	if(postac1->armor_slot.isEmpty == false) { //armor
-		fprintf(file, "%d %s %d %d %d %d %d %d\n", postac1->armor_slot.wpn->lvl, postac1->armor_slot.wpn->name, postac1->armor_slot.wpn->klasa, postac1->armor_slot.wpn->armorpoints, postac1->armor_slot.wpn->AS,
-			postac1->armor_slot.wpn->def, postac1->armor_slot.wpn->szerokosc, postac1->armor_slot.wpn->wysokosc);
-	}
-	else { fprintf(file, "0 \n"); }	//jesli armor slot jest pusty, zapisuje 0
-
-	if(postac1->right_hand.isEmpty == false) {			//prawa dlon
-		fprintf(file, "%d %s %d %d %d %d %d %d\n", postac1->right_hand.wpn->lvl, postac1->right_hand.wpn->name, postac1->right_hand.wpn->klasa, postac1->right_hand.wpn->AP, postac1->right_hand.wpn->AS,
-			postac1->right_hand.wpn->def, postac1->right_hand.wpn->szerokosc, postac1->right_hand.wpn->wysokosc);
-	}
-	else { fprintf(file, "0 \n"); }	//jesli right hand jest pusty, zapisuje 0
-
-	if(postac1->left_hand.isEmpty == false) {		//lewa dlon
-		fprintf(file, "%d %s %d %d %d %d %d %d\n", postac1->left_hand.wpn->lvl, postac1->left_hand.wpn->name, postac1->left_hand.wpn->klasa, postac1->left_hand.wpn->AP, postac1->left_hand.wpn->AS,
-			postac1->left_hand.wpn->def, postac1->left_hand.wpn->szerokosc, postac1->left_hand.wpn->wysokosc);
-	}
-	else { fprintf(file, "0 \n"); }	//jesli left hand jest pusty, zapisuje 0
-	
-	if (postac1->ring_slot.isEmpty == false) {		//ring
-		fprintf(file, "%d %s %d %d %d %d %d %d %d %d\n", postac1->ring_slot.wpn->lvl, postac1->ring_slot.wpn->name, postac1->ring_slot.wpn->klasa, postac1->ring_slot.wpn->AP, postac1->ring_slot.wpn->AS,
-			postac1->ring_slot.wpn->def, postac1->ring_slot.wpn->luck_modifier, postac1->ring_slot.wpn->hp_modifier, postac1->ring_slot.wpn->szerokosc, postac1->ring_slot.wpn->wysokosc);
-	}
-	else { fprintf(file, "0 \n"); }	//jesli ring jest pusty, zapisuje 0
-
-	if (postac1->ring_slot2.isEmpty == false) {		//ring2
-		fprintf(file, "%d %s %d %d %d %d %d %d %d %d\n", postac1->ring_slot2.wpn->lvl, postac1->ring_slot2.wpn->name, postac1->ring_slot2.wpn->klasa, postac1->ring_slot2.wpn->AP, postac1->ring_slot2.wpn->AS,
-			postac1->ring_slot2.wpn->def, postac1->ring_slot2.wpn->luck_modifier, postac1->ring_slot2.wpn->hp_modifier, postac1->ring_slot2.wpn->szerokosc, postac1->ring_slot2.wpn->wysokosc);
-	}
-	else { fprintf(file, "0 \n"); }	//jesli ring jest pusty, zapisuje 0
-	
-	if (postac1->potion_slot.isEmpty == false) {
-		fprintf(file, "%d %s %d %d %d %d \n", postac1->potion_slot.wpn->lvl, postac1->potion_slot.wpn->name, postac1->potion_slot.wpn->klasa, postac1->potion_slot.wpn->hp_modifier, postac1->potion_slot.wpn->szerokosc, postac1->potion_slot.wpn->wysokosc);
-	}
-	else { fprintf(file, "0 \n"); }	//jesli  pusty, zapisuje 0
-
-	if (postac1->potion_slot2.isEmpty == false) {
-		fprintf(file, "%d %s %d %d %d %d\n", postac1->potion_slot2.wpn->lvl, postac1->potion_slot2.wpn->name, postac1->potion_slot2.wpn->klasa, postac1->potion_slot2.wpn->hp_modifier, postac1->potion_slot2.wpn->szerokosc, postac1->potion_slot2.wpn->wysokosc);
-	}
-	else { fprintf(file, "0 \n"); }	//jesli pusty, zapisuje 0
-
-	if (postac1->potion_slot3.isEmpty == false) {
-		fprintf(file, "%d %s %d %d %d %d\n", postac1->potion_slot3.wpn->lvl, postac1->potion_slot3.wpn->name, postac1->potion_slot3.wpn->klasa, postac1->potion_slot3.wpn->hp_modifier, postac1->potion_slot3.wpn->szerokosc, postac1->potion_slot3.wpn->wysokosc);
-	}
-	else { fprintf(file, "0 \n"); }	//jesli  pusty, zapisuje 0
-
-	if (postac1->potion_slot4.isEmpty == false) {
-		fprintf(file, "%d %s %d %d %d %d\n", postac1->potion_slot4.wpn->lvl, postac1->potion_slot4.wpn->name, postac1->potion_slot4.wpn->klasa, postac1->potion_slot4.wpn->hp_modifier, postac1->potion_slot4.wpn->szerokosc, postac1->potion_slot4.wpn->wysokosc);
-	}
-	else { fprintf(file, "0 \n"); }	//jesli  pusty, zapisuje 0
-
-	if (postac1->potion_slot5.isEmpty == false) {
-		fprintf(file, "%d %s %d %d %d\n", postac1->potion_slot5.wpn->lvl, postac1->potion_slot5.wpn->name, postac1->potion_slot5.wpn->klasa, postac1->potion_slot5.wpn->hp_modifier, postac1->potion_slot5.wpn->szerokosc, postac1->potion_slot5.wpn->wysokosc);
-	}
-	else { fprintf(file, "0 \n"); }	//j
-
-	for (int i = 0; i < mapx_size; i++) {	//zapisanie mapy
-		for (int j = 0; j < mapy_size; j++) {
-			fprintf(file, "%c", mapa[i][j]);
-		}
-		fprintf(file, "\n");
-	}
-	int last_item_id = -1;
-	for (int i = 0; i < postac1->backpack_height; i++) {
-		for (int j = 0; j < postac1->backpack_width; j++) {
-			if (postac1->backpack[i][j].id != 0 && postac1->backpack[i][j].id > last_item_id) {
-				last_item_id = postac1->backpack[i][j].id;
-				fprintf(file, "%d %d %d %d %d %d %d %d %d %d %d %s %d %d %d %b %d\n", postac1->backpack[i][j].typ, postac1->backpack[i][j].lvl, postac1->backpack[i][j].klasa, postac1->backpack[i][j].AP , postac1->backpack[i][j].AS,
-					postac1->backpack[i][j].def, postac1->backpack[i][j].armorpoints, postac1->backpack[i][j].hp_modifier, postac1->backpack[i][j].potion_type, postac1->backpack[i][j].weapon_type, 
-					postac1->backpack[i][j].name, postac1->backpack[i][j].luck_modifier, postac1->backpack[i][j].szerokosc, postac1->backpack[i][j].wysokosc, postac1->backpack[i][j].isTwoHanded, postac1->backpack[i][j].weight
-				);
-			}
-		}
-	}
-	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-
-	fclose(file);
-	printf("\n\t[ZAPISANO GRĘ]\n\n");
-	fopen_s(&file, "saves/save.txt", "a");
-	fprintf(file, "%s \n",postac1->name);
-	fclose(file);
-	Sleep(200);
-}
-
-void load_game(postac** postac1_ptr, char*** mapa_ptr, int mapx_size, int mapy_size, int* runda) {
-	FILE* file;
-	char filename[9];
-	char filepath[20];
-	printf("Który save wczytac? (pelna nazwa)");
-
-	fopen_s(&file, "saves/save.txt", "r");
-	if (file == NULL) {
-		// Plik nie istnieje, więc go utwórz
-		fopen_s(&file, "saves/save.txt", "w");
-		if (file != NULL) {
-			fclose(file);
-		}
-	}
-	char linia[9];
-	printf("\nDostępne zapisy:\n");
-	while (fgets(linia, sizeof(linia), file) != NULL) {
-		printf("%s", linia);
-	}
-	fclose(file);
+							     _____  _____
+								<     `/     |
+								 >          (
+								|   _     _  |
+								|  |_) | |_) |
+								|  | \ | |   |
+								|            |
+				 ______.______%_|            |__________  _____
+			   _/                                       \|     |
+			  |    funkcje zapisu i odczytu (nie dzialaly)      <
+			  |_____.-._________              ____/|___________|
+								| * 17/06/25 |
+								| + 15/06/25 |
+								|            |
+								|            |
+								|   _        <
+								|__/         |
+								 / `--.      |
+							   %|            |%
+						   |/.%%|          -< @%%%
+						   `\%`@|     v      |@@%@%%    - mfj
+						 .%%%@@@|%    |    % @@@%%@%%%%
+					_.%%%%%%@@@@@@%%_/%\_%@@%%@@@@@@@%%%%%%
 
 
 
-	while (1) {				//sprawdzamy czy taki plik wgl istnieje
-
-		scanf_s("%9s", filename, (unsigned)_countof(filename));
-		if (strcmp(filename, "q")== 0){
-			return;
-		}
-		snprintf(filepath, sizeof(filepath), "saves/%s.txt", filename);
-		fopen_s(&file, filepath, "r");
-		if (file == NULL) {
-			printf("Plik nie istnieje. Podaj poprawną nazwę:\n");
-		}
-		else {
-			fclose(file);
-			break; // wyjście z pętli, jeśli plik istnieje
-		}
-	}
 
 
-	
 
-	snprintf(filename, sizeof(filename), "saves/%s.txt", filename);		//zostaje nazwa rozszerzona o .txt
-	
-
-	postac* postac1 = generate_postac();
-	mapx_size = 10;
-	mapy_size = 15;
-	char** mapa = (char**)malloc(sizeof(char*) * mapx_size);
-	for (int i = 0; i < mapx_size; i++) {
-		mapa[i] = (char*)malloc(sizeof(char) * mapy_size);
-	}
-	generate_map(mapa, mapx_size, mapy_size, postac1);
-
-	
-
-	strcpy_s(postac1->name, sizeof(postac1->name), filename);
-
-	fopen_s(&file, filepath, "r");
-	
-	fscanf_s(file, "%9s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",	//postac
-		postac1->name, (unsigned)_countof(postac1->name),
-		&postac1->lvl, &postac1->health, &postac1->attack, &postac1->xp, &postac1->stamina, &postac1->hunger, &postac1->posx, &postac1->posy,
-		&postac1->def, &postac1->speed, &postac1->luck, &postac1->skillpoints, &postac1->cash, &postac1->backpack_height, &postac1->backpack_width, 
-		&postac1->effect, &postac1->effect_duration, &runda);
-
-	
-	fscanf_s(file, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d",		//staty
-		&postac1->statystyki->enemies_slayed, &postac1->statystyki->goblins_slayed, &postac1->statystyki->zombie_slayed,
-		&postac1->statystyki->orcs_slayed, &postac1->statystyki->wizard_slayed, &postac1->statystyki->hits_given,
-		&postac1->statystyki->dmg_given, &postac1->statystyki->hits_taken, &postac1->statystyki->dmg_taken,
-		&postac1->statystyki->skillpoints_got, &postac1->statystyki->cash_got, &postac1->statystyki->items_picked,
-		&postac1->statystyki->potions_used, &postac1->statystyki->hp_healed, &postac1->statystyki->poisons_got,
-		&postac1->statystyki->poisond_dmg_got, &postac1->statystyki->hungers_got, &postac1->statystyki->xp_got,
-		&postac1->statystyki->moved, &postac1->statystyki->moved_up, &postac1->statystyki->moved_down,
-		&postac1->statystyki->moved_left, &postac1->statystyki->moved_right);
-
-	char buffer[128];
-
-	fgets(buffer, sizeof(buffer), file);
-	if (buffer[0] != '0') { //armor
-		postac1->armor_slot.wpn = (item*)malloc(sizeof(item));
-		postac1->armor_slot.isEmpty = false;
-		sscanf_s(buffer, "%d %20s %d %d %d %d %d %d\n",
-			&postac1->armor_slot.wpn->lvl, 
-			postac1->armor_slot.wpn->name, (unsigned)_countof(postac1->armor_slot.wpn->name),
-			&postac1->armor_slot.wpn->klasa,
-			&postac1->armor_slot.wpn->armorpoints, 
-			&postac1->armor_slot.wpn->AS,
-			&postac1->armor_slot.wpn->def, 
-			&postac1->armor_slot.wpn->szerokosc, 
-			&postac1->armor_slot.wpn->wysokosc);
-	}else {postac1->armor_slot.isEmpty = true;}
-
-	fgets(buffer, sizeof(buffer), file);
-	if (buffer[0] != '0') {			//prawa dlon
-		postac1->right_hand.wpn = (item*)malloc(sizeof(item));
-		postac1->right_hand.isEmpty = false;
-		sscanf_s(buffer, "%d %s %d %d %d %d %d %d\n", 
-			&postac1->right_hand.wpn->lvl, 
-			postac1->right_hand.wpn->name, (unsigned)_countof(postac1->right_hand.wpn->name),
-			&postac1->right_hand.wpn->klasa, 
-			&postac1->right_hand.wpn->AP, 
-			&postac1->right_hand.wpn->AS,
-			&postac1->right_hand.wpn->def, 
-			&postac1->right_hand.wpn->szerokosc, 
-			&postac1->right_hand.wpn->wysokosc);}
-	else(postac1->right_hand.isEmpty = true);	//jesli right hand jest pusty
-
-	fgets(buffer, sizeof(buffer), file);
-	if (buffer[0] != '0') {		//lewa dlon
-		postac1->left_hand.wpn = (item*)malloc(sizeof(item));
-		postac1->left_hand.isEmpty = false;
-		sscanf_s(buffer, "%d %s %d %d %d %d %d %d\n", 
-			&postac1->left_hand.wpn->lvl, 
-			postac1->left_hand.wpn->name, (unsigned)_countof(postac1->armor_slot.wpn->name),
-			&postac1->left_hand.wpn->klasa, 
-			&postac1->left_hand.wpn->AP, 
-			&postac1->left_hand.wpn->AS,
-			&postac1->left_hand.wpn->def, 
-			&postac1->left_hand.wpn->szerokosc, 
-			&postac1->left_hand.wpn->wysokosc);
-	}
-	else { postac1->left_hand.isEmpty = true; }	//jesli left hand jest pusty
-
-	fgets(buffer, sizeof(buffer), file);
-	if (buffer[0] != '0') {		//ring
-		postac1->ring_slot.wpn = (item*)malloc(sizeof(item));
-		postac1->ring_slot.isEmpty = false;
-		sscanf_s(buffer, "%d %s %d %d %d %d %d %d %d %d\n", 
-			&postac1->ring_slot.wpn->lvl, 
-			postac1->ring_slot.wpn->name, (unsigned)_countof(postac1->ring_slot.wpn->name),
-			&postac1->ring_slot.wpn->klasa, 
-			&postac1->ring_slot.wpn->AP, 
-			&postac1->ring_slot.wpn->AS,
-			&postac1->ring_slot.wpn->def, 
-			&postac1->ring_slot.wpn->luck_modifier, 
-			&postac1->ring_slot.wpn->hp_modifier, 
-			&postac1->ring_slot.wpn->szerokosc, 
-			&postac1->ring_slot.wpn->wysokosc);
-	}
-	else { postac1->ring_slot.isEmpty = true; }	//jesli ring jest pusty
-
-	fgets(buffer, sizeof(buffer), file);
-	if (buffer[0] != '0') {		//ring2
-		postac1->ring_slot2.wpn = (item*)malloc(sizeof(item));
-		postac1->ring_slot2.isEmpty = false;
-		sscanf_s(buffer, "%d %s %d %d %d %d %d %d %d %d\n", 
-			&postac1->ring_slot2.wpn->lvl, 
-			postac1->ring_slot2.wpn->name, (unsigned)_countof(postac1->ring_slot2.wpn->name),
-			&postac1->ring_slot2.wpn->klasa, 
-			&postac1->ring_slot2.wpn->AP, 
-			&postac1->ring_slot2.wpn->AS,
-			&postac1->ring_slot2.wpn->def, 
-			&postac1->ring_slot2.wpn->luck_modifier, 
-			&postac1->ring_slot2.wpn->hp_modifier, 
-			&postac1->ring_slot2.wpn->szerokosc, 
-			&postac1->ring_slot2.wpn->wysokosc);
-	}
-	else { postac1->ring_slot2.isEmpty = true; }	//jesli ring2 jest pusty
-
-	fgets(buffer, sizeof(buffer), file);
-	 if(buffer[0] != '0') {
-		 //potion slot
-		 postac1->potion_slot.wpn = (item*)malloc(sizeof(item));
-		 postac1->potion_slot.isEmpty = false;
-		 sscanf_s(buffer, "%d %s %d %d %d %d\n",
-			&postac1->potion_slot.wpn->lvl, 
-			postac1->potion_slot.wpn->name, (unsigned)_countof(postac1->potion_slot.wpn->name),
-			&postac1->potion_slot.wpn->klasa, 
-			&postac1->potion_slot.wpn->hp_modifier,
-			&postac1->potion_slot.wpn->szerokosc, 
-			&postac1->potion_slot.wpn->wysokosc);
-	}
-
-	 fgets(buffer, sizeof(buffer), file);
-	if (buffer[0] != '0') {
-		//potion slot2
-		postac1->potion_slot2.wpn = (item*)malloc(sizeof(item));
-		postac1->potion_slot2.isEmpty = false;
-		sscanf_s(buffer, "%d %s %d %d %d %d\n",
-			&postac1->potion_slot2.wpn->lvl, 
-			postac1->potion_slot2.wpn->name, (unsigned)_countof(postac1->potion_slot2.wpn->name),
-			&postac1->potion_slot2.wpn->klasa, 
-			&postac1->potion_slot2.wpn->hp_modifier, 
-			&postac1->potion_slot2.wpn->szerokosc, 
-			&postac1->potion_slot2.wpn->wysokosc);
-	}
-
-	fgets(buffer, sizeof(buffer), file);
-	if (buffer[0] != '0') {
-		//potion slot3
-		postac1->potion_slot3.wpn = (item*)malloc(sizeof(item));
-		postac1->potion_slot3.isEmpty = false;
-		sscanf_s(buffer, "%d %s %d %d %d %d\n",
-			&postac1->potion_slot3.wpn->lvl, 
-			postac1->potion_slot3.wpn->name, (unsigned)_countof(postac1->potion_slot3.wpn->name),
-			&postac1->potion_slot3.wpn->klasa,
-			&postac1->potion_slot3.wpn->hp_modifier, 
-			&postac1->potion_slot3.wpn->szerokosc,
-			&postac1->potion_slot3.wpn->wysokosc);
-	}
-
-	fgets(buffer, sizeof(buffer), file);
-	if (buffer[0] != '0') {
-		//potion slot4
-		postac1->potion_slot4.wpn = (item*)malloc(sizeof(item));
-		postac1->potion_slot4.isEmpty = false;
-		sscanf_s(buffer, "%d %s %d %d %d %d\n", 
-			&postac1->potion_slot4.wpn->lvl, 
-			postac1->potion_slot4.wpn->name, (unsigned)_countof(postac1->potion_slot4.wpn->name),
-			&postac1->potion_slot4.wpn->klasa, 
-			&postac1->potion_slot4.wpn->hp_modifier, 
-			&postac1->potion_slot4.wpn->szerokosc, 
-			&postac1->potion_slot4.wpn->wysokosc);
-	}
-
-	fgets(buffer, sizeof(buffer), file);
-	if (buffer[0] != '0') {
-		//potion slot5
-		postac1->potion_slot5.wpn = (item*)malloc(sizeof(item));
-		postac1->potion_slot5.isEmpty = false;
-		sscanf_s(buffer, "%d %s %d %d %d %d\n", 
-			&postac1->potion_slot5.wpn->lvl, 
-			postac1->potion_slot5.wpn->name, (unsigned)_countof(postac1->potion_slot5.wpn->name),
-			&postac1->potion_slot5.wpn->klasa, 
-			&postac1->potion_slot5.wpn->hp_modifier, 
-			&postac1->potion_slot5.wpn->szerokosc, 
-			&postac1->potion_slot5.wpn->wysokosc);
-	}
-	else { postac1->potion_slot5.isEmpty = true; }	//jesli  pusty, zapisuje 0
-	
-
-	for (int i = 0; i < mapx_size; i++) {
-		for (int j = 0; j < mapy_size; j++) {
-			fscanf_s(file, "%c", &mapa[i][j]);
-		}
-	}
-
-	//wczytywanie przedmiotow z plecaka
-	while (fgets(buffer, sizeof(buffer), file) != NULL && buffer[0] != '\0' && buffer[0] != '\n') {
-		int lvl, typ, klasa, AP, AS, def, armorpoints, hp_modifier, potion_type, weapon_type, luck_modifier, szerokosc, wysokosc, isTwoHanded, weight;
-		char name[20];
-		int scanned = sscanf_s(buffer, "%d %d %d %d %d %d %d %d %d %d %19s %d %d %d %d %d",
-			&lvl, &typ, &klasa, &AP, &AS, &def, &armorpoints, &hp_modifier, &potion_type, &weapon_type,
-			name, (unsigned)_countof(name), &luck_modifier, &szerokosc, &wysokosc, &isTwoHanded, &weight);
-
-		if (scanned < 17) {
-			// Niepoprawna linia, pomiń
-			continue;
-		}
-		item* newItem = (item*)malloc(sizeof(item));
-		memset(newItem, 0, sizeof(item));
-		newItem->lvl = lvl;
-		newItem->typ = typ;
-		newItem->klasa = klasa;
-		newItem->AP = AP;
-		newItem->AS = AS;
-		newItem->def = def;
-		newItem->armorpoints = armorpoints;
-		newItem->hp_modifier = hp_modifier;
-		newItem->potion_type = potion_type;
-		newItem->weapon_type = weapon_type;
-		strcpy_s(newItem->name, sizeof(newItem->name), name);
-		newItem->luck_modifier = luck_modifier;
-		newItem->szerokosc = szerokosc;
-		newItem->wysokosc = wysokosc;
-		newItem->isTwoHanded = isTwoHanded;
-		newItem->weight = weight;
-
-		// Ustaw flagi typów
-		newItem->isWeapon = (typ == 1);
-		newItem->isArmor = (typ == 2);
-		newItem->isRing = (typ == 3);
-		newItem->isPotion = (typ == 0);
-		for (int i = 0; i < postac1->backpack_height; i++) {
-			for (int j = 0; j < postac1->backpack_width; j++) {
-				if (postac1->backpack[i][j].id == 0) {
-					pick_item(newItem, postac1, 0); // Dodaj przedmiot do plecaka
-					free(newItem);
-					newItem = nullptr;
-					goto next_item; // przejdź do kolejnej linii
-				}
-			}
-		next_item:
-			continue;
-		}
-	}
-
-	fclose(file);
-
-
-	*mapa_ptr = mapa;
-	*postac1_ptr = postac1;
-	printf("ZALADOWANO GRE\n");
-	Sleep(200);
-}*/
+*/
 
 
 void effects_impact(postac* postac1) {
@@ -3395,6 +3029,8 @@ void save_game2(postac* postac1, char** mapa, int mapx_size, int mapy_size, int 
 		postac1->name, postac1->lvl, postac1->health, postac1->attack, postac1->xp, postac1->stamina, postac1->hunger,
 		postac1->posx, postac1->posy, postac1->def, postac1->speed, postac1->luck, postac1->skillpoints, postac1->cash,
 		postac1->backpack_height, postac1->backpack_width, postac1->effect, postac1->effect_duration, runda);
+
+	fprintf(file, "%d %d\n", enemycount, trapcount);	//zapisuje enemycount bo zapomnialem xD
 
 	// Zapis statystyk
 	fprintf(file, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",
@@ -3486,10 +3122,30 @@ void save_game2(postac* postac1, char** mapa, int mapx_size, int mapy_size, int 
 	fclose(file);
 	printf("\n\t[ZAPISANO GRĘ]\n\n");
 
-	// Dodanie save do listy
-	fopen_s(&file, "saves/save.txt", "a");
-	fprintf(file, "%s\n", postac1->name);
-	fclose(file);
+	// Sprawdź, czy nazwa już istnieje w saves / save.txt
+		bool exists = false;
+	fopen_s(&file, "saves/save.txt", "r");
+	if (file != NULL) {
+		char linia[32];
+		while (fgets(linia, sizeof(linia), file) != NULL) {
+			// Usuwanie znaku nowej linii na końcu
+			linia[strcspn(linia, "\r\n")] = 0;
+			if (strcmp(linia, postac1->name) == 0) {
+				exists = true;
+				break;
+			}
+		}
+		fclose(file);
+	}
+
+	// Dodaj nazwę tylko jeśli jej nie ma
+	if (!exists) {
+		fopen_s(&file, "saves/save.txt", "a");
+		if (file != NULL) {
+			fprintf(file, "%s\n", postac1->name);
+			fclose(file);
+		}
+	}
 	Sleep(200);
 }
 void load_game2(postac** postac1_ptr, char*** mapa_ptr, int mapx_size, int mapy_size, int* runda) {
@@ -3545,6 +3201,9 @@ void load_game2(postac** postac1_ptr, char*** mapa_ptr, int mapx_size, int mapy_
 		&postac1->lvl, &postac1->health, &postac1->attack, &postac1->xp, &postac1->stamina, &postac1->hunger,
 		&postac1->posx, &postac1->posy, &postac1->def, &postac1->speed, &postac1->luck, &postac1->skillpoints,
 		&postac1->cash, &postac1->backpack_height, &postac1->backpack_width, &postac1->effect, &postac1->effect_duration, runda);
+
+	//staty
+	fscanf_s(file, "%d %d\n", &enemycount, &trapcount);
 
 	// Wczytaj statystyki
 	fscanf_s(file, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",
