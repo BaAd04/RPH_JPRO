@@ -295,23 +295,23 @@ item* generate_ring(postac* postac1, int klasa) {
 	rand_ = rand() % 1000;
 	rand_ += postac1->luck;
 	if (rand_ > 0 && rand_ < 200) {
-		rg->AP = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Attack ring");
+		rg->AP = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Attack-ring");
 	}
 	else//to attack ring 20%
 		if (rand_ >= 200 && rand_ < 400) {
-			rg->def = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Deffence ring");
+			rg->def = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Deffence-ring");
 		}
 		else//deff ring 20%
 			if (rand_ >= 400 && rand_ < 600) {
-				rg->AS = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Speed ring");
+				rg->AS = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Speed-ring");
 			}
 			else //speed ring 20%
 				if (rand_ >= 600 && rand_ < 690) {
-					rg->luck_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl; strcpy_s(rg->name, sizeof(rg->name), "Luck ring");
+					rg->luck_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl; strcpy_s(rg->name, sizeof(rg->name), "Luck-ring");
 				}
 				else //luck ring 9%
 					if (rand_ >= 690 && rand_ < 700) {
-						rg->def = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Full ring");			//full ring 1%
+						rg->def = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Full-ring");			//full ring 1%
 						rg->luck_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl;
 						rg->AS = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5;
 						rg->def = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5;
@@ -319,7 +319,7 @@ item* generate_ring(postac* postac1, int klasa) {
 						rg->hp_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5;
 					}
 					else if (rand_ >= 700 && rand_ < 1000) {
-						rg->hp_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Health ring");
+						rg->hp_modifier = rand() % 5 + 1 + postac1->luck * 0.1 + rg->lvl * 5; strcpy_s(rg->name, sizeof(rg->name), "Health-ring");
 					}	//health ring 30%
 
 	switch (klasa) {	//wylosowane wartosci zostaja przemnozone przez klase
@@ -442,7 +442,7 @@ item* generate_weapon(postac* postac1, int klasa) {
 	{
 	case 0://miecz lekki
 
-		strcpy_s(wpn->name, sizeof(wpn->name), "Lekki miecz");
+		strcpy_s(wpn->name, sizeof(wpn->name), "Lekki-miecz");
 		wpn->AP = wpn->lvl * rand() % 3 + 1 + postac1->luck * 0.5;
 		wpn->AS = wpn->lvl * rand() % 2 + 1;
 		wpn->weight = 3;
@@ -451,7 +451,7 @@ item* generate_weapon(postac* postac1, int klasa) {
 		wpn->weapon_type = 1; //sword
 		break;
 	case 1:	//miecz sredni
-		strcpy_s(wpn->name, sizeof(wpn->name), "Sredni miecz");
+		strcpy_s(wpn->name, sizeof(wpn->name), "Sredni-miecz");
 		wpn->AP = wpn->lvl * rand() % 5 + 1 + postac1->luck * 0.5;
 		wpn->AS = wpn->lvl * rand() % 4 + 1;
 		wpn->weight = 5;
@@ -460,7 +460,7 @@ item* generate_weapon(postac* postac1, int klasa) {
 		wpn->weapon_type = 1; //sword
 		break;
 	case 2:	//miecz ciezki
-		strcpy_s(wpn->name, sizeof(wpn->name), "Ciezki miecz");
+		strcpy_s(wpn->name, sizeof(wpn->name), "Ciezki-miecz");
 		wpn->AP = wpn->lvl * rand() % 9 + 1 + postac1->luck * 0.5;
 		wpn->AS = wpn->lvl * rand() % 7 + 1;
 		wpn->weight = 9;
@@ -469,7 +469,7 @@ item* generate_weapon(postac* postac1, int klasa) {
 		wpn->weapon_type = 1; //sword
 		break;
 	case 3:	//lekki topor
-		strcpy_s(wpn->name, sizeof(wpn->name), "Lekka siekiera");
+		strcpy_s(wpn->name, sizeof(wpn->name), "Lekka-siekiera");
 		wpn->AP = wpn->lvl * rand() % 5 + 1 + postac1->luck * 0.5;
 		wpn->AS = wpn->lvl * rand() % 4 + 1;
 		wpn->weight = 4;
@@ -478,7 +478,7 @@ item* generate_weapon(postac* postac1, int klasa) {
 		wpn->weapon_type = 2; //axe
 		break;
 	case 4:	//sredni topor
-		strcpy_s(wpn->name, sizeof(wpn->name), "Srednia siekiera");
+		strcpy_s(wpn->name, sizeof(wpn->name), "Srednia-siekiera");
 		wpn->AP = wpn->lvl * rand() % 7 + 1 + postac1->luck * 0.5;
 		wpn->AS = wpn->lvl * rand() % 6 + 1;
 		wpn->weight = 5;
@@ -487,7 +487,7 @@ item* generate_weapon(postac* postac1, int klasa) {
 		wpn->weapon_type = 2; //axe
 		break;
 	case 5: //ciezki topor
-		strcpy_s(wpn->name, sizeof(wpn->name), "Ciezka siekiera");
+		strcpy_s(wpn->name, sizeof(wpn->name), "Ciezka-siekiera");
 		wpn->AP = wpn->lvl * rand() % 10 + 1 + postac1->luck * 0.5;
 		wpn->AS = wpn->lvl * rand() % 8 + 1;
 		wpn->weight = 10;
@@ -496,7 +496,7 @@ item* generate_weapon(postac* postac1, int klasa) {
 		wpn->weapon_type = 2; //axe
 		break;
 	case 6:	//lekka tarcza
-		strcpy_s(wpn->name, sizeof(wpn->name), "Lekka tarcza");
+		strcpy_s(wpn->name, sizeof(wpn->name), "Lekka-tarcza");
 		wpn->AP = 0;
 		wpn->def = wpn->lvl * rand() % 3 + 1 + postac1->luck * 0.5;
 		wpn->AS = wpn->lvl * rand() % 4 + 1;
@@ -506,7 +506,7 @@ item* generate_weapon(postac* postac1, int klasa) {
 		wpn->weapon_type = 3; //shield
 		break;
 	case 7:	//srednia tarcza
-		strcpy_s(wpn->name, sizeof(wpn->name), "Lekka tarcza");
+		strcpy_s(wpn->name, sizeof(wpn->name), "Lekka-tarcza");
 		wpn->AP = 0;
 		wpn->def = wpn->lvl * rand() % 5 + 1 + postac1->luck * 0.5;
 		wpn->AS = wpn->lvl * rand() % 5 + 1;
@@ -516,7 +516,7 @@ item* generate_weapon(postac* postac1, int klasa) {
 		wpn->weapon_type = 3; //shield
 		break;
 	case 8:
-		strcpy_s(wpn->name, sizeof(wpn->name), "Ciezka tarcza");
+		strcpy_s(wpn->name, sizeof(wpn->name), "Ciezka-tarcza");
 		wpn->AP = 0;
 		wpn->def = wpn->lvl * rand() % 7 + 1 + postac1->luck * 0.5;
 		wpn->AS = wpn->lvl * rand() % 6 + 1;
@@ -526,7 +526,7 @@ item* generate_weapon(postac* postac1, int klasa) {
 		wpn->weapon_type = 3; //shield
 		break;
 	case 9:
-		strcpy_s(wpn->name, sizeof(wpn->name), "Dwureczny miecz");
+		strcpy_s(wpn->name, sizeof(wpn->name), "Dwureczny-miecz");
 		wpn->AP = wpn->lvl * rand() % 12 + 1 + postac1->luck * 0.5;
 		wpn->AS = wpn->lvl * rand() % 9 + 1;
 		wpn->weight = 10;
@@ -577,7 +577,7 @@ item* generate_potion(postac* postac1, int klasa) {
 
 	int potion_type = 1;	//0 - nie potion, 1 -  health, 2 - luck boost, 3 - atack boost
 
-	strcpy_s(pot->name, sizeof(pot->name), "Health Potion");
+	strcpy_s(pot->name, sizeof(pot->name), "Health-Potion");
 	pot->klasa = klasa;
 	pot->szerokosc = 1;
 	pot->weight = 1;
@@ -620,7 +620,7 @@ item* generate_armor(postac* postac1, int klasa) {
 	if (rand_ + postac1->luck < 1) { armr->lvl = postac1->lvl + 5; }
 
 	if (armr_type == 5) {	//ciezka zbroja
-		strcpy_s(armr->name, sizeof(armr->name), "Ciężka zbroja");
+		strcpy_s(armr->name, sizeof(armr->name), "Ciężka-zbroja");
 		armr->AS = -(rand() % 10 + 5) + postac1->luck * 0.1 + armr->lvl * 0.1;
 		armr->def = rand() % 10 + 1 + postac1->luck * 0.1 + armr->lvl * 5;	//defence
 		armr->armorpoints = rand() % 10 + 1 + postac1->luck * 0.1 + armr->lvl * 5;	//armor (potem dzielony przez 2)
@@ -630,7 +630,7 @@ item* generate_armor(postac* postac1, int klasa) {
 	}
 	else
 		if (armr_type > 2) {	//normalna zbroja
-			strcpy_s(armr->name, sizeof(armr->name), "Normalna zbroja");
+			strcpy_s(armr->name, sizeof(armr->name), "Normalna-zbroja");
 			armr->AS = -(rand() % 5 + 1) + postac1->luck * 0.1 + armr->lvl * 0.1;
 			armr->def = rand() % 5 + 1 + postac1->luck * 0.1 + armr->lvl * 2;	//defence
 			armr->armorpoints = rand() % 5 + 1 + postac1->luck * 0.1 + armr->lvl * 2;	//armor (potem dzielony przez 2)
@@ -639,7 +639,7 @@ item* generate_armor(postac* postac1, int klasa) {
 			armr->wysokosc = 2;	//wysokosc zbroi
 		}
 		else {
-			strcpy_s(armr->name, sizeof(armr->name), "Lekka zbroja");
+			strcpy_s(armr->name, sizeof(armr->name), "Lekka-zbroja");
 			armr->AS = -(rand() % 3 + 1) + postac1->luck * 0.1 + armr->lvl * 0.1;
 			armr->def = rand() % 3 + 1 + postac1->luck * 0.1 + armr->lvl;	//defence
 			armr->armorpoints = rand() % 3 + 1 + postac1->luck * 0.1 + armr->lvl;	//armor (potem dzielony przez 2)
@@ -1097,7 +1097,7 @@ void put_effect(enemy* wrog, postac* postac1) {
 		return klasa_itema;
 	}
 
-	void put_it_in(postac* postac1, item* newItem, int i, int j) {
+	void put_it_in(postac* postac1, item* &newItem, int i, int j) {
 		int szerokosc= newItem->szerokosc  ;
 		int wysokosc = newItem->wysokosc ;
 		switch (newItem->szerokosc) {
@@ -2313,6 +2313,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->armor_slot.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ ARMOR %s]\n", postac1->armor_slot.wpn->name);
 			item* newItem = postac1->armor_slot.wpn;	//przypisanie itemu do zmiennej newItem
+			*newItem = *(postac1->armor_slot.wpn);
 			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->armor_slot.isEmpty = true;	
@@ -2323,6 +2324,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->right_hand.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ PRAWY PRZEDMIOT %s]\n", postac1->right_hand.wpn->name);
 			item* newItem = postac1->right_hand.wpn;	//przypisanie itemu do zmiennej newItem
+			*newItem = *(postac1->right_hand.wpn);
 			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->right_hand.isEmpty = true;
@@ -2333,6 +2335,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->left_hand.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ LEWY PRZEDMIOT %s]\n", postac1->left_hand.wpn->name);
 			item* newItem = postac1->left_hand.wpn;	//przypisanie itemu do zmiennej newItem
+			*newItem = *(postac1->left_hand.wpn);
 			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->left_hand.isEmpty = true;
@@ -2343,6 +2346,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->ring_slot.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ PIERŚCIONEK %s]\n", postac1->ring_slot.wpn->name);
 			item* newItem = postac1->ring_slot.wpn;	//przypisanie itemu do zmiennej newItem
+			*newItem = *(postac1->ring_slot.wpn);
 			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->ring_slot.isEmpty = true;
@@ -2353,6 +2357,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->ring_slot2.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ DRUGI PIERŚCIONEK %s]\n", postac1->ring_slot2.wpn->name);
 			item* newItem = postac1->ring_slot2.wpn;	//przypisanie itemu do zmiennej newItem
+			*newItem = *(postac1->ring_slot2.wpn);
 			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->ring_slot2.isEmpty = true;
@@ -2363,6 +2368,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->right_hand.wpn->isTwoHanded == true) {
 			printf("\n\t[ZDJMUJESZ DWURECZNY PRZEDMIOT %s]\n", postac1->right_hand.wpn->name);
 			item* newItem = postac1->right_hand.wpn;	//przypisanie itemu do zmiennej newItem
+			*newItem = *(postac1->right_hand.wpn);
 			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->right_hand.isEmpty = true;
@@ -2374,6 +2380,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->potion_slot.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot.wpn->name);
 			item* newItem = postac1->potion_slot.wpn;	//przypisanie itemu do zmiennej newItem
+			*newItem = *(postac1->potion_slot.wpn);
 			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->potion_slot.isEmpty = true;
@@ -2384,6 +2391,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->potion_slot2.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot2.wpn->name);
 			item* newItem = postac1->potion_slot2.wpn;	//przypisanie itemu do zmiennej newItem
+			*newItem = *(postac1->potion_slot2.wpn);
 			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->potion_slot2.isEmpty = true;
@@ -2394,6 +2402,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->potion_slot3.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot3.wpn->name);
 			item* newItem = postac1->potion_slot3.wpn;	//przypisanie itemu do zmiennej newItem
+			*newItem = *(postac1->potion_slot3.wpn);
 			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->potion_slot3.isEmpty = true;
@@ -2404,6 +2413,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->potion_slot4.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot4.wpn->name);
 			item* newItem = postac1->potion_slot4.wpn;	//przypisanie itemu do zmiennej newItem
+			*newItem = *(postac1->potion_slot4.wpn);
 			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->potion_slot4.isEmpty = true;
@@ -2414,6 +2424,7 @@ void take_down_item(postac* postac1, char move[1]) {
 		if (postac1->potion_slot5.isEmpty == false) {
 			printf("\n\t[ZDJMUJESZ MIKSTURE %s]\n", postac1->potion_slot5.wpn->name);
 			item* newItem = postac1->potion_slot5.wpn;	//przypisanie itemu do zmiennej newItem
+			*newItem = *(postac1->potion_slot5.wpn);
 			pick_item(newItem, postac1, 0);	//dodanie itemu do ekwipunku
 			
 			postac1->potion_slot5.isEmpty = true;
@@ -2916,7 +2927,7 @@ void put_item_on(postac* postac1, char move[1]) {
 		}
 	}
 }
-
+/*
 void save_game(postac* postac1, char** mapa, int mapx_size, int mapy_size, int runda) {
 	FILE* file;
 	char savefile[32];
@@ -2963,27 +2974,27 @@ void save_game(postac* postac1, char** mapa, int mapx_size, int mapy_size, int r
 	else { fprintf(file, "0 \n"); }	//jesli ring jest pusty, zapisuje 0
 	
 	if (postac1->potion_slot.isEmpty == false) {
-		fprintf(file, "%d %s %d %d %d %d %d %d %d %d\n", postac1->potion_slot.wpn->lvl, postac1->potion_slot.wpn->name, postac1->potion_slot.wpn->klasa, postac1->potion_slot.wpn->hp_modifier, postac1->potion_slot.wpn->szerokosc, postac1->potion_slot.wpn->wysokosc);
+		fprintf(file, "%d %s %d %d %d %d \n", postac1->potion_slot.wpn->lvl, postac1->potion_slot.wpn->name, postac1->potion_slot.wpn->klasa, postac1->potion_slot.wpn->hp_modifier, postac1->potion_slot.wpn->szerokosc, postac1->potion_slot.wpn->wysokosc);
 	}
 	else { fprintf(file, "0 \n"); }	//jesli  pusty, zapisuje 0
 
 	if (postac1->potion_slot2.isEmpty == false) {
-		fprintf(file, "%d %s %d %d %d %d %d %d %d %d\n", postac1->potion_slot2.wpn->lvl, postac1->potion_slot2.wpn->name, postac1->potion_slot2.wpn->klasa, postac1->potion_slot2.wpn->hp_modifier, postac1->potion_slot2.wpn->szerokosc, postac1->potion_slot2.wpn->wysokosc);
+		fprintf(file, "%d %s %d %d %d %d\n", postac1->potion_slot2.wpn->lvl, postac1->potion_slot2.wpn->name, postac1->potion_slot2.wpn->klasa, postac1->potion_slot2.wpn->hp_modifier, postac1->potion_slot2.wpn->szerokosc, postac1->potion_slot2.wpn->wysokosc);
 	}
 	else { fprintf(file, "0 \n"); }	//jesli pusty, zapisuje 0
 
 	if (postac1->potion_slot3.isEmpty == false) {
-		fprintf(file, "%d %s %d %d %d %d %d %d %d %d\n", postac1->potion_slot3.wpn->lvl, postac1->potion_slot3.wpn->name, postac1->potion_slot3.wpn->klasa, postac1->potion_slot3.wpn->hp_modifier, postac1->potion_slot3.wpn->szerokosc, postac1->potion_slot3.wpn->wysokosc);
+		fprintf(file, "%d %s %d %d %d %d\n", postac1->potion_slot3.wpn->lvl, postac1->potion_slot3.wpn->name, postac1->potion_slot3.wpn->klasa, postac1->potion_slot3.wpn->hp_modifier, postac1->potion_slot3.wpn->szerokosc, postac1->potion_slot3.wpn->wysokosc);
 	}
 	else { fprintf(file, "0 \n"); }	//jesli  pusty, zapisuje 0
 
 	if (postac1->potion_slot4.isEmpty == false) {
-		fprintf(file, "%d %s %d %d %d %d %d %d %d %d\n", postac1->potion_slot4.wpn->lvl, postac1->potion_slot4.wpn->name, postac1->potion_slot4.wpn->klasa, postac1->potion_slot4.wpn->hp_modifier, postac1->potion_slot4.wpn->szerokosc, postac1->potion_slot4.wpn->wysokosc);
+		fprintf(file, "%d %s %d %d %d %d\n", postac1->potion_slot4.wpn->lvl, postac1->potion_slot4.wpn->name, postac1->potion_slot4.wpn->klasa, postac1->potion_slot4.wpn->hp_modifier, postac1->potion_slot4.wpn->szerokosc, postac1->potion_slot4.wpn->wysokosc);
 	}
 	else { fprintf(file, "0 \n"); }	//jesli  pusty, zapisuje 0
 
 	if (postac1->potion_slot5.isEmpty == false) {
-		fprintf(file, "%d %s %d %d %d %d %d %d %d %d\n", postac1->potion_slot5.wpn->lvl, postac1->potion_slot5.wpn->name, postac1->potion_slot5.wpn->klasa, postac1->potion_slot5.wpn->hp_modifier, postac1->potion_slot5.wpn->szerokosc, postac1->potion_slot5.wpn->wysokosc);
+		fprintf(file, "%d %s %d %d %d\n", postac1->potion_slot5.wpn->lvl, postac1->potion_slot5.wpn->name, postac1->potion_slot5.wpn->klasa, postac1->potion_slot5.wpn->hp_modifier, postac1->potion_slot5.wpn->szerokosc, postac1->potion_slot5.wpn->wysokosc);
 	}
 	else { fprintf(file, "0 \n"); }	//j
 
@@ -3015,7 +3026,7 @@ void save_game(postac* postac1, char** mapa, int mapx_size, int mapy_size, int r
 	Sleep(200);
 }
 
-void load_game() {
+void load_game(postac** postac1_ptr, char*** mapa_ptr, int mapx_size, int mapy_size, int* runda) {
 	FILE* file;
 	char filename[9];
 	char filepath[20];
@@ -3062,15 +3073,15 @@ void load_game() {
 	
 
 	postac* postac1 = generate_postac();
-	int mapx_size = 10;
-	int mapy_size = 15;
+	mapx_size = 10;
+	mapy_size = 15;
 	char** mapa = (char**)malloc(sizeof(char*) * mapx_size);
 	for (int i = 0; i < mapx_size; i++) {
 		mapa[i] = (char*)malloc(sizeof(char) * mapy_size);
 	}
 	generate_map(mapa, mapx_size, mapy_size, postac1);
 
-	int runda = 1;
+	
 
 	strcpy_s(postac1->name, sizeof(postac1->name), filename);
 
@@ -3182,7 +3193,7 @@ void load_game() {
 		 //potion slot
 		 postac1->potion_slot.wpn = (item*)malloc(sizeof(item));
 		 postac1->potion_slot.isEmpty = false;
-		fprintf(file, "%d %s %d %d %d %d %d %d %d %d\n", 
+		 sscanf_s(buffer, "%d %s %d %d %d %d\n",
 			&postac1->potion_slot.wpn->lvl, 
 			postac1->potion_slot.wpn->name, (unsigned)_countof(postac1->potion_slot.wpn->name),
 			&postac1->potion_slot.wpn->klasa, 
@@ -3196,7 +3207,7 @@ void load_game() {
 		//potion slot2
 		postac1->potion_slot2.wpn = (item*)malloc(sizeof(item));
 		postac1->potion_slot2.isEmpty = false;
-		sscanf_s(buffer, "%d %s %d %d %d %d %d %d %d %d\n",
+		sscanf_s(buffer, "%d %s %d %d %d %d\n",
 			&postac1->potion_slot2.wpn->lvl, 
 			postac1->potion_slot2.wpn->name, (unsigned)_countof(postac1->potion_slot2.wpn->name),
 			&postac1->potion_slot2.wpn->klasa, 
@@ -3210,7 +3221,7 @@ void load_game() {
 		//potion slot3
 		postac1->potion_slot3.wpn = (item*)malloc(sizeof(item));
 		postac1->potion_slot3.isEmpty = false;
-		fprintf(file, "%d %s %d %d %d %d %d %d %d %d\n", 
+		sscanf_s(buffer, "%d %s %d %d %d %d\n",
 			&postac1->potion_slot3.wpn->lvl, 
 			postac1->potion_slot3.wpn->name, (unsigned)_countof(postac1->potion_slot3.wpn->name),
 			&postac1->potion_slot3.wpn->klasa,
@@ -3224,7 +3235,7 @@ void load_game() {
 		//potion slot4
 		postac1->potion_slot4.wpn = (item*)malloc(sizeof(item));
 		postac1->potion_slot4.isEmpty = false;
-		sscanf_s(buffer, "%d %s %d %d %d %d %d %d %d %d\n", 
+		sscanf_s(buffer, "%d %s %d %d %d %d\n", 
 			&postac1->potion_slot4.wpn->lvl, 
 			postac1->potion_slot4.wpn->name, (unsigned)_countof(postac1->potion_slot4.wpn->name),
 			&postac1->potion_slot4.wpn->klasa, 
@@ -3238,7 +3249,7 @@ void load_game() {
 		//potion slot5
 		postac1->potion_slot5.wpn = (item*)malloc(sizeof(item));
 		postac1->potion_slot5.isEmpty = false;
-		sscanf_s(buffer, "%d %s %d %d %d %d %d %d %d %d\n", 
+		sscanf_s(buffer, "%d %s %d %d %d %d\n", 
 			&postac1->potion_slot5.wpn->lvl, 
 			postac1->potion_slot5.wpn->name, (unsigned)_countof(postac1->potion_slot5.wpn->name),
 			&postac1->potion_slot5.wpn->klasa, 
@@ -3307,25 +3318,13 @@ void load_game() {
 
 	fclose(file);
 
+
+	*mapa_ptr = mapa;
+	*postac1_ptr = postac1;
 	printf("ZALADOWANO GRE\n");
 	Sleep(200);
-}
-void saves(postac* postac1,char** mapa,int mapx_size, int mapy_size,int runda,char move[1]) {
-	printf("\nZAPISZ - S, ZALADUJ - L\n");
-	scanf_s(" %c", &move[0]);
-	switch (move[0]){
-	case 's':
-		saving_animation();
-		save_game(postac1, mapa, mapx_size, mapy_size, runda);
-		break;
-	case 'l':
-		load_game();
-			break;
-	default:
-		break;
-	}
+}*/
 
-}
 
 void effects_impact(postac* postac1) {
 	switch (postac1->effect)
@@ -3381,8 +3380,307 @@ void effects_impact(postac* postac1) {
 	}
 }
 
+void save_game2(postac* postac1, char** mapa, int mapx_size, int mapy_size, int runda) {
+	FILE* file;
+	char savefile[32];
+	snprintf(savefile, sizeof(savefile), "saves/%s.txt", postac1->name);
+	fopen_s(&file, savefile, "w");
+	if (file == NULL) {
+		printf("Nie mozna otworzyc pliku do zapisu.\n");
+		return;
+	}
 
+	// Zapis podstawowych danych postaci
+	fprintf(file, "%s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",
+		postac1->name, postac1->lvl, postac1->health, postac1->attack, postac1->xp, postac1->stamina, postac1->hunger,
+		postac1->posx, postac1->posy, postac1->def, postac1->speed, postac1->luck, postac1->skillpoints, postac1->cash,
+		postac1->backpack_height, postac1->backpack_width, postac1->effect, postac1->effect_duration, runda);
 
+	// Zapis statystyk
+	fprintf(file, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",
+		postac1->statystyki->enemies_slayed, postac1->statystyki->goblins_slayed, postac1->statystyki->zombie_slayed,
+		postac1->statystyki->orcs_slayed, postac1->statystyki->wizard_slayed, postac1->statystyki->hits_given,
+		postac1->statystyki->dmg_given, postac1->statystyki->hits_taken, postac1->statystyki->dmg_taken,
+		postac1->statystyki->skillpoints_got, postac1->statystyki->cash_got, postac1->statystyki->items_picked,
+		postac1->statystyki->potions_used, postac1->statystyki->hp_healed, postac1->statystyki->poisons_got,
+		postac1->statystyki->poisond_dmg_got, postac1->statystyki->hungers_got, postac1->statystyki->xp_got,
+		postac1->statystyki->moved, postac1->statystyki->moved_up, postac1->statystyki->moved_down,
+		postac1->statystyki->moved_left, postac1->statystyki->moved_right);
+
+	// Helper do zapisu slotu (NULL lub pełny)
+	auto save_slot = [&](Slot& slot, const char* fmt, int n) {
+		if (!slot.isEmpty && slot.wpn != nullptr) {
+			if (n == 8) {
+				fprintf(file, fmt,
+					slot.wpn->lvl, slot.wpn->name, slot.wpn->klasa, slot.wpn->AP, slot.wpn->AS,
+					slot.wpn->def, slot.wpn->szerokosc, slot.wpn->wysokosc);
+			}
+			else if (n == 8 + 1) { // armor
+				fprintf(file, fmt,
+					slot.wpn->lvl, slot.wpn->name, slot.wpn->klasa, slot.wpn->armorpoints, slot.wpn->AS,
+					slot.wpn->def, slot.wpn->szerokosc, slot.wpn->wysokosc);
+			}
+			else if (n == 10) { // ring
+				fprintf(file, fmt,
+					slot.wpn->lvl, slot.wpn->name, slot.wpn->klasa, slot.wpn->AP, slot.wpn->AS,
+					slot.wpn->def, slot.wpn->luck_modifier, slot.wpn->hp_modifier, slot.wpn->szerokosc, slot.wpn->wysokosc);
+			}
+			else if (n == 6) { // potion
+				fprintf(file, fmt,
+					slot.wpn->lvl, slot.wpn->name, slot.wpn->klasa, slot.wpn->hp_modifier, slot.wpn->szerokosc, slot.wpn->wysokosc);
+			}
+		}
+		else {
+			fprintf(file, "0\n");
+		}
+		};
+
+	// Zapis slotów
+	save_slot(postac1->armor_slot, "%d %s %d %d %d %d %d %d\n", 8 + 1); // armor
+	save_slot(postac1->right_hand, "%d %s %d %d %d %d %d %d\n", 8); // right hand
+	save_slot(postac1->left_hand, "%d %s %d %d %d %d %d %d\n", 8); // left hand
+	save_slot(postac1->ring_slot, "%d %s %d %d %d %d %d %d %d %d\n", 10); // ring
+	save_slot(postac1->ring_slot2, "%d %s %d %d %d %d %d %d %d %d\n", 10); // ring2
+	save_slot(postac1->potion_slot, "%d %s %d %d %d %d\n", 6); // potion1
+	save_slot(postac1->potion_slot2, "%d %s %d %d %d %d\n", 6); // potion2
+	save_slot(postac1->potion_slot3, "%d %s %d %d %d %d\n", 6); // potion3
+	save_slot(postac1->potion_slot4, "%d %s %d %d %d %d\n", 6); // potion4
+	save_slot(postac1->potion_slot5, "%d %s %d %d %d %d\n", 6); // potion5
+
+	// Zapis mapy
+	for (int i = 0; i < mapx_size; i++) {
+		for (int j = 0; j < mapy_size; j++) {
+			fprintf(file, "%c", mapa[i][j]);
+		}
+		fprintf(file, "\n");
+	}
+
+	// Zapis plecaka (unikalne id)
+	int last_item_id = -1;
+	for (int i = 0; i < postac1->backpack_height; i++) {
+		for (int j = 0; j < postac1->backpack_width; j++) {
+			if (postac1->backpack[i][j].id != 0 && postac1->backpack[i][j].id > last_item_id) {
+				last_item_id = postac1->backpack[i][j].id;
+				fprintf(file, "%d %d %d %d %d %d %d %d %d %d %s %d %d %d %d %d\n",
+					postac1->backpack[i][j].lvl,
+					postac1->backpack[i][j].typ,
+					postac1->backpack[i][j].klasa,
+					postac1->backpack[i][j].AP,
+					postac1->backpack[i][j].AS,
+					postac1->backpack[i][j].def,
+					postac1->backpack[i][j].armorpoints,
+					postac1->backpack[i][j].hp_modifier,
+					postac1->backpack[i][j].potion_type,
+					postac1->backpack[i][j].weapon_type,
+					postac1->backpack[i][j].name,
+					postac1->backpack[i][j].luck_modifier,
+					postac1->backpack[i][j].szerokosc,
+					postac1->backpack[i][j].wysokosc,
+					postac1->backpack[i][j].isTwoHanded,
+					postac1->backpack[i][j].weight
+				);
+			}
+		}
+	}
+
+	fclose(file);
+	printf("\n\t[ZAPISANO GRĘ]\n\n");
+
+	// Dodanie save do listy
+	fopen_s(&file, "saves/save.txt", "a");
+	fprintf(file, "%s\n", postac1->name);
+	fclose(file);
+	Sleep(200);
+}
+void load_game2(postac** postac1_ptr, char*** mapa_ptr, int mapx_size, int mapy_size, int* runda) {
+	FILE* file;
+	char filename[32];
+	char filepath[64];
+
+	printf("Który save wczytać? (pełna nazwa):\n");
+
+	// Wyświetl dostępne zapisy
+	fopen_s(&file, "saves/save.txt", "r");
+	if (file == NULL) {
+		printf("Brak pliku z listą zapisów.\n");
+		return;
+	}
+	char linia[32];
+	printf("\nDostępne zapisy:\n");
+	while (fgets(linia, sizeof(linia), file) != NULL) {
+		printf("%s", linia);
+	}
+	fclose(file);
+
+	// Wczytaj nazwę pliku
+	while (1) {
+		scanf_s("%31s", filename, (unsigned)_countof(filename));
+		snprintf(filepath, sizeof(filepath), "saves/%s.txt", filename);
+		fopen_s(&file, filepath, "r");
+		if (file == NULL) {
+			printf("Plik nie istnieje. Podaj poprawną nazwę:\n");
+		}
+		else {
+			fclose(file);
+			break;
+		}
+	}
+
+	// Przygotuj strukturę postaci i mapę
+	postac* postac1 = generate_postac();
+	char** mapa = (char**)malloc(sizeof(char*) * mapx_size);
+	for (int i = 0; i < mapx_size; i++) {
+		mapa[i] = (char*)malloc(sizeof(char) * mapy_size);
+	}
+
+	fopen_s(&file, filepath, "r");
+	if (file == NULL) {
+		printf("Nie można otworzyć pliku save.\n");
+		return;
+	}
+
+	// Wczytaj podstawowe dane postaci
+	fscanf_s(file, "%9s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",
+		postac1->name, (unsigned)_countof(postac1->name),
+		&postac1->lvl, &postac1->health, &postac1->attack, &postac1->xp, &postac1->stamina, &postac1->hunger,
+		&postac1->posx, &postac1->posy, &postac1->def, &postac1->speed, &postac1->luck, &postac1->skillpoints,
+		&postac1->cash, &postac1->backpack_height, &postac1->backpack_width, &postac1->effect, &postac1->effect_duration, runda);
+
+	// Wczytaj statystyki
+	fscanf_s(file, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",
+		&postac1->statystyki->enemies_slayed, &postac1->statystyki->goblins_slayed, &postac1->statystyki->zombie_slayed,
+		&postac1->statystyki->orcs_slayed, &postac1->statystyki->wizard_slayed, &postac1->statystyki->hits_given,
+		&postac1->statystyki->dmg_given, &postac1->statystyki->hits_taken, &postac1->statystyki->dmg_taken,
+		&postac1->statystyki->skillpoints_got, &postac1->statystyki->cash_got, &postac1->statystyki->items_picked,
+		&postac1->statystyki->potions_used, &postac1->statystyki->hp_healed, &postac1->statystyki->poisons_got,
+		&postac1->statystyki->poisond_dmg_got, &postac1->statystyki->hungers_got, &postac1->statystyki->xp_got,
+		&postac1->statystyki->moved, &postac1->statystyki->moved_up, &postac1->statystyki->moved_down,
+		&postac1->statystyki->moved_left, &postac1->statystyki->moved_right);
+
+	char buffer[128];
+
+	// Helper do wczytywania slotów
+	auto load_slot = [&](Slot& slot, const char* fmt, int n) {
+		fgets(buffer, sizeof(buffer), file);
+		if (buffer[0] != '0') {
+			slot.wpn = (item*)malloc(sizeof(item));
+			slot.isEmpty = false;
+			if (n == 9) { // armor
+				sscanf_s(buffer, fmt,
+					&slot.wpn->lvl, slot.wpn->name, (unsigned)_countof(slot.wpn->name),
+					&slot.wpn->klasa, &slot.wpn->armorpoints, &slot.wpn->AS,
+					&slot.wpn->def, &slot.wpn->szerokosc, &slot.wpn->wysokosc);
+			}
+			else if (n == 8) { // broń
+				sscanf_s(buffer, fmt,
+					&slot.wpn->lvl, slot.wpn->name, (unsigned)_countof(slot.wpn->name),
+					&slot.wpn->klasa, &slot.wpn->AP, &slot.wpn->AS,
+					&slot.wpn->def, &slot.wpn->szerokosc, &slot.wpn->wysokosc);
+			}
+			else if (n == 10) { // ring
+				sscanf_s(buffer, fmt,
+					&slot.wpn->lvl, slot.wpn->name, (unsigned)_countof(slot.wpn->name),
+					&slot.wpn->klasa, &slot.wpn->AP, &slot.wpn->AS,
+					&slot.wpn->def, &slot.wpn->luck_modifier, &slot.wpn->hp_modifier,
+					&slot.wpn->szerokosc, &slot.wpn->wysokosc);
+			}
+			else if (n == 6) { // potion
+				sscanf_s(buffer, fmt,
+					&slot.wpn->lvl, slot.wpn->name, (unsigned)_countof(slot.wpn->name),
+					&slot.wpn->klasa, &slot.wpn->hp_modifier, &slot.wpn->szerokosc, &slot.wpn->wysokosc);
+			}
+		}
+		else {
+			slot.isEmpty = true;
+		}
+		};
+
+	// Wczytaj sloty
+	load_slot(postac1->armor_slot, "%d %19s %d %d %d %d %d %d\n", 9);
+	load_slot(postac1->right_hand, "%d %19s %d %d %d %d %d %d\n", 8);
+	load_slot(postac1->left_hand, "%d %19s %d %d %d %d %d %d\n", 8);
+	load_slot(postac1->ring_slot, "%d %19s %d %d %d %d %d %d %d %d\n", 10);
+	load_slot(postac1->ring_slot2, "%d %19s %d %d %d %d %d %d %d %d\n", 10);
+	load_slot(postac1->potion_slot, "%d %19s %d %d %d %d\n", 6);
+	load_slot(postac1->potion_slot2, "%d %19s %d %d %d %d\n", 6);
+	load_slot(postac1->potion_slot3, "%d %19s %d %d %d %d\n", 6);
+	load_slot(postac1->potion_slot4, "%d %19s %d %d %d %d\n", 6);
+	load_slot(postac1->potion_slot5, "%d %19s %d %d %d %d\n", 6);
+
+	// Wczytaj mapę
+	for (int i = 0; i < mapx_size; i++) {
+		for (int j = 0; j < mapy_size; j++) {
+			fscanf_s(file, "%c", &mapa[i][j], 1);
+		}
+		fgetc(file); // pomiń znak nowej linii
+	}
+
+	// Wczytaj plecak
+	while (fgets(buffer, sizeof(buffer), file) != NULL && buffer[0] != '\0' && buffer[0] != '\n') {
+		int lvl, typ, klasa, AP, AS, def, armorpoints, hp_modifier, potion_type, weapon_type, luck_modifier, szerokosc, wysokosc, isTwoHanded, weight;
+		char name[20];
+		int scanned = sscanf_s(buffer, "%d %d %d %d %d %d %d %d %d %d %19s %d %d %d %d %d",
+			&lvl, &typ, &klasa, &AP, &AS, &def, &armorpoints, &hp_modifier, &potion_type, &weapon_type,
+			name, (unsigned)_countof(name), &luck_modifier, &szerokosc, &wysokosc, &isTwoHanded, &weight);
+
+		if (scanned < 16) continue;
+		item* newItem = (item*)malloc(sizeof(item));
+		memset(newItem, 0, sizeof(item));
+		newItem->lvl = lvl;
+		newItem->typ = typ;
+		newItem->klasa = klasa;
+		newItem->AP = AP;
+		newItem->AS = AS;
+		newItem->def = def;
+		newItem->armorpoints = armorpoints;
+		newItem->hp_modifier = hp_modifier;
+		newItem->potion_type = potion_type;
+		newItem->weapon_type = weapon_type;
+		strcpy_s(newItem->name, sizeof(newItem->name), name);
+		newItem->luck_modifier = luck_modifier;
+		newItem->szerokosc = szerokosc;
+		newItem->wysokosc = wysokosc;
+		newItem->isTwoHanded = isTwoHanded;
+		newItem->weight = weight;
+		newItem->isWeapon = (typ == 1);
+		newItem->isArmor = (typ == 2);
+		newItem->isRing = (typ == 3);
+		newItem->isPotion = (typ == 0);
+
+		// Dodaj do plecaka
+		for (int i = 0; i < postac1->backpack_height; i++) {
+			for (int j = 0; j < postac1->backpack_width; j++) {
+				if (postac1->backpack[i][j].id == 0) {
+					postac1->backpack[i][j] = *newItem;
+					postac1->backpack[i][j].id = item_id++;
+					goto next_item;
+				}
+			}
+		}
+	next_item:
+		free(newItem);
+	}
+
+	fclose(file);
+
+	*mapa_ptr = mapa;
+	*postac1_ptr = postac1;
+	printf("ZALADOWANO GRE\n");
+	Sleep(200);
+}
+void saves(postac* postac1, char** mapa, int mapx_size, int mapy_size, int runda, char move[1]) {
+	printf("\nZAPISZ - S\n");
+	scanf_s(" %c", &move[0]);
+	switch (move[0]) {
+	case 's':
+		saving_animation();
+		save_game2(postac1, mapa, mapx_size, mapy_size, runda);
+		break;
+	default:
+		break;
+	}
+
+}
 int main() {
 
 	SetConsoleOutputCP(CP_UTF8);
@@ -3422,7 +3720,7 @@ int main() {
 		}
 		}
 		else {
-			load_game();
+			load_game2(&postac1, &mapa, mapx_size, mapy_size, &runda);
 		}
 	
 
