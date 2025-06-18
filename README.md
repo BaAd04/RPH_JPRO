@@ -4,4 +4,4 @@ RPG game written in uni <br>
 ![asci_working](https://github.com/user-attachments/assets/0b6dfd67-70c5-434b-a3c5-ba94dfd64460)
 
 
-create saves directory in the same directory, where the cpp file is, so saving will work
+create "saves" directory in the same directory, where the cpp file is, so saving will work
